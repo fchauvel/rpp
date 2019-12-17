@@ -1,7 +1,7 @@
 {
    "name": "@fchauvel/rpp",
-    "version": "0.0.0",
-    "commit": null,
+   "version": "0.0.0",
+   "commit": null,
    "description": "Rapid Project Planning",
    "author": "Franck Chauvel",
    "license": "MIT",

@@ -1,6 +1,5 @@
 # RPP &mdash; Rapid Project Plan
 
-![GitHub tag](https://img.shields.io/github/tag/fchauvel/rpp.svg)
 ![NPM Version](https://img.shields.io/npm/v/fchauvel/rpp)
 [![Build Status](https://travis-ci.org/fchauvel/rpp.svg?branch=master)](https://travis-ci.org/fchauvel/rpp)
 [![Test Coverage](https://img.shields.io/codecov/c/github/fchauvel/rpp)](https://codecov.io/gh/fchauvel/rpp/branch/master)
