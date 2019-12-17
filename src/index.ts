@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 
-import infos = require("../package.json");
+import * as infos from "../package.json";
 
-let version = infos.version;
-if (infos.commit != null) {
+let commit: string = infos.commit
+let version: string = infos.version;
+if (commit !== null) {
     const max = 7;
-    version = version + "+git." + infos.commit.substring(max);
+    version =  version + "+git." + commit.substring(max);
 }
 
 console.log("RPP v" + version);

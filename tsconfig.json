@@ -2,7 +2,8 @@
   "compilerOptions": {
       "target": "es5",
       "outDir": "build",
-      "inlineSourceMap": true
+      "inlineSourceMap": true,
+      "resolveJsonModule": true
   },
     "include": [
 	"src/**/*",
