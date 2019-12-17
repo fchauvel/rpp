@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const infos = require("../package.json");
+import infos = require("../package.json");
 
 let version = infos.version;
 if (infos.commit != null) {
