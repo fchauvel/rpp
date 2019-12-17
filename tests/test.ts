@@ -9,16 +9,16 @@
  */
 
 
-import { Project } from '../src/wbs'
+import { Project } from "../src/wbs"
 
 
-describe('A project', () => {
+describe("A project", () => {
 
-    it('should expose its name', () => {
-	const name = 'Dummy project';
-	var project = new Project(name);
+    it("should expose its name", () => {
+        const name = "Dummy project";
+        const project = new Project(name);
 
-	expect(project.name).toBe(name);
+        expect(project.name).toBe(name);
     });
 
 });
