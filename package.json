@@ -1,0 +1,35 @@
+{
+   "name": "RPP",
+   "version": "0.0.0",
+   "description": "Rapid Project Planning",
+   "author": "Franck Chauvel",
+   "license": "MIT",
+   "bugs": {
+      "url": "https://github.com/fchauvel/rpp/issues"
+   },
+   "main": "./build/index.js",
+   "bin": {
+      "rpp": "./build/index.js"
+   },
+   "scripts": {
+      "test": "jest --coverage"
+   },
+   "devDependencies": {
+      "@types/jest": "^24.0.23",
+      "jest": "^24.9.0",
+      "ts-jest": "^24.2.0"
+   },
+   "dependencies": {
+      "@babel/core": "^7.7.5",
+      "@babel/preset-env": "^7.7.6",
+      "babel-jest": "^24.9.0",
+      "typescript": "^3.7.3"
+   },
+   "jest": {
+      "preset": "ts-jest",
+      "roots": [
+         "<rootDir>/src",
+         "<rootDir>/tests"
+      ]
+   }
+}
