@@ -2,11 +2,11 @@
 
 import * as infos from "../package.json";
 
-let commit: string = infos.commit
+const commit: string = infos.commit
 let version: string = infos.version;
 if (commit !== null) {
-    const max = 7;
-    version =  version + "+git." + commit.substring(max);
+    const hash_length = 7;
+    version =  version + "+git." + commit.substring(hash_length);
 }
 
 console.log("RPP v" + version);
