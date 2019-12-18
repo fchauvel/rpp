@@ -13,7 +13,7 @@ after_success:
           sed -ir "s/\"commit\": null/\"commit\": \"${TRAVIS_COMMIT}\"/I" package.json
           tsc
           npm install -g npm-cli-login
-          npm-cli-login -u "${NPM_LOGIN}" -p "${NPM_PASSWORD}" -e ${"NPM_EMAIL}"
+          npm-cli-login -u "${NPM_LOGIN}" -p "${NPM_PASSWORD}" -e "${NPM_EMAIL}"
           npm publish --access public
        fi
     fi
