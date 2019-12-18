@@ -1,0 +1,19 @@
+language: node_js
+node_js:
+  - '10'
+before_script:
+  - npm install codecov -g
+after_success:
+  - codecov
+  - |
+    if [[ "${TRAVIS_BRANCH}" == "master" && "${TRAVIS_PULL_REQUEST}" == "false" ]]
+    then
+       if [[ "${TRAVIS_TAG}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+       then
+          sed -ir "s/\"commit\": null/\"commit\": \"${TRAVIS_COMMIT}\"/I" package.json
+          tsc
+          npm install -g npm-cli-login
+          npm-cli-login -u "${NPM_LOGIN}" -p "${NPM_PASSWORD}" -e ${"NPM_EMAIL}"
+          npm publish --access public
+       fi
+    fi

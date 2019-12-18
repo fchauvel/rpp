@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+      "target": "es5",
+      "outDir": "build",
+      "inlineSourceMap": true,
+      "resolveJsonModule": true
+  },
+    "include": [
+	"src/**/*",
+	"test/**/*"
+    ]
+}

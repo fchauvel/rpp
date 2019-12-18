@@ -1,0 +1,9 @@
+
+# Emacs
+*~
+
+# NodeJS & Typescript
+/node_modules
+/build
+
+/coverage
