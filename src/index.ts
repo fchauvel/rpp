@@ -1,13 +1,25 @@
 #!/usr/bin/env node
 
-import * as infos from "../package.json";
+/*
+ * Copyright (C) 2019, 2020 Franck Chauvel
+ * All rights reserved.
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.
+ *
+ * See the LICENSE file for details.
+ */
 
-const commit: string = infos.commit
-let version: string = infos.version;
-if (commit !== null) {
-    const hash_length = 7;
-    version =  version + "+git." + commit.substring(hash_length);
-}
 
-console.log("RPP v" + version);
-console.log("Thanks!");
+
+import { Controller } from "./controller";
+import { Terminal } from "./terminal"
+import { RPP } from "./rpp"
+
+
+
+const controller = new Controller(
+    new RPP(),
+    new Terminal(console));
+
+controller.execute(process.argv.slice(2));

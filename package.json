@@ -8,15 +8,16 @@
    "bugs": {
       "url": "https://github.com/fchauvel/rpp/issues"
    },
-   "main": "./build/index.js",
+   "main": "./build/src/index.js",
    "bin": {
-      "rpp": "./build/index.js"
+      "rpp": "./build/src/index.js"
    },
    "scripts": {
-      "test": "jest --coverage"
+      "test": "jest"
    },
    "devDependencies": {
       "@types/jest": "^24.0.23",
+      "@types/yargs": "^13.0.3",
       "jest": "^24.9.0",
       "ts-jest": "^24.2.0"
    },
@@ -25,6 +26,8 @@
       "@babel/preset-env": "^7.7.6",
       "@types/node": "^12.12.18",
       "babel-jest": "^24.9.0",
+      "d3": "^5.14.2",
+      "jsdom": "^15.2.1",
       "typescript": "^3.7.3"
    },
    "jest": {
@@ -32,6 +35,9 @@
       "roots": [
          "<rootDir>/src",
          "<rootDir>/tests"
+      ],
+      "collectCoverageFrom": [
+         "src/**/*.ts"
       ]
    }
 }
