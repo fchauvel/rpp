@@ -30,7 +30,7 @@ describe("The terminal should", () => {
     test("format version number", () => {
         const version = "0.0.0";
 
-        terminal.show_version(version, null);
+        terminal.showVersion(version, null);
 
         const pattern = new RegExp(format(terminal.VERSION, version));
         expect(output.text).toMatch(pattern);
@@ -41,7 +41,7 @@ describe("The terminal should", () => {
         const version = "0.0.0";
         const commit = "abcedfghijklmnopqrstuvwxyz";
 
-        terminal.show_version(version, commit);
+        terminal.showVersion(version, commit);
 
         expect(output.text).toMatch(version);
         expect(output.text).toMatch(commit.substring(0, terminal.HASH_LENGTH));
@@ -51,7 +51,7 @@ describe("The terminal should", () => {
     test("format 'help' message", () => {
         const message = "help";
 
-        terminal.show_help(message);
+        terminal.showHelp(message);
 
         expect(output.text).toMatch(message);
     });
@@ -60,7 +60,7 @@ describe("The terminal should", () => {
     test("format invalid arguments", () => {
         const message = "Invalid arguments: x y";
 
-        terminal.invalid_arguments(message, null);
+        terminal.invalidArguments(message, null);
 
         expect(output.text).toMatch(message);
     });

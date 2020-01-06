@@ -11,13 +11,12 @@
 
 
 
-import * as infos from "../package.json";
 import * as yargs from "yargs";
 import { Argv } from "yargs";
 
 import { RPP } from "./rpp";
 import { Terminal } from "./terminal";
-import { Storage } from "./storage"
+import { Storage, FileSystem } from "./storage";
 
 
 
@@ -31,18 +30,18 @@ export class Controller {
     public constructor(rpp: RPP, terminal: Terminal) {
         this._rpp = rpp;
         this._terminal = terminal;
-        this._storage = new Storage();
+        this._storage = new Storage([ new FileSystem() ]);
         this._parser =          yargs
             .scriptName("rpp")
             .usage("$0 [command] [options...]")
             .command("help",
                      "generate project visualisations",
                      {},
-                     (args: any) => { this.show_help(args); })
+                     (args: any) => { this.showHelp(args); })
             .command("version",
                      "show RPP's version",
                      {},
-                     (args: any) => { this.show_version(args); })
+                     (args: any) => { this.showVersion(args); })
             .command("gantt",
                      "Generate Gantt chart",
                      (yargs) => yargs
@@ -62,36 +61,35 @@ export class Controller {
             .help(false)
             .version(false)
             .fail((msg: string, err: Error) => {
-                this.invalid_arguments(msg, err);
+                this.invalidArguments(msg, err);
             })
             .strict();
     }
 
-    public execute(commandLine: Array<string>) {
+    public execute(commandLine: Array<string>): void {
         this._parser.parse(commandLine);
     }
 
 
-    private invalid_arguments(message: string, error: Error) {
-        this._terminal.invalid_arguments(message, error);
-        this.show_help(null);
+    private invalidArguments(message: string, error: Error): void {
+        this._terminal.invalidArguments(message, error);
+        this.showHelp(null);
     }
 
 
-    private show_version(args: any) {
+    private showVersion(args: any): void {
         const [version, commit] = this._rpp.version();
-        this._terminal.show_version(version, commit);
+        this._terminal.showVersion(version, commit);
     }
 
 
-    private show_help(args: any) {
-        this._terminal.show_help("Usage: rpp [command] [option]+")
+    private showHelp(args: any): void {
+        this._terminal.showHelp("Usage: rpp [command] [option]+");
         this._parser.showHelp("log");
     }
 
 
-    private generateGantt(args: any) {
-        console.log(args);
+    private generateGantt(args: any): void {
         const project = this._storage.loadProject(args.project);
         this._storage.storeGanttChart(project, args.output);
     }

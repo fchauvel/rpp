@@ -18,6 +18,9 @@
    "devDependencies": {
       "@types/jest": "^24.0.23",
       "@types/yargs": "^13.0.3",
+      "@typescript-eslint/eslint-plugin": "^2.15.0",
+      "@typescript-eslint/parser": "^2.15.0",
+      "eslint": "^6.8.0",
       "jest": "^24.9.0",
       "ts-jest": "^24.2.0"
    },
@@ -27,6 +30,7 @@
       "@types/node": "^12.12.18",
       "babel-jest": "^24.9.0",
       "d3": "^5.14.2",
+      "js-yaml": "^3.13.1",
       "jsdom": "^15.2.1",
       "typescript": "^3.7.3"
    },
@@ -35,6 +39,9 @@
       "roots": [
          "<rootDir>/src",
          "<rootDir>/tests"
+      ],
+      "modulePaths": [
+         "."
       ],
       "collectCoverageFrom": [
          "src/**/*.ts"

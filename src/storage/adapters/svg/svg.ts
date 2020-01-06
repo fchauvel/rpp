@@ -13,10 +13,34 @@
 import * as d3 from "d3";
 import { JSDOM } from  "jsdom";
 
-import { Project, Activity, Package, Task } from "../../wbs";
-import { StyleSheet } from "./style"
+import { StyleSheet } from "./style";
+import { Figure, Rectangle, Text, Line } from "./shape";
 
-import { Figure, Rectangle, Text, Line } from "./shape"
+
+
+function xPosition(text: Text): number {
+    switch(text.style.font.textAnchor) {
+        case "start":
+            return 0;
+        case "end":
+            return text.boundingBox.width;
+        case "middle":
+            return text.boundingBox.width / 2;
+        default:
+            return 0;
+    }
+}
+
+
+
+function yPosition(text: Text): number {
+    switch(text.style.font.dominantBaseline) {
+        case "middle":
+            return text.boundingBox.height / 2;
+        default:
+            return 0;
+    }
+}
 
 
 
@@ -27,32 +51,33 @@ export class SVGWriter {
     private _container: any;
 
 
-    public write(figure: Figure) {
+    public write(figure: Figure): string {
         this.initialize(figure.boundingBox.width,
                         figure.boundingBox.height);
         figure.accept(this);
-        return this._body.select('.container').html();
+        return this._body.select(".container").html();
     }
 
 
     public visitFigure(figure: Figure): void {
-        for (let eachShape of figure.shapes) {
+        for (const eachShape of figure.shapes) {
             eachShape.accept(this);
         }
     }
 
 
-    private initialize(width: number, height:number): void {
+    private initialize(width: number, height: number): void {
         this._dom = new JSDOM("<!DOCTYPE html><html><body></body></html>");
-        this._body = d3.select(this._dom.window.document).select('body');
-        this._container = this._body.append('div')
-            .attr('class', 'container')
+        this._body = d3.select(this._dom.window.document).select("body");
+        this._container = this._body.append("div")
+            .attr("class", "container")
             .append("svg")
+            .attr("xmlns", "http://www.w3.org/2000/svg")
             .attr("width", width)
             .attr("height", height);
     }
 
-    public visitRectangle(rectangle: Rectangle) {
+    public visitRectangle(rectangle: Rectangle): void {
         this._container.append("rect")
             .attr("x", rectangle.boundingBox.topLeft.x)
             .attr("y", rectangle.boundingBox.topLeft.y)
@@ -65,7 +90,7 @@ export class SVGWriter {
         ;
     }
 
-    public visitLine(line: Line) {
+    public visitLine(line: Line): void {
         this._container.append("line")
             .attr("x1", line.boundingBox.topLeft.x)
             .attr("y1", line.boundingBox.topLeft.y)
@@ -76,7 +101,7 @@ export class SVGWriter {
             .attr("stroke-dasharray", line.style.stroke.dashArray);
     }
 
-    public visitText(text: Text) {
+    public visitText(text: Text): void {
         const frame = this._container.append("svg")
             .attr("x", text.boundingBox.topLeft.x)
             .attr("y", text.boundingBox.topLeft.y)
@@ -95,28 +120,4 @@ export class SVGWriter {
     }
 
 
-}
-
-
-function xPosition(text: Text): number {
-    switch(text.style.font.textAnchor) {
-        case "start":
-            return 0;
-        case "end":
-            return text.boundingBox.width;
-        case "middle":
-            return text.boundingBox.width / 2;
-        default:
-            return 0;
-    }
-}
-
-
-function yPosition(text: Text): number {
-    switch(text.style.font.dominantBaseline) {
-        case "middle":
-            return text.boundingBox.height / 2;
-        default:
-            return 0;
-    }
 }

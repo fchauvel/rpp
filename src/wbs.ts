@@ -51,7 +51,7 @@ export class Task extends Activity {
     constructor(name: string, start: number, duration=1) {
         super(name, []);
         this._start = start;
-        this._duration = duration
+        this._duration = duration;
     }
 
 
@@ -88,7 +88,9 @@ export class Package extends Activity {
     public start(): number {
         return this.breakdown.reduce(
             (earliest, activity) => {
-                return earliest < activity.start() ? earliest : activity.start()
+                return earliest < activity.start() ?
+                    earliest :
+                    activity.start();
             },
             Number.MAX_VALUE);
     }
@@ -102,7 +104,9 @@ export class Package extends Activity {
     public end(): number {
         return this.breakdown.reduce(
             (latest, activity) => {
-                return latest > activity.end() ? latest : activity.end()
+                return latest > activity.end() ?
+                    latest :
+                    activity.end();
             },
             0);
     }
@@ -115,7 +119,7 @@ export class Package extends Activity {
 
 
     protected iterateOverBreakdown(visitor: Visitor): void {
-        for (let [index, activity] of this.breakdown.entries()) {
+        for (const [index, activity] of this.breakdown.entries()) {
             visitor.path.enter(index + 1);
             activity.accept(visitor);
             visitor.path.exit();
@@ -128,7 +132,7 @@ export class Package extends Activity {
 export class Project extends Package {
 
     constructor(name: string, breakdown: Activity[]) {
-        super(name, breakdown)
+        super(name, breakdown);
     }
 
     public get origin(): Date {
@@ -160,7 +164,7 @@ export class Path {
     }
 
 
-    public asIdentifier(prefix: string, separator: string="."): string {
+    public asIdentifier(prefix: string, separator="."): string {
         return prefix + " " + this._indexes.map(String).join(separator);
     }
 
@@ -173,7 +177,7 @@ export class Path {
         this._indexes.push(index);
     }
 
-    public exit() {
+    public exit(): void {
         if (this._indexes.length == 0) {
             throw new Error("Cannot exit root!");
         }
@@ -196,13 +200,10 @@ export abstract class Visitor {
         return this._path;
     }
 
-    public onTask(task: Task): void {
-    }
+    public onTask(task: Task): void {}
 
-    public onPackage(workPackage: Package) : void {
-    }
+    public onPackage(workPackage: Package): void {}
 
-    public onProject(project: Project): void {
-    }
+    public onProject(project: Project): void {}
 
 }

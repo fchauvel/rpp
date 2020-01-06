@@ -10,47 +10,85 @@
 
 
 
-import { Project, Activity, Package, Task } from "../wbs";
-import { Layout, GanttPainter } from "./adapters/painter";
-import { SVGWriter } from "./adapters/svg"
+import { Project  } from "../wbs";
+import { Format } from "./adapters";
+import { JSONFormat } from "./adapters/json";
+import { YAMLFormat } from "./adapters/yaml";
+import { SVGFormat } from "./adapters/svg";
+
 
 import * as fs from "fs";
 
 
 
-export class Storage {
+export abstract class DataSource {
 
+    public abstract fetch(location: string): string;
 
-    public loadProject(location: string): Project {
-        let content = fs.readFileSync(location, "utf-8");
-        let data = JSON.parse(content);
-        const activities = this.parseActivities(data.project.breakdown);
-        return new Project(data.project.name, activities);
+    public store (location: string, content: string): void {
+        throw new Error("Not supported!");
     }
 
 
-    private parseActivities(json: Array<any>): Array<Activity> {
-        const activities: Array<Activity> = [];
-        for (var item of json) {
-            if ("breakdown" in item) {
-                const breakdown = this.parseActivities(item.breakdown);
-                activities.push(new Package(item.name, breakdown));
-            } else {
-                const task = new Task(
-                    item.name,
-                    item.start,
-                    item.duration);
-                activities.push(task);
+}
+
+
+
+export class FileSystem extends DataSource {
+
+
+    public fetch (location: string): string {
+        const encoding = "utf-8";
+        return fs.readFileSync(location, encoding);
+    }
+
+
+    public store(location: string, content: string): void {
+        fs.writeFileSync(location, content);
+    }
+
+
+}
+
+
+export class Storage {
+
+    private _sources: DataSource[];
+    private _formats: Format[];
+
+
+    constructor (sources: DataSource[]=[]) {
+        this._sources = sources;
+        this._formats = [
+            new JSONFormat(),
+            new YAMLFormat(),
+            new SVGFormat()
+        ];
+    }
+
+
+    public loadProject(location: string): Project {
+        const content = this._sources[0].fetch(location);
+        const reader = this.selectReader(location);
+        return reader.parseProject(content);
+    }
+
+
+    private selectReader(location: string): Format {
+        for (const anyFormat of this._formats) {
+            if (anyFormat.accept(location)) {
+                return anyFormat;
             }
         }
-        return activities;
+        throw Error("Format not supported (" + location + ")");
     }
 
 
     public storeGanttChart(project: Project, location: string) {
-        const gantt = new GanttPainter(new Layout());
-        const svg = new SVGWriter();
-        fs.writeFileSync(location, svg.write(gantt.draw(project)));
+        const format = this.selectReader(location);
+        const content = format.writeGantt(project);
+        this._sources[0].store(location, content);
     }
+
 
 }

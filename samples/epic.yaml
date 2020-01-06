@@ -1,0 +1,72 @@
+#
+# Copyright (C) 2019, 2020 Franck Chauvel
+# All rights reserved.
+#
+# This software may be modified and distributed under the terms
+# of the MIT license.
+#
+# See the LICENSE file for details.
+#
+
+
+project:
+  name: EPIC
+  breakdown:
+    - name: Project Management
+      breakdown:
+        - name: Infrastructure for Communication
+          start: 1
+          duration: 48
+        - name: Financial Reporting
+          start: 1
+          duration: 48
+        - name: Quality & Risk Management
+          start: 1
+          duration: 48
+    - name: Exploration & Modelling
+      breakdown:
+        - name: Generator Synthesis
+          start: 1
+          duration: 24
+        - name: Threats Detection
+          start: 1
+          duration: 24
+        - name: Evolutionary Strategy
+          start: 25
+          duration: 24
+        - name: Communication & Cooperation
+          start: 25
+          duration: 24
+    - name: Simulation & Prototyping
+      breakdown:
+        - name: Platform Development
+          start: 1
+          duration: 24
+        - name: Validation throug Simulation
+          start: 12
+          duration: 24
+        - name: Prototype Development
+          start: 25
+          duration: 24
+    - name: Case studies & Evaluation
+      breakdown:
+        - name: KPI & Metrics
+          start: 1
+          duration: 18
+        - name: Minimal Toys Scenarios
+          start: 1
+          duration: 24
+        - name: Case studies Scenarios
+          start: 19
+          duration: 24
+        - name: Evaluation
+          start: 31
+          duration: 18
+    - name: Dissemination & Exploitation
+      breakdown:
+        - name: Scientific Dissemination
+          start: 1
+          duration: 48
+        - name: Communication & Exploitation
+          start: 1
+          duration: 48

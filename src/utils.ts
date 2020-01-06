@@ -12,12 +12,12 @@
 export function format(template: string, ...args: any[]): string {
     let result = template;
     for (const index in args) {
-	const pattern = new RegExp("\\{" + index + "\\}", "g");
-	result = result.replace(pattern, args[index]);
+        const pattern = new RegExp("\\{" + index + "\\}", "g");
+        result = result.replace(pattern, args[index]);
     }
-    const remaining_slots = result.match(/\{(\d+)\}/g);
-    if (remaining_slots) {
-	throw Error("Invalid indexes: " + remaining_slots);
+    const remainingSlots = result.match(/\{(\d+)\}/g);
+    if (remainingSlots) {
+        throw Error("Invalid indexes: " + remainingSlots);
     }
     return result;
 }

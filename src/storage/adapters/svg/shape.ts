@@ -9,7 +9,7 @@
  */
 
 
-import { StyleSheet, Style } from "../../storage/adapters/style";
+import { StyleSheet, Style } from "./style";
 
 
 export class Point {
@@ -92,7 +92,7 @@ export class Box {
             || this.includes(other.bottomRight);
     }
 
-    public includes(point: Point) {
+    public includes(point: Point): boolean {
         return point.x >= this.left && point.x <= this.right
             && point.y >= this.top && point.y < this.bottom;
     }
@@ -196,7 +196,7 @@ export abstract class Shape {
     }
 
 
-    addTag(tag: string) {
+    addTag(tag: string): void {
         if (!this.hasTag(tag)) {
             this._tags.push(tag);
         }
@@ -232,11 +232,11 @@ export class Line extends Shape {
     }
 
 
-    public accept(visitor: Visitor) {
+    public accept(visitor: Visitor): void {
         visitor.visitLine(this);
     }
 
-    public get boundingBox() {
+    public get boundingBox(): Box {
         const topLeft = new Point(
             Math.min(this._source.x, this._target.x),
             Math.min(this._source.y, this._target.y)
@@ -259,7 +259,7 @@ export class Rectangle extends Shape {
     }
 
 
-    public accept(visitor: Visitor) {
+    public accept(visitor: Visitor): void {
         visitor.visitRectangle(this);
     }
 
@@ -284,7 +284,7 @@ export class Text extends Rectangle {
         return this._text;
     }
 
-    public accept(visitor: Visitor) {
+    public accept(visitor: Visitor): void {
         visitor.visitText(this);
     }
 
@@ -301,11 +301,11 @@ export class Figure extends Shape {
         this._shapes = shapes;
     }
 
-    public accept(visitor: Visitor) {
+    public accept(visitor: Visitor): void {
         visitor.visitFigure(this);
     }
 
-    public get boundingBox() {
+    public get boundingBox(): Box {
         if (this._shapes.length == 0) {
             throw Error("An empty figure has no bounding box!");
         }
@@ -314,7 +314,7 @@ export class Figure extends Shape {
         let maxX = 0;
         let minY = Number.MAX_VALUE;
         let maxY = 0;
-        for (let anyShape of this._shapes) {
+        for (const anyShape of this._shapes) {
             const boundingBox = anyShape.boundingBox;
             minX = Math.min(minX, boundingBox.left);
             maxX = Math.max(maxX, boundingBox.right);
@@ -327,18 +327,18 @@ export class Figure extends Shape {
                        maxY - minY);
     }
 
-    public get shapes() {
+    public get shapes(): Shape[] {
         return this._shapes;
     }
 
-    public add(newShape: Shape) {
+    public add(newShape: Shape): void {
         this._shapes.push(newShape);
     }
 
 
     findShapesWithTags(tags: string[]): Shape[] {
         const selectedShapes: Shape[] = [];
-        for(let anyShape of this._shapes) {
+        for(const anyShape of this._shapes) {
             if (anyShape.hasAllTags(tags)) {
                 selectedShapes.push(anyShape);
             }
@@ -374,37 +374,37 @@ export class Painter {
     }
 
 
-    public moveTo(xOffset:number, yOffset: number) {
+    public moveTo(xOffset: number, yOffset: number): void {
         this._position = this._position.move(xOffset, yOffset);
     }
 
 
-    public moveVerticallyTo(position: number) {
+    public moveVerticallyTo(position: number): void {
         this._position = this._position.moveVerticallyTo(position);
     }
 
 
-    public moveHorizontallyTo(position: number) {
+    public moveHorizontallyTo(position: number): void {
         this._position = this._position.moveHorizontallyTo(position);
     }
 
 
-    public moveLeftBy(offset: number) {
+    public moveLeftBy(offset: number): void {
         this._position = this._position.moveLeftBy(offset);
     }
 
 
-    public moveRightBy(offset: number) {
+    public moveRightBy(offset: number): void {
         this._position = this._position.moveRightBy(offset);
     }
 
 
-    public moveDownBy(offset: number) {
+    public moveDownBy(offset: number): void {
         this._position = this._position.moveDownBy(offset);
     }
 
 
-    public moveUpBy(offset: number) {
+    public moveUpBy(offset: number): void {
         this._position = this._position.moveUpBy(offset);
     }
 
@@ -413,7 +413,7 @@ export class Painter {
                      width: number,
                      height: number,
                      style: Style,
-                     tags: string[]=[]) {
+                     tags: string[]=[]): void {
         this._figure.add(
             new Text(
                 text,
@@ -427,7 +427,7 @@ export class Painter {
     public drawRectangle(width: number,
                          height: number,
                          style: Style,
-                         tags: string[]=[]) {
+                         tags: string[]=[]): void {
         this._figure.add(
             new Rectangle(
                 new Box(this._position, width, height),
@@ -440,7 +440,7 @@ export class Painter {
     public drawLine(x: number,
                     y: number,
                     style: Style,
-                    tags: string[]=[]) {
+                    tags: string[]=[]): void {
         this._figure.add(
             new Line(this._position,
                      this._position.move(x, y),

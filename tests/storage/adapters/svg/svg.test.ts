@@ -10,9 +10,10 @@
 
 
 
-import { Figure, Painter } from "../../../src/storage/adapters/shape";
-import { SVGWriter } from "../../../src/storage/adapters/svg";
-import { StyleSheet } from "../../../src/storage/adapters/style";
+import { Figure, Painter } from "../../../../src/storage/adapters/svg/shape";
+import { SVGWriter } from "../../../../src/storage/adapters/svg/svg";
+import { StyleSheet } from "../../../../src/storage/adapters/svg/style";
+
 
 
 describe("SVG converter should", () => {
@@ -28,7 +29,7 @@ describe("SVG converter should", () => {
         const svgCode = writer.write(painter.figure);
 
         expect(svgCode).toBe(
-            "<svg width=\"50\" height=\"25\">" +
+            "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"50\" height=\"25\">" +
                 "<rect x=\"15\" y=\"20\" width=\"50\" height=\"25\" " +
                 "stroke-width=\"0\" " +
                 "stroke=\"black\" " +
@@ -46,7 +47,7 @@ describe("SVG converter should", () => {
         const svgCode = writer.write(painter.figure);
 
         expect(svgCode).toBe(
-            "<svg width=\"50\" height=\"25\">" +
+            "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"50\" height=\"25\">" +
                 "<line x1=\"15\" y1=\"20\" x2=\"65\" y2=\"45\" " +
                 "stroke-width=\"0\" " +
                 "stroke=\"black\" " +
@@ -63,7 +64,7 @@ describe("SVG converter should", () => {
         const svgCode = writer.write(painter.figure);
 
         expect(svgCode).toBe(
-            "<svg width=\"50\" height=\"25\">" +
+            "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"50\" height=\"25\">" +
                 "<svg x=\"15\" y=\"20\" width=\"50\" height=\"25\">" +
                 "<text x=\"25\" y=\"12.5\" " +
                 "font-family=\"sans-serif\" " +

@@ -13,8 +13,8 @@
 
 
 import { Controller } from "./controller";
-import { Terminal } from "./terminal"
-import { RPP } from "./rpp"
+import { Terminal } from "./terminal";
+import { RPP } from "./rpp";
 
 
 

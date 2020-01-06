@@ -10,9 +10,9 @@
 
 
 
-import { Project, Package, Activity, Task, Visitor } from "../../../src/wbs";
-import { Figure, Shape } from "../../../src/storage/adapters/shape";
-import { Layout, Tags, GanttPainter } from "../../../src/storage/adapters/painter";
+import { Project, Package, Activity, Task, Visitor } from "../../../../src/wbs";
+import { Figure, Shape } from "../../../../src/storage/adapters/svg/shape";
+import { Layout, Tags, GanttPainter } from "../../../../src/storage/adapters/svg/painter";
 
 
 class Reader {
@@ -154,7 +154,6 @@ describe("A Gantt chart should", () => {
                 const identifier = this.path.asIdentifier(prefix);
                 const [start, end] = chart.readStartAndEnd(identifier);
 
-                console.log(start, end);
                 expect(start).toBeCloseTo(normalize(activity.start()-1));
                 expect(end).toBeCloseTo(normalize(activity.end()));
             }

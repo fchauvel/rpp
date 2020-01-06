@@ -10,7 +10,7 @@
 
 
 
-import { format } from "./utils"
+import { format } from "./utils";
 
 
 
@@ -30,12 +30,12 @@ export class Terminal {
     }
 
 
-    private write(text: string) {
+    private write(text: string): void {
         this._output.log(text);
     }
 
 
-    show_version(version: string, commit: string) {
+    showVersion(version: string, commit: string): void {
         if (commit != null) {
             this.write(format(this.VERSION_WITH_HASH,
                               version,
@@ -50,12 +50,12 @@ export class Terminal {
     readonly VERSION_WITH_HASH = "RPP v{0}+git.{1}"
 
 
-    show_help(help: string) {
+    showHelp(help: string): void {
         this.write(help);
     }
 
 
-    invalid_arguments(message: string, error: Error) {
+    invalidArguments(message: string, error: Error): void {
         this.write("Error");
         this.write(message);
     }

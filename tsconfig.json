@@ -1,13 +1,14 @@
 {
-  "compilerOptions": {
-      "target": "es6",
-      "outDir": "build",
-      "module": "commonjs",
-      "inlineSourceMap": true,
-      "resolveJsonModule": true,
-      "esModuleInterop": true,
-      "moduleResolution": "node"
-  },
+    "compilerOptions": {
+	"baseUrl": "./src",
+	"target": "es6",
+	"outDir": "build",
+	"module": "commonjs",
+	"inlineSourceMap": true,
+	"resolveJsonModule": true,
+	"esModuleInterop": true,
+	"moduleResolution": "node",
+    },
     "include": [
 	"src/**/*",
 	"test/**/*"

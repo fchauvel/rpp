@@ -10,9 +10,9 @@
 
 
 
-import { Point, Box, Figure, Painter } from "./shape";
-import { Project, Task, Package, Path, Visitor, Activity } from "../../wbs";
-import { Period, Durations, Duration } from "../../time";
+import { Figure, Painter } from "./shape";
+import { Project, Task, Package, Path, Visitor, Activity } from "../../../wbs";
+import { Period, Durations, Duration } from "../../../time";
 
 
 
@@ -79,7 +79,7 @@ export class GanttPainter extends Painter {
     }
 
 
-    private drawPeriod(period: Duration, prefix: string="") {
+    private drawPeriod(period: Duration, prefix=""): void {
         this.moveHorizontallyTo(this._layout.LEFT_MARGIN);
         this.moveRightBy(this._layout.TASK_LABEL_WIDTH
                          + this._layout.SEPARATOR);
@@ -88,10 +88,10 @@ export class GanttPainter extends Painter {
             Durations.MONTH.times(this._project.duration())
                 .from(this._project.origin)
         );
-        for (let [index, eachMonth] of projectSpan.splitBy(period).entries()) {
+        for (const [index, eachMonth] of projectSpan.splitBy(period).entries()) {
             const start = projectSpan.normalize(eachMonth.start);
             const end = projectSpan.normalize(eachMonth.end);
-            const width = (end - start) * this._layout.TIME_AXIS_LENGTH
+            const width = (end - start) * this._layout.TIME_AXIS_LENGTH;
             this.writeText(prefix + String(index+1),
                            width,
                        this._layout.TASK_HEIGHT,
@@ -105,7 +105,7 @@ export class GanttPainter extends Painter {
     }
 
 
-    private drawTimeAxis() {
+    private drawTimeAxis(): void {
         this.moveHorizontallyTo(this._layout.LEFT_MARGIN);
         this.moveRightBy(this._layout.TASK_LABEL_WIDTH
                          + this._layout.SEPARATOR * 2);
@@ -118,7 +118,7 @@ export class GanttPainter extends Painter {
 
     public drawActivity(activity: Activity,
                         path: Path,
-                        isPackage: boolean = false): void {
+                        isPackage=false): void {
         this.moveHorizontallyTo(this._layout.LEFT_MARGIN);
         this.moveDownBy(this._layout.spaceBeforeActivity(path));
         this.moveRightBy(this._layout.indentation(path));
@@ -191,7 +191,7 @@ export class Layout {
     public readonly INDENTATION = 10;
 
 
-    public spaceBeforeActivity(path: Path) {
+    public spaceBeforeActivity(path: Path): number {
         return this.SPACE_BEFORE_ACTIVITY / path.depth;
     }
 
@@ -208,7 +208,7 @@ export class Layout {
     }
 
 
-    public identifier(path: Path, isPackage: boolean) {
+    public identifier(path: Path, isPackage: boolean): string {
         if (isPackage) {
             return path.asIdentifier("WP");
         }

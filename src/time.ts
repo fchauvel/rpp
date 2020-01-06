@@ -9,7 +9,9 @@
  */
 
 
+
 type DateChange = (date: Date) => Date;
+
 
 
 export class Duration {
@@ -17,22 +19,22 @@ export class Duration {
 
     private _from: DateChange;
 
-    constructor(from: DateChange) {
+    constructor (from: DateChange) {
         this._from = from;
     }
 
-    public from(start: Date) {
+    public from(start: Date): Date {
         return this._from(start);
     }
 
     public times(count: number): Duration {
-        const transition = (start: Date) => {
+        const transition = (start: Date): Date => {
             let end = this.from(start);
             for (let i=0 ; i<count-1 ; i++) {
                 end = this.from(end);
             }
             return end;
-        }
+        };
         return new Duration(transition);
     }
 
@@ -42,7 +44,7 @@ export class Duration {
 export class Durations {
 
     public static readonly MONTH = new Duration((start: Date): Date => {
-        let end = new Date(start);
+        const end = new Date(start);
         end.setMonth(start.getMonth() + 1);
         return end;
     });
@@ -76,11 +78,11 @@ export class Period {
 
 
     public splitBy(duration: Duration): Period[] {
-        let parts: Period[] = [];
+        const parts: Period[] = [];
         let current: Date = this.start;
         while (current < this.end) {
             const end = duration.from(current);
-            const part = new Period(current, end)
+            const part = new Period(current, end);
             parts.push(part);
             current = end;
         }
@@ -90,7 +92,7 @@ export class Period {
 
     public normalize(date: Date): number {
         return (date.getTime() - this._start.getTime()) /
-            (this._end.getTime() - this._start.getTime())
+            (this._end.getTime() - this._start.getTime());
     }
 
 

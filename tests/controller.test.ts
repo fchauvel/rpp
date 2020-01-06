@@ -41,7 +41,7 @@ describe("The controller should", () => {
         });
 
         expect(rpp.version).toHaveBeenCalledTimes(1);
-        expect(terminal.show_version).toHaveBeenCalledTimes(1);
+        expect(terminal.showVersion).toHaveBeenCalledTimes(1);
     });
 
 
@@ -51,7 +51,7 @@ describe("The controller should", () => {
             resolve();
         });
 
-        expect(terminal.show_help).toHaveBeenCalledTimes(1);
+        expect(terminal.showHelp).toHaveBeenCalledTimes(1);
     });
 
 
@@ -61,7 +61,7 @@ describe("The controller should", () => {
             resolve();
         });
 
-        expect(terminal.invalid_arguments).toHaveBeenCalledTimes(1);
+        expect(terminal.invalidArguments).toHaveBeenCalledTimes(1);
     });
 
 
