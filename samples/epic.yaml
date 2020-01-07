@@ -17,56 +17,176 @@ project:
         - name: Infrastructure for Communication
           start: 1
           duration: 48
+          deliverables:
+            - name: Infrastructure for Communication
+              kind: Software
+              due: 3
         - name: Financial Reporting
           start: 1
           duration: 48
+          deliverables:
+            - name: Intermediate Financial Report
+              kind: Report
+              due: 24
+            - name: Final Financial Report
+              kind: Report
+              due: 48
         - name: Quality & Risk Management
           start: 1
           duration: 48
+          deliverables:
+            - name: Quality Handbook
+              kind: Report
+              due: 3
+            - name: First Risk Assessement Report
+              kind: Report
+              due: 12
+            - name: Second Risk Assessement Report
+              kind: Report
+              due: 36
     - name: Exploration & Modelling
       breakdown:
         - name: Generator Synthesis
           start: 1
           duration: 24
+          deliverables:
+            - name: First report on generator synthesis
+              kind: Report
+              due: 12
+            - name: Final report on generator synthesis
+              kind: Report
+              due: 24
         - name: Threats Detection
           start: 1
           duration: 24
+          deliverables:
+            - name: First report on threat detection
+              kind: Report
+              due: 12
+            - name: Final report on threat detection
+              kind: Report
+              due: 24
+
         - name: Evolutionary Strategy
           start: 25
           duration: 24
+          deliverables:
+            - name: First report on evolutionary strategy
+              kind: Report
+              due: 36
+            - name: Final report on evolutionary strategy
+              kind: Report
+              due: 48
         - name: Communication & Cooperation
           start: 25
           duration: 24
+          deliverables:
+            - name: First report on Communication & Cooperation strategies
+              kind: Report
+              due: 36
+            - name: Final report on Communication & Cooperation strategies
+              kind: Report
+              due: 48
     - name: Simulation & Prototyping
       breakdown:
         - name: Platform Development
           start: 1
           duration: 24
-        - name: Validation throug Simulation
+          deliverables:
+            - name: First release of the simulation platform
+              kind: Software 
+              due: 12
+            - name: Second Release of the simulation platform
+              kind: Software
+              due: 24
+        - name: Validation through Simulation
           start: 12
           duration: 24
+          deliverables:
+            - name: First report on model simulation
+              kind: Report
+              due: 24
+            - name: Final report on model simulation
+              kind: Report
+              due: 35
         - name: Prototype Development
           start: 25
           duration: 24
+          deliverables:
+            - name: EPIC experimental platform v0.1
+              kind: Software
+              due: 30
+            - name: EPIC experimental platform v0.2
+              kind: Software
+              due: 36
+            - name: EPIC experimental platform v0.3
+              kind: Software
+              due: 42
+            - name: EPIC experimental platform v0.4
+              kind: Software
+              due: 48
     - name: Case studies & Evaluation
       breakdown:
         - name: KPI & Metrics
           start: 1
           duration: 18
+          deliverables:
+            - name: Project KPI
+              kind: Report
+              due: 6
+            - name: Privacy Metrics
+              kind: Report
+              due: 18
         - name: Minimal Toys Scenarios
           start: 1
           duration: 24
+          deliverables:
+            - name: First set of toy scenarios
+              kind: Report
+              due: 12
+            - name: Final set of toy scenarios
+              kind: Report
+              due: 24
         - name: Case studies Scenarios
           start: 19
           duration: 24
+          deliverables:
+            - name: First set of case-studies
+              kind: Report
+              due: 24
+            - name: Final set of case-studies
+              kind: Report
+              due: 36
         - name: Evaluation
           start: 31
           duration: 18
+          deliverables:
+            - name: First evaluation
+              kind: Report
+              due: 36
+            - name: Final evaluation
+              kind: Report
+              due: 48
     - name: Dissemination & Exploitation
       breakdown:
         - name: Scientific Dissemination
           start: 1
           duration: 48
+          deliverables:
+            - name: First report on scientific dissemination
+              kind: Report
+              due: 24
+            - name: Final report on scientific dissemination
+              kind: Report
+              due: 48
         - name: Communication & Exploitation
           start: 1
           duration: 48
+          deliverables:
+            - name: First report on Communication & Exploitation
+              kind: Report
+              due: 24
+            - name: Final report on Communication & Exploitation
+              kind: Report
+              due: 48
+          

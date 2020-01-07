@@ -40,6 +40,44 @@ export abstract class Activity {
 
     public abstract end(): number;
 
+    public abstract get deliverables(): Deliverable[];
+
+}
+
+
+
+export class Deliverable {
+
+    private _name: string;
+    private _kind: string;
+    private _date: number;
+
+    constructor (name: string, kind: string, date: number) {
+        this._name = name;
+        this._kind = kind;
+        this._date = date;
+    }
+
+
+    public get name(): string {
+        return this._name;
+    }
+
+
+    public get dueDate(): number {
+        return this._date;
+    }
+
+
+    public get kind(): string {
+        return this._kind;
+    }
+
+
+    public accept(visitor: Visitor): void {
+        visitor.onDeliverable(this);
+    }
+
 }
 
 
@@ -47,11 +85,16 @@ export class Task extends Activity {
 
     private _start: number;
     private _duration: number;
+    private _deliverables: Deliverable[];
 
-    constructor(name: string, start: number, duration=1) {
+    constructor(name: string,
+                start: number,
+                duration=1,
+                deliverables: Deliverable[]=[]) {
         super(name, []);
         this._start = start;
         this._duration = duration;
+        this._deliverables = deliverables;
     }
 
 
@@ -70,8 +113,18 @@ export class Task extends Activity {
     }
 
 
+    public get deliverables(): Deliverable[] {
+        return this._deliverables;
+    }
+
+
     public accept(visitor: Visitor): void {
         visitor.onTask(this);
+        for (const [index, deliverable] of this._deliverables.entries()) {
+            visitor.path.enter(index + 1);
+            deliverable.accept(visitor);
+            visitor.path.exit();
+        }
     }
 
 
@@ -109,6 +162,14 @@ export class Package extends Activity {
                     activity.end();
             },
             0);
+    }
+
+
+    public get deliverables(): Deliverable[] {
+        return this.breakdown.reduce(
+            (result: Deliverable[], activity: Activity) => {
+                return result.concat(activity.deliverables);
+            }, []);
     }
 
 
@@ -159,6 +220,13 @@ export class Path {
     }
 
 
+    public get parent() : Path {
+        const length = this._indexes.length;
+        if (length <= 1)
+            throw new Error("The root element has no parent!");
+        return new Path(this._indexes.slice(0, length-1));
+    }
+
     public get depth(): number {
         return this._indexes.length;
     }
@@ -205,5 +273,7 @@ export abstract class Visitor {
     public onPackage(workPackage: Package): void {}
 
     public onProject(project: Project): void {}
+
+    public onDeliverable(deliverable: Deliverable): void {}
 
 }

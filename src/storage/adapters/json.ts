@@ -24,10 +24,7 @@ export class JSONFormat extends Format {
 
 
     public parseProject(content: string): Project {
-        const objects = JSON.parse(content);
-        const activities = this.parseActivities(objects.project.breakdown);
-        return new Project(objects.project.name,
-                           activities);
+        return this.asProject(JSON.parse(content));
     }
 
 

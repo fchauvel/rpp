@@ -10,7 +10,7 @@
 
 
 
-import { Project, Task, Package, Activity } from "../../wbs";
+import { Project, Task, Package, Activity, Deliverable } from "../../wbs";
 
 
 
@@ -55,6 +55,13 @@ export abstract class Format {
     }
 
 
+    protected asProject(data: any): Project {
+        const activities = this.parseActivities(data.project.breakdown);
+        return new Project(data.project.name,
+                           activities);
+    }
+
+
     protected parseActivities(json: Array<any>): Array<Activity> {
         const activities: Array<Activity> = [];
         for (const item of json) {
@@ -62,13 +69,30 @@ export abstract class Format {
                 const breakdown = this.parseActivities(item.breakdown);
                 activities.push(new Package(item.name, breakdown));
             } else {
+                const deliverables = this.parseDeliverable(item.deliverables);
                 const task = new Task(
                     item.name,
                     item.start,
-                    item.duration);
+                    item.duration,
+                    deliverables);
                 activities.push(task);
             }
         }
         return activities;
+    }
+
+
+    protected parseDeliverable(json: Array<any>): Array<Deliverable> {
+        const deliverables: Deliverable[] = [];
+        if (!(Symbol.iterator in Object(json))) {
+            return deliverables;
+        }
+        for (const item of json) {
+            const deliverable = new Deliverable(item.name,
+                                                item.kind,
+                                                item.due);
+            deliverables.push(deliverable);
+        }
+        return deliverables;
     }
 }

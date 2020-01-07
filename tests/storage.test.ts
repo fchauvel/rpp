@@ -70,7 +70,11 @@ class FakeSource extends DataSource {
         "      duration: 10\n" +
         "    - name: Task 2\n" +
         "      start: 5\n" +
-        "      duration: 7\n"
+        "      duration: 7\n" +
+        "      deliverables:\n" +
+        "        - name: Dummy Report\n" +
+        "          kind: Report\n" +
+        "          due: 6\n"
     ;
 
 
@@ -122,6 +126,7 @@ describe("The storage should", () => {
         expect(project.name).toBe("Dummy");
         expect(project.breakdown.length).toBe(2);
         expect(project.breakdown[1].name).toBe("Task 2");
+        expect(project.deliverables).toHaveLength(1);
     });
 
 

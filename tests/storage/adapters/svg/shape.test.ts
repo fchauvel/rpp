@@ -10,7 +10,7 @@
 
 
 
-import { Project, Package, Activity, Task, Visitor } from "../../../../src/wbs";
+import { Project, Package, Activity, Task, Visitor, Deliverable } from "../../../../src/wbs";
 import { Figure, Shape } from "../../../../src/storage/adapters/svg/shape";
 import { Layout, Tags, GanttPainter } from "../../../../src/storage/adapters/svg/painter";
 
@@ -29,12 +29,26 @@ class Reader {
         const bar = this._chart.findShapesWithTags([identifier,
                                                     Tags.BAR])[0];
 
-        const width = timeAxis.boundingBox.right - timeAxis.boundingBox.left
+        const width = timeAxis.boundingBox.right - timeAxis.boundingBox.left;
         const start = (bar.boundingBox.left - timeAxis.boundingBox.left) /
             width;
         const end = (bar.boundingBox.right - timeAxis.boundingBox.left) /
             width;
         return [start, end];
+    }
+
+
+    readDeliverableDueDate(identifier: string): number {
+        const timeAxis = this._chart.findShapesWithTags([Tags.TIME_AXIS])[0];
+        const deliverable = this.findDeliverable(identifier);
+        const width = timeAxis.boundingBox.right - timeAxis.boundingBox.left;
+        return (deliverable.boundingBox.center.x - timeAxis.boundingBox.left) / width;
+    }
+
+
+    findDeliverable(identifier: string): Shape {
+        return this._chart.findShapesWithTags([identifier,
+                                        Tags.DELIVERABLE])[0];
     }
 
 
@@ -82,7 +96,11 @@ describe("A Gantt chart should", () => {
         "P1",
         [
             new Task("First Task", 1, 10),
-            new Task("Second Task", 5, 7),
+            new Task("Second Task", 5, 7,
+                     [ new Deliverable("Blabla",
+                                       "Report",
+                                       1),
+                     ]),
             new Package("Hard Stuff", [
                 new Task("Fairly hard", 5, 5),
                 new Task("Really hard", 7, 7)
@@ -157,6 +175,48 @@ describe("A Gantt chart should", () => {
                 expect(start).toBeCloseTo(normalize(activity.start()-1));
                 expect(end).toBeCloseTo(normalize(activity.end()));
             }
+        }();
+
+        project.accept(tester);
+    });
+
+
+    test("have deliverables placed with respect to the time axis", () => {
+
+        const normalize = (d: number): number => {
+            return d / project.duration();
+        }
+
+        const tester = new class extends Visitor {
+
+            public onDeliverable(deliverable: Deliverable): void {
+                const identifier = this.path.asIdentifier("D");
+
+                const dueDate = chart.readDeliverableDueDate(identifier);
+                expect(dueDate).toBeCloseTo(normalize(deliverable.dueDate-1));
+            }
+
+        }();
+
+        project.accept(tester);
+    });
+
+
+    test("have deliverables aligned with task that produces them", () => {
+
+        const tester = new class extends Visitor {
+
+            public onDeliverable(deliverable: Deliverable): void {
+                const identifier = this.path.asIdentifier("D");
+
+                const parentIdentifier = this.path.parent.asIdentifier("T");
+
+                const marker = chart.findDeliverable(identifier);
+                const label = chart.findActivityLabel(parentIdentifier);
+
+                expect(label.center.isAlignedWith(marker.center)).toBe(true);
+            }
+
         }();
 
         project.accept(tester);

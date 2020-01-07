@@ -1,8 +1,7 @@
 {
     "compilerOptions": {
-	"baseUrl": "./src",
 	"target": "es6",
-	"outDir": "build",
+	"outDir": "build/src",
 	"module": "commonjs",
 	"inlineSourceMap": true,
 	"resolveJsonModule": true,

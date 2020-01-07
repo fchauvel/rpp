@@ -25,10 +25,7 @@ export class YAMLFormat extends Format {
 
 
     public parseProject(content: string): Project {
-        const objects = yaml.safeLoad(content);
-        const activities = this.parseActivities(objects.project.breakdown);
-        return new Project(objects.project.name,
-                           activities);
+        return this.asProject(yaml.safeLoad(content));
     }
 
 

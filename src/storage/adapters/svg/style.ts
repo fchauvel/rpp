@@ -100,6 +100,7 @@ export class StyleSheet {
     public quarterGrid: Style;
     public yearGrid: Style;
     public axis: Style;
+    public deliverable: Style;
 
 
     public constructor() {
@@ -125,6 +126,11 @@ export class StyleSheet {
         this._tasks[1].bar.fill.color = "steelblue";
         this._tasks[1].bar.stroke.width = 0;
 
+
+        this.deliverable = new Style();
+        this.deliverable.font.textAnchor = "middle";
+        this.deliverable.font.weight = "bold";
+        this.deliverable.fill.color = "white";
 
         this.taskHeader = new Style();
         this.taskHeader.font.textAnchor = "start";

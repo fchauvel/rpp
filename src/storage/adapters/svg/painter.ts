@@ -11,7 +11,7 @@
 
 
 import { Figure, Painter } from "./shape";
-import { Project, Task, Package, Path, Visitor, Activity } from "../../../wbs";
+import { Project, Task, Package, Path, Visitor, Activity, Deliverable } from "../../../wbs";
 import { Period, Durations, Duration } from "../../../time";
 
 
@@ -21,6 +21,7 @@ export class Tags {
     public static readonly NAME = "name";
     public static readonly IDENTIFIER = "identifier";
     public static readonly TIME_AXIS = "time_axis";
+    public static readonly DELIVERABLE = "deliverable";
 }
 
 
@@ -40,6 +41,10 @@ class PainterVisitor extends Visitor {
 
     public onPackage(wp: Package): void {
         this._painter.drawActivity(wp, this.path, true);
+    }
+
+    public onDeliverable(d: Deliverable): void {
+        this._painter.drawDeliverable(d, this.path);
     }
 
 }
@@ -173,6 +178,29 @@ export class GanttPainter extends Painter {
                            ]);
     }
 
+
+    public drawDeliverable(deliverable: Deliverable, path: Path): void {
+        const text = deliverable.kind.charAt(0).toUpperCase();
+        const ratio = (deliverable.dueDate-1) / this._project.duration();
+
+        const xPosition = this._layout.LEFT_MARGIN
+            + this._layout.TASK_LABEL_WIDTH
+            + this._layout.SEPARATOR * 2
+            + (ratio * this._layout.TIME_AXIS_LENGTH)
+            - (this._layout.DELIVERABLE_WIDTH / 2);
+        this.moveHorizontallyTo(xPosition);
+        this.moveUpBy(this._layout.TASK_HEIGHT);
+        this.writeText(text,
+                       this._layout.DELIVERABLE_WIDTH,
+                       this._layout.TASK_HEIGHT,
+                       this.styleSheet.deliverable,
+                       [
+                           path.asIdentifier("D"),
+                           Tags.DELIVERABLE
+                       ]);
+        this.moveDownBy(this._layout.TASK_HEIGHT);
+    }
+
 }
 
 
@@ -185,6 +213,8 @@ export class Layout {
     public readonly TASK_LABEL_WIDTH = 300;
     public readonly TASK_HEIGHT = 20;
     public readonly TIME_AXIS_LENGTH = 750;
+
+    public readonly DELIVERABLE_WIDTH = 50;
 
     public readonly SPACE_BEFORE_ACTIVITY = 20;
     public readonly SEPARATOR = 5;

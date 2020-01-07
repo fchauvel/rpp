@@ -10,7 +10,7 @@
 
 
 
-import { Project, Task, Package } from "../src/wbs"
+import { Project, Task, Package, Deliverable, Visitor } from "../src/wbs"
 
 
 
@@ -18,7 +18,19 @@ describe("A task should", () => {
 
     const start = 1
     const duration = 10;
-    const task = new Task("Do something", start, duration);
+    const deliverables = [
+        new Deliverable("D1",
+                        "Report",
+                        3)
+    ];
+
+    const task = new Task(
+        "Do something",
+        start,
+        duration,
+        deliverables
+    );
+
 
     test("expose its start", () => {
         expect(task.start()).toBe(start);
@@ -35,13 +47,42 @@ describe("A task should", () => {
     });
 
 
+    test("expose its deliverables", () => {
+        expect(task.deliverables).toHaveLength(deliverables.length);
+    });
+
+
+    test("ensure visitors access its deliverables", () => {
+        const visitor = new class extends Visitor {
+            public counter: number;
+
+            constructor () {
+                super();
+                this.counter = 0;
+            }
+
+            onDeliverable(deliberable: Deliverable): void {
+                this.counter += 1;
+            }
+        }();
+
+        task.accept(visitor);
+
+        expect(visitor.counter).toBe(1);
+    });
+
 });
 
 
 
 describe("A package should", () => {
 
-    const task1 = new Task("T1", 3, 10);
+
+    const task1 = new Task("T1", 3, 10, [
+        new Deliverable("D1",
+                        "Report",
+                        5)
+    ]);
     const task2 = new Task("T2", 4, 5);
     const wp1 = new Package("WP1", [task1, task2]);
 
@@ -58,6 +99,11 @@ describe("A package should", () => {
 
     test("run as long as there are tasks running", () => {
         expect(wp1.duration()).toBe(task1.duration());
+    });
+
+
+    test("expose its deliverables", () => {
+        expect(wp1.deliverables).toHaveLength(1);
     });
 
 });
@@ -81,5 +127,30 @@ describe("A project should", () => {
         expect(project.breakdown).toBeDefined();
         expect(project.breakdown.length).toBe(1);
     });
+
+});
+
+
+describe("A deliverable should", () => {
+
+    const name = "My deliverable";
+    const kind = "Report";
+    const date = 3;
+    const deliverable = new Deliverable(name, kind, date);
+
+    test("expose its name", () => {
+        expect(deliverable.name).toBe(name);
+    });
+
+
+    test("expose its due date", () => {
+        expect(deliverable.dueDate).toBe(date);
+    });
+
+
+    test("expose its kind", () => {
+        expect(deliverable.kind).toBe(kind);
+    });
+
 
 });

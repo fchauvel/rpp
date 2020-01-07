@@ -31,7 +31,7 @@ export class Point {
     }
 
     isAlignedWith(other: Point): boolean {
-        return this._x == other.x || this._y == other.y;
+        return this._x === other.x || this._y === other.y;
     }
 
 
@@ -182,7 +182,7 @@ export abstract class Shape {
     }
 
     public get center(): Point {
-        return new Point(0, 0);
+        return this.boundingBox.center;
     }
 
 
