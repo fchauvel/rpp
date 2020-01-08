@@ -8,64 +8,50 @@
  * See the LICENSE file for details.
  */
 
-
-
 import { Project  } from "../wbs";
 import { Format } from "./adapters";
 import { JSONFormat } from "./adapters/json";
-import { YAMLFormat } from "./adapters/yaml";
 import { SVGFormat } from "./adapters/svg";
-
+import { YAMLFormat } from "./adapters/yaml";
 
 import * as fs from "fs";
-
-
 
 export abstract class DataSource {
 
     public abstract fetch(location: string): string;
 
-    public store (location: string, content: string): void {
+    public store(location: string, content: string): void {
         throw new Error("Not supported!");
     }
 
-
 }
-
-
 
 export class FileSystem extends DataSource {
 
-
-    public fetch (location: string): string {
+    public fetch(location: string): string {
         const encoding = "utf-8";
         return fs.readFileSync(location, encoding);
     }
-
 
     public store(location: string, content: string): void {
         fs.writeFileSync(location, content);
     }
 
-
 }
-
 
 export class Storage {
 
     private _sources: DataSource[];
     private _formats: Format[];
 
-
-    constructor (sources: DataSource[]=[]) {
+    constructor(sources: DataSource[]= []) {
         this._sources = sources;
         this._formats = [
             new JSONFormat(),
             new YAMLFormat(),
-            new SVGFormat()
+            new SVGFormat(),
         ];
     }
-
 
     public loadProject(location: string): Project {
         const content = this._sources[0].fetch(location);
@@ -73,6 +59,11 @@ export class Storage {
         return reader.parseProject(content);
     }
 
+    public storeGanttChart(project: Project, location: string) {
+        const format = this.selectReader(location);
+        const content = format.writeGantt(project);
+        this._sources[0].store(location, content);
+    }
 
     private selectReader(location: string): Format {
         for (const anyFormat of this._formats) {
@@ -82,13 +73,5 @@ export class Storage {
         }
         throw Error("Format not supported (" + location + ")");
     }
-
-
-    public storeGanttChart(project: Project, location: string) {
-        const format = this.selectReader(location);
-        const content = format.writeGantt(project);
-        this._sources[0].store(location, content);
-    }
-
 
 }

@@ -8,12 +8,9 @@
  * See the LICENSE file for details.
  */
 
-
-
-import { Project } from "../src/wbs";
-import { Storage, DataSource } from "../src/storage";
+import { DataSource, Storage } from "../src/storage";
 import { Format } from "../src/storage/adapters";
-
+import { Project } from "../src/wbs";
 
 class FakeFormat extends Format {
 
@@ -21,14 +18,11 @@ class FakeFormat extends Format {
         super("SVG", [".svg"]);
     }
 
-
     public parseProject(content: string): Project {
         return null;
     }
 
 }
-
-
 
 describe("A format should", () => {
 
@@ -43,8 +37,6 @@ describe("A format should", () => {
     });
 
 });
-
-
 
 class FakeSource extends DataSource {
 
@@ -77,17 +69,15 @@ class FakeSource extends DataSource {
         "          due: 6\n"
     ;
 
-
     private _contents: { [extension: string]: string };
 
-    constructor () {
+    constructor() {
         super();
         this._contents = {};
         this._contents[".json"] = this.json;
         this._contents[".yml" ] = this.yaml;
         this._contents[".yaml" ] = this.yaml;
     }
-
 
     public fetch(resource: string): string {
         const marker = ".";
@@ -98,6 +88,19 @@ class FakeSource extends DataSource {
 
 }
 
+describe("A data source should", () => {
+
+    test("Reject storing anything by default", () => {
+        expect(() => {
+            new class extends DataSource {
+                public fetch(location: string): string {
+                    return "";
+                }
+            }().store("myfile.txt", "blabla");
+        }).toThrow();
+    });
+
+});
 
 describe("The storage should", () => {
 
@@ -110,7 +113,6 @@ describe("The storage should", () => {
         }).toThrow();
     });
 
-
     test("Read project from JSON file", () => {
         const project = storage.loadProject("whatever.json");
 
@@ -118,7 +120,6 @@ describe("The storage should", () => {
         expect(project.breakdown.length).toBe(2);
         expect(project.breakdown[1].name).toBe("Task 2");
     });
-
 
     test("Read project from YAML file", () => {
         const project = storage.loadProject("whatever.yaml");
@@ -128,6 +129,5 @@ describe("The storage should", () => {
         expect(project.breakdown[1].name).toBe("Task 2");
         expect(project.deliverables).toHaveLength(1);
     });
-
 
 });

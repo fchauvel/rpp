@@ -8,18 +8,14 @@
  * See the LICENSE file for details.
  */
 
-
-
 import * as d3 from "d3";
 import { JSDOM } from  "jsdom";
 
+import { Figure, Line, Rectangle, Text } from "./shape";
 import { StyleSheet } from "./style";
-import { Figure, Rectangle, Text, Line } from "./shape";
-
-
 
 function xPosition(text: Text): number {
-    switch(text.style.font.textAnchor) {
+    switch (text.style.font.textAnchor) {
         case "start":
             return 0;
         case "end":
@@ -31,10 +27,8 @@ function xPosition(text: Text): number {
     }
 }
 
-
-
 function yPosition(text: Text): number {
-    switch(text.style.font.dominantBaseline) {
+    switch (text.style.font.dominantBaseline) {
         case "middle":
             return text.boundingBox.height / 2;
         default:
@@ -42,14 +36,11 @@ function yPosition(text: Text): number {
     }
 }
 
-
-
 export class SVGWriter {
 
     private _dom: JSDOM;
     private _body: any;
     private _container: any;
-
 
     public write(figure: Figure): string {
         this.initialize(figure.boundingBox.width,
@@ -58,23 +49,10 @@ export class SVGWriter {
         return this._body.select(".container").html();
     }
 
-
     public visitFigure(figure: Figure): void {
         for (const eachShape of figure.shapes) {
             eachShape.accept(this);
         }
-    }
-
-
-    private initialize(width: number, height: number): void {
-        this._dom = new JSDOM("<!DOCTYPE html><html><body></body></html>");
-        this._body = d3.select(this._dom.window.document).select("body");
-        this._container = this._body.append("div")
-            .attr("class", "container")
-            .append("svg")
-            .attr("xmlns", "http://www.w3.org/2000/svg")
-            .attr("width", width)
-            .attr("height", height);
     }
 
     public visitRectangle(rectangle: Rectangle): void {
@@ -119,5 +97,15 @@ export class SVGWriter {
             .text(text.text);
     }
 
+    private initialize(width: number, height: number): void {
+        this._dom = new JSDOM("<!DOCTYPE html><html><body></body></html>");
+        this._body = d3.select(this._dom.window.document).select("body");
+        this._container = this._body.append("div")
+            .attr("class", "container")
+            .append("svg")
+            .attr("xmlns", "http://www.w3.org/2000/svg")
+            .attr("width", width)
+            .attr("height", height);
+    }
 
 }

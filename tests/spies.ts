@@ -8,21 +8,17 @@
  * See the LICENSE file for details.
  */
 
-
-
-import { Output } from "../src/terminal"
-
-
+import { Output } from "../src/terminal";
 
 export class SpyOutput implements Output {
 
-    text: string;
+    public text: string;
 
     public log(text: string) {
 	this.text += text;
     }
 
-    reset() {
+    public reset() {
 	this.text = "";
     }
 }

@@ -8,11 +8,9 @@
  * See the LICENSE file for details.
  */
 
-
-
 export class RPP {
 
-    version (): [string, string] {
+    public version(): [string, string] {
         return ["0.0.0", "" ];
     }
 

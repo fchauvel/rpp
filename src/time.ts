@@ -8,18 +8,13 @@
  * See the LICENSE file for details.
  */
 
-
-
 type DateChange = (date: Date) => Date;
-
-
 
 export class Duration {
 
-
     private _from: DateChange;
 
-    constructor (from: DateChange) {
+    constructor(from: DateChange) {
         this._from = from;
     }
 
@@ -30,7 +25,7 @@ export class Duration {
     public times(count: number): Duration {
         const transition = (start: Date): Date => {
             let end = this.from(start);
-            for (let i=0 ; i<count-1 ; i++) {
+            for (let i = 0 ; i < count - 1 ; i++) {
                 end = this.from(end);
             }
             return end;
@@ -39,7 +34,6 @@ export class Duration {
     }
 
 }
-
 
 export class Durations {
 
@@ -53,9 +47,16 @@ export class Durations {
 
     public static readonly YEAR = Durations.MONTH.times(12);
 
+    public static readonly CALENDAR_YEAR =
+        new Duration((start: Date): Date => {
+            const end = new Date(start);
+            end.setDate(1);
+            end.setMonth(0);
+            end.setFullYear(start.getFullYear() + 1);
+            return end;
+        });
+
 }
-
-
 
 export class Period {
 
@@ -67,8 +68,7 @@ export class Period {
         this._end = end;
     }
 
-
-    public get start():  Date {
+    public get start(): Date {
         return this._start;
     }
 
@@ -76,24 +76,24 @@ export class Period {
         return this._end;
     }
 
-
     public splitBy(duration: Duration): Period[] {
         const parts: Period[] = [];
         let current: Date = this.start;
-        while (current < this.end) {
-            const end = duration.from(current);
-            const part = new Period(current, end);
-            parts.push(part);
+        let end = duration.from(current);
+        while (end < this.end) {
+            parts.push(new Period(current, end));
             current = end;
+            end = duration.from(current);
+        }
+        if (end >= this.end) {
+            parts.push(new Period(current, this.end));
         }
         return parts;
     }
-
 
     public normalize(date: Date): number {
         return (date.getTime() - this._start.getTime()) /
             (this._end.getTime() - this._start.getTime());
     }
-
 
 }

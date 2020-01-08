@@ -8,25 +8,18 @@
  * See the LICENSE file for details.
  */
 
-
-
+import * as yaml from "js-yaml";
 import { Project  } from "../../wbs";
 import { Format } from "../adapters";
-import * as yaml from "js-yaml";
-
-
 
 export class YAMLFormat extends Format {
 
-
-    constructor () {
+    constructor() {
         super("YAML", [".yaml", ".yml"]);
     }
-
 
     public parseProject(content: string): Project {
         return this.asProject(yaml.safeLoad(content));
     }
-
 
 }

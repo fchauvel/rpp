@@ -8,9 +8,7 @@
  * See the LICENSE file for details.
  */
 
-
-import { StyleSheet, Style } from "./style";
-
+import { Style, StyleSheet } from "./style";
 
 export class Point {
 
@@ -30,10 +28,9 @@ export class Point {
         return this._y;
     }
 
-    isAlignedWith(other: Point): boolean {
+    public isAlignedWith(other: Point): boolean {
         return this._x === other.x || this._y === other.y;
     }
-
 
     public move(xOffset: number, yOffset: number): Point {
         return this.moveRightBy(xOffset)
@@ -44,26 +41,21 @@ export class Point {
         return new Point(position, this._y);
     }
 
-
     public moveLeftBy(offset: number): Point {
         return new Point(this._x - offset, this._y);
     }
-
 
     public moveRightBy(offset: number): Point {
         return new Point(this._x + offset, this._y);
     }
 
-
     public moveVerticallyTo(position: number): Point {
         return new Point(this._x, position);
     }
 
-
     public moveUpBy(offset: number): Point {
         return new Point(this._x, this._y - offset);
     }
-
 
     public moveDownBy(offset: number): Point {
         return new Point(this._x, this._y + offset);
@@ -71,19 +63,17 @@ export class Point {
 
 }
 
-
 export class Box {
 
     private _topLeft: Point;
     private _width: number;
     private _height: number;
 
-    constructor (topLeft: Point, width: number, height: number) {
+    constructor(topLeft: Point, width: number, height: number) {
         this._topLeft = topLeft;
         this._width = width;
         this._height = height;
     }
-
 
     public overlapWith(other: Box): boolean {
         return this.includes(other.topLeft)
@@ -148,8 +138,6 @@ export class Box {
 
 }
 
-
-
 export interface Visitor {
 
     visitRectangle(rectangle: Rectangle);
@@ -161,21 +149,17 @@ export interface Visitor {
     visitFigure(figure: Figure);
 }
 
-
-
 export abstract class Shape {
 
     private _tags: string[];
     private _style: Style;
 
-    constructor(style: Style, tags: string[]=[]) {
+    constructor(style: Style, tags: string[]= []) {
         this._tags = tags;
         this._style = style;
     }
 
-
-    abstract accept(visitor: Visitor);
-
+    public abstract accept(visitor: Visitor);
 
     public get style(): Style {
         return this._style;
@@ -185,31 +169,25 @@ export abstract class Shape {
         return this.boundingBox.center;
     }
 
-
-    hasTag(tag: string): boolean {
+    public hasTag(tag: string): boolean {
         return this._tags.includes(tag);
     }
 
-
-    hasAllTags(tags: string[]): boolean {
+    public hasAllTags(tags: string[]): boolean {
         return tags.every((tag) => this.hasTag(tag));
     }
 
-
-    addTag(tag: string): void {
+    public addTag(tag: string): void {
         if (!this.hasTag(tag)) {
             this._tags.push(tag);
         }
     }
 
-
     public overlapWith(other: Shape): boolean {
         return this.boundingBox.overlapWith(other.boundingBox);
     }
 
-
     public abstract get boundingBox(): Box;
-
 
     public toString(): string {
         return this.boundingBox.toString();
@@ -217,20 +195,16 @@ export abstract class Shape {
 
 }
 
-
-
 export class Line extends Shape {
 
     private _source: Point;
     private _target: Point;
-
 
     constructor(source: Point, target: Point, style: Style, tags: string[]) {
         super(style, tags);
         this._source = source;
         this._target = target;
     }
-
 
     public accept(visitor: Visitor): void {
         visitor.visitLine(this);
@@ -239,7 +213,7 @@ export class Line extends Shape {
     public get boundingBox(): Box {
         const topLeft = new Point(
             Math.min(this._source.x, this._target.x),
-            Math.min(this._source.y, this._target.y)
+            Math.min(this._source.y, this._target.y),
         );
         const width = Math.max(this._source.x, this._target.x) - topLeft.x;
         const height = Math.max(this._source.y, this._target.y) - topLeft.y;
@@ -247,7 +221,6 @@ export class Line extends Shape {
     }
 
 }
-
 
 export class Rectangle extends Shape {
 
@@ -258,18 +231,15 @@ export class Rectangle extends Shape {
         this._box = box;
     }
 
-
     public accept(visitor: Visitor): void {
         visitor.visitRectangle(this);
     }
-
 
     public get boundingBox(): Box {
         return this._box;
     }
 
 }
-
 
 export class Text extends Rectangle {
 
@@ -288,15 +258,13 @@ export class Text extends Rectangle {
         visitor.visitText(this);
     }
 
-
 }
-
 
 export class Figure extends Shape {
 
     private _shapes: Shape[];
 
-    constructor(shapes: Shape[]=[], style: Style=null, tags: string[]=[]) {
+    constructor(shapes: Shape[]= [], style: Style= null, tags: string[]= []) {
         super(style, tags);
         this._shapes = shapes;
     }
@@ -335,10 +303,9 @@ export class Figure extends Shape {
         this._shapes.push(newShape);
     }
 
-
-    findShapesWithTags(tags: string[]): Shape[] {
+    public findShapesWithTags(tags: string[]): Shape[] {
         const selectedShapes: Shape[] = [];
-        for(const anyShape of this._shapes) {
+        for (const anyShape of this._shapes) {
             if (anyShape.hasAllTags(tags)) {
                 selectedShapes.push(anyShape);
             }
@@ -348,14 +315,11 @@ export class Figure extends Shape {
 
 }
 
-
-
 export class Painter {
 
     private _figure: Figure;
     private _position: Point;
     private _styleSheet: StyleSheet;
-
 
     constructor() {
         this._figure = new Figure();
@@ -363,89 +327,83 @@ export class Painter {
         this._styleSheet = new StyleSheet();
     }
 
-
     get figure(): Figure {
         return this._figure;
     }
-
 
     protected get styleSheet(): StyleSheet {
         return this._styleSheet;
     }
 
+    protected get position(): Point {
+        return this._position;
+    }
 
     public moveTo(xOffset: number, yOffset: number): void {
         this._position = this._position.move(xOffset, yOffset);
     }
 
-
     public moveVerticallyTo(position: number): void {
         this._position = this._position.moveVerticallyTo(position);
     }
-
 
     public moveHorizontallyTo(position: number): void {
         this._position = this._position.moveHorizontallyTo(position);
     }
 
-
     public moveLeftBy(offset: number): void {
         this._position = this._position.moveLeftBy(offset);
     }
-
 
     public moveRightBy(offset: number): void {
         this._position = this._position.moveRightBy(offset);
     }
 
-
     public moveDownBy(offset: number): void {
         this._position = this._position.moveDownBy(offset);
     }
-
 
     public moveUpBy(offset: number): void {
         this._position = this._position.moveUpBy(offset);
     }
 
-
     public writeText(text: string,
                      width: number,
                      height: number,
                      style: Style,
-                     tags: string[]=[]): void {
+                     tags: string[]= []): void {
         this._figure.add(
             new Text(
                 text,
                 new Box(this._position, width, height),
                 style,
-                tags
-            )
+                tags,
+            ),
         );
     }
 
     public drawRectangle(width: number,
                          height: number,
                          style: Style,
-                         tags: string[]=[]): void {
+                         tags: string[]= []): void {
         this._figure.add(
             new Rectangle(
                 new Box(this._position, width, height),
                 style,
-                tags
-            )
+                tags,
+            ),
         );
     }
 
     public drawLine(x: number,
                     y: number,
                     style: Style,
-                    tags: string[]=[]): void {
+                    tags: string[]= []): void {
         this._figure.add(
             new Line(this._position,
                      this._position.move(x, y),
                      style,
-                     tags)
+                     tags),
         );
     }
 

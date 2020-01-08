@@ -10,13 +10,9 @@
  * See the LICENSE file for details.
  */
 
-
-
 import { Controller } from "./controller";
-import { Terminal } from "./terminal";
 import { RPP } from "./rpp";
-
-
+import { Terminal } from "./terminal";
 
 const controller = new Controller(
     new RPP(),

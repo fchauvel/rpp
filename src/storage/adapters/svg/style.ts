@@ -8,21 +8,18 @@
  * See the LICENSE file for details.
  */
 
-
-
-
 class Font {
-    public family: string
-    public size: string
-    public weight: string
-    public textAnchor: string
-    public dominantBaseline: string
+    public family: string;
+    public size: string;
+    public weight: string;
+    public textAnchor: string;
+    public dominantBaseline: string;
 
-    constructor(family="sans-serif",
-                size="12pt",
-                weight="normal",
-                textAnchor="middle",
-                dominantBaseline="middle") {
+    constructor(family= "sans-serif",
+                size= "12pt",
+                weight= "normal",
+                textAnchor= "middle",
+                dominantBaseline= "middle") {
         this.family = family;
         this.size = size;
         this.weight = weight;
@@ -32,14 +29,13 @@ class Font {
 
 }
 
-
 class Stroke {
 
     public width: number;
     public color: string;
-    public dashArray: string
+    public dashArray: string;
 
-    constructor(strokeWidth=1, stroke="black") {
+    constructor(strokeWidth= 1, stroke= "black") {
         this.width = strokeWidth;
         this.color = stroke;
         this.dashArray = "";
@@ -51,12 +47,11 @@ class Fill {
 
     public color: string;
 
-    constructor () {
+    constructor() {
         this.color = "black";
     }
 
 }
-
 
 export class Style {
 
@@ -72,8 +67,6 @@ export class Style {
 
 }
 
-
-
 class Activity {
 
     public identifier: Style;
@@ -88,82 +81,92 @@ class Activity {
 
 }
 
+type Factory<T> = () => T;
 
+class Hierarchy<T> {
+
+    private _levels: T[];
+
+    constructor(levelCount: number, factory: Factory<T>) {
+        this._levels = [];
+        for (let index = 0 ; index < levelCount ; index++) {
+            this._levels.push(factory());
+        }
+    }
+
+    public level(depth: number): T {
+        const length = this._levels.length;
+        if (depth >= length) {
+            return this._levels[length - 1];
+        }
+        return this._levels[depth - 1];
+    }
+}
 
 export class StyleSheet {
 
-    public taskHeader: Style;
-    public timeScale: Style;
+    public timeAxis: Style;
+    public timeLabels: Hierarchy<Style>;
 
-    private _tasks: Activity[];
+    public grids: Hierarchy<Style>;
 
-    public quarterGrid: Style;
-    public yearGrid: Style;
-    public axis: Style;
     public deliverable: Style;
 
+    private _tasks: Hierarchy<Activity>;
 
     public constructor() {
-        this._tasks = [];
-        this._tasks.push(new Activity());
-        this._tasks.push(new Activity());
+        this.initializeTasks();
+        this.initializeDeliverables();
 
-        this._tasks[0].identifier.fill.color = "darkblue";
-        this._tasks[0].identifier.font.textAnchor = "start";
-        this._tasks[0].identifier.font.weight = "bold";
-        this._tasks[0].label.fill.color = "darkblue";
-        this._tasks[0].label.font.textAnchor = "start";
-        this._tasks[0].label.font.weight = "bold";
-        this._tasks[0].bar.fill.color = "darkblue";
-        this._tasks[0].bar.stroke.width = 0;
+        this.timeAxis = new Style();
+        this.timeAxis.stroke.width = 3;
 
-        this._tasks[1].identifier.fill.color = "steelblue";
-        this._tasks[1].identifier.font.textAnchor = "start";
-        this._tasks[1].identifier.font.weight = "normal";
-        this._tasks[1].label.fill.color = "steelblue";
-        this._tasks[1].label.font.textAnchor = "start";
-        this._tasks[1].label.font.weight = "normal";
-        this._tasks[1].bar.fill.color = "steelblue";
-        this._tasks[1].bar.stroke.width = 0;
+        this.timeLabels = new Hierarchy<Style>(3, () => new Style());
+        this.timeLabels.level(1).font.weight = "bold";
+        this.timeLabels.level(2).font.size = "10pt";
+        this.timeLabels.level(3).font.size = "9pt";
 
-
-        this.deliverable = new Style();
-        this.deliverable.font.textAnchor = "middle";
-        this.deliverable.font.weight = "bold";
-        this.deliverable.fill.color = "white";
-
-        this.taskHeader = new Style();
-        this.taskHeader.font.textAnchor = "start";
-        this.taskHeader.font.weight = "bold";
-
-        this.timeScale = new Style();
-
-        this.quarterGrid = new Style();
-        this.quarterGrid.stroke.dashArray = "4";
-
-        this.yearGrid = new Style();
-
-        this.axis = new Style();
-        this.axis.stroke.width = 3;
+        this.grids = new Hierarchy<Style>(3, () => new Style());
+        this.grids.level(1).stroke.width = 1;
+        this.grids.level(2).stroke.dashArray = "4";
 
     }
-
 
     public activity(depth: number, isPackage = false) {
         if (isPackage) {
-            return StyleSheet.fetch(depth-1, this._tasks);
+            return this._tasks.level(depth);
         }
-        return StyleSheet.fetch(depth-1, this._tasks);
+        return this._tasks.level(depth);
     }
 
+    private initializeTasks(): void {
+        this._tasks = new Hierarchy<Activity>(2, () => new Activity());
 
-    private static fetch<T>(depth: number, array: Array<T>): T {
-        const length = array.length;
-        if (depth >= length) {
-            return array[length-1];
-        }
-        return array[depth];
+        this._tasks.level(1).identifier.fill.color = "darkblue";
+        this._tasks.level(1).identifier.font.textAnchor = "start";
+        this._tasks.level(1).identifier.font.weight = "bold";
+        this._tasks.level(1).label.fill.color = "darkblue";
+        this._tasks.level(1).label.font.textAnchor = "start";
+        this._tasks.level(1).label.font.weight = "bold";
+        this._tasks.level(1).bar.fill.color = "darkblue";
+        this._tasks.level(1).bar.stroke.width = 0;
+
+        this._tasks.level(2).identifier.fill.color = "steelblue";
+        this._tasks.level(2).identifier.font.textAnchor = "start";
+        this._tasks.level(2).identifier.font.weight = "normal";
+        this._tasks.level(2).label.fill.color = "steelblue";
+        this._tasks.level(2).label.font.textAnchor = "start";
+        this._tasks.level(2).label.font.weight = "normal";
+        this._tasks.level(2).bar.fill.color = "steelblue";
+        this._tasks.level(2).bar.stroke.width = 0;
     }
 
+    private initializeDeliverables(): void {
+        this.deliverable = new Style();
+        this.deliverable.font.textAnchor = "middle";
+        this.deliverable.font.weight = "bold";
+        this.deliverable.font.size = "10pt";
+        this.deliverable.fill.color = "white";
+    }
 
 }

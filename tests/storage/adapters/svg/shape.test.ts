@@ -8,12 +8,9 @@
  * See the LICENSE file for details.
  */
 
-
-
-import { Project, Package, Activity, Task, Visitor, Deliverable } from "../../../../src/wbs";
+import { GanttPainter, Layout, Tags } from "../../../../src/storage/adapters/svg/painter";
 import { Figure, Shape } from "../../../../src/storage/adapters/svg/shape";
-import { Layout, Tags, GanttPainter } from "../../../../src/storage/adapters/svg/painter";
-
+import { Activity, Deliverable, Package, Project, Task, Visitor } from "../../../../src/wbs";
 
 class Reader {
 
@@ -23,8 +20,7 @@ class Reader {
         this._chart = chart;
     }
 
-
-    readStartAndEnd(identifier: string): [number, number] {
+    public readStartAndEnd(identifier: string): [number, number] {
         const timeAxis = this._chart.findShapesWithTags([Tags.TIME_AXIS])[0];
         const bar = this._chart.findShapesWithTags([identifier,
                                                     Tags.BAR])[0];
@@ -37,36 +33,31 @@ class Reader {
         return [start, end];
     }
 
-
-    readDeliverableDueDate(identifier: string): number {
+    public readDeliverableDueDate(identifier: string): number {
         const timeAxis = this._chart.findShapesWithTags([Tags.TIME_AXIS])[0];
         const deliverable = this.findDeliverable(identifier);
         const width = timeAxis.boundingBox.right - timeAxis.boundingBox.left;
         return (deliverable.boundingBox.center.x - timeAxis.boundingBox.left) / width;
     }
 
-
-    findDeliverable(identifier: string): Shape {
+    public findDeliverable(identifier: string): Shape {
         return this._chart.findShapesWithTags([identifier,
                                         Tags.DELIVERABLE])[0];
     }
 
-
-    findActivityLabel(identifier: string): Shape {
+    public findActivityLabel(identifier: string): Shape {
         return this._chart.findShapesWithTags(
             [identifier,
              Tags.NAME])[0];
     }
 
-
-    findActivityBar(identifier: string): Shape {
+    public findActivityBar(identifier: string): Shape {
         return this._chart.findShapesWithTags(
             [identifier,
              Tags.BAR])[0];
     }
 
-
-    findActivityIdentifier(identifier: string): Shape {
+    public findActivityIdentifier(identifier: string): Shape {
         return this._chart.findShapesWithTags(
             [identifier,
              Tags.IDENTIFIER])[0];
@@ -76,19 +67,17 @@ class Reader {
 
 abstract class Tester extends Visitor {
 
-    protected abstract verify(prefix: string, activity: Activity): void;
-
-    onTask (task: Task): void {
+    public onTask(task: Task): void {
         this.verify("T", task);
     }
 
-    onPackage(workPackage: Package): void {
+    public onPackage(workPackage: Package): void {
         this.verify("WP", workPackage);
     }
 
+    protected abstract verify(prefix: string, activity: Activity): void;
+
 }
-
-
 
 describe("A Gantt chart should", () => {
 
@@ -103,13 +92,12 @@ describe("A Gantt chart should", () => {
                      ]),
             new Package("Hard Stuff", [
                 new Task("Fairly hard", 5, 5),
-                new Task("Really hard", 7, 7)
-            ])
+                new Task("Really hard", 7, 7),
+            ]),
         ]);
 
     const gantt = new GanttPainter(new Layout());
     const chart = new Reader(gantt.draw(project));
-
 
     test("have tasks' identifier that do not overlap tasks' name", () => {
         const tester = new class extends Tester {
@@ -126,8 +114,6 @@ describe("A Gantt chart should", () => {
 
         project.accept(tester);
     });
-
-
 
     test("have tasks' bar aligned with tasks' name", () => {
         const tester = new class extends Tester {
@@ -147,60 +133,39 @@ describe("A Gantt chart should", () => {
         project.accept(tester);
     });
 
-
-    // test("not have two tasks whose bars overlap", () => {
-    //     project.forEachActivity((activity1, path1) => {
-    //         project.forEachActivity((activity2, path2) => {
-    //             if (activity1 != activity2) {
-    //                 const bar1 = chart.findActivityBar(path1.asIdentifier("));
-    //                 const bar2 = chart.findActivityBar(task2.identifier);
-    //                 expect(bar1.overlapWith(bar2)).toBe(false);
-    //             }
-    //         }
-    //     }
-    // });
-
+    const normalize = (d: number): number => {
+        return d / project.duration;
+    };
 
     test("have bar placed with respect to the time axis", () => {
-
-        const normalize = (d: number): number => {
-            return d / project.duration();
-        }
 
         const tester = new class extends Tester {
             protected verify(prefix: string, activity: Activity): void {
                 const identifier = this.path.asIdentifier(prefix);
                 const [start, end] = chart.readStartAndEnd(identifier);
 
-                expect(start).toBeCloseTo(normalize(activity.start()-1));
-                expect(end).toBeCloseTo(normalize(activity.end()));
+                expect(start).toBeCloseTo(normalize(activity.start - 1));
+                expect(end).toBeCloseTo(normalize(activity.end));
             }
         }();
 
         project.accept(tester);
     });
 
-
     test("have deliverables placed with respect to the time axis", () => {
-
-        const normalize = (d: number): number => {
-            return d / project.duration();
-        }
-
         const tester = new class extends Visitor {
 
             public onDeliverable(deliverable: Deliverable): void {
                 const identifier = this.path.asIdentifier("D");
 
                 const dueDate = chart.readDeliverableDueDate(identifier);
-                expect(dueDate).toBeCloseTo(normalize(deliverable.dueDate-1));
+                expect(dueDate).toBeCloseTo(normalize(deliverable.dueDate - 0.5));
             }
 
         }();
 
         project.accept(tester);
     });
-
 
     test("have deliverables aligned with task that produces them", () => {
 

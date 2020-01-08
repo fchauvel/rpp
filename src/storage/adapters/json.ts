@@ -8,24 +8,17 @@
  * See the LICENSE file for details.
  */
 
-
-
 import { Project  } from "../../wbs";
 import { Format } from "../adapters";
 
-
-
 export class JSONFormat extends Format {
 
-
-    constructor () {
+    constructor() {
         super("JSON", [".json"]);
     }
-
 
     public parseProject(content: string): Project {
         return this.asProject(JSON.parse(content));
     }
-
 
 }

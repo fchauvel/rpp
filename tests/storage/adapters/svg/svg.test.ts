@@ -8,13 +8,9 @@
  * See the LICENSE file for details.
  */
 
-
-
 import { Figure, Painter } from "../../../../src/storage/adapters/svg/shape";
-import { SVGWriter } from "../../../../src/storage/adapters/svg/svg";
 import { StyleSheet } from "../../../../src/storage/adapters/svg/style";
-
-
+import { SVGWriter } from "../../../../src/storage/adapters/svg/svg";
 
 describe("SVG converter should", () => {
 
@@ -34,10 +30,9 @@ describe("SVG converter should", () => {
                 "stroke-width=\"0\" " +
                 "stroke=\"black\" " +
                 "fill=\"steelblue\" " +
-                "stroke-dasharray=\"\"></rect></svg>"
+                "stroke-dasharray=\"\"></rect></svg>",
         );
     });
-
 
     test("draw a line", () => {
         const painter = new Painter();
@@ -51,10 +46,9 @@ describe("SVG converter should", () => {
                 "<line x1=\"15\" y1=\"20\" x2=\"65\" y2=\"45\" " +
                 "stroke-width=\"0\" " +
                 "stroke=\"black\" " +
-                "stroke-dasharray=\"\"></line></svg>"
+                "stroke-dasharray=\"\"></line></svg>",
         );
     });
-
 
     test("write a text", () => {
         const painter = new Painter();
@@ -69,10 +63,10 @@ describe("SVG converter should", () => {
                 "<text x=\"25\" y=\"12.5\" " +
                 "font-family=\"sans-serif\" " +
                 "font-size=\"12pt\" " +
-                "font-weight=\"normal\" "+
+                "font-weight=\"normal\" " +
                 "text-anchor=\"middle\" " +
                 "dominant-baseline=\"middle\" " +
-                "fill=\"steelblue\">Bonjour</text></svg></svg>"
+                "fill=\"steelblue\">Bonjour</text></svg></svg>",
          );
     });
 

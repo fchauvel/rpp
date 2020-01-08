@@ -51,3 +51,7 @@ project:
               kind: Report
               due: 48
 ``` 
+
+This yields the following Gantt Chart: 
+
+![Sample Gantt Chart](./samples/epic.gantt.svg)

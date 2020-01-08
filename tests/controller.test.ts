@@ -8,34 +8,27 @@
  * See the LICENSE file for details.
  */
 
-
-
 import { Controller } from "../src/controller";
-import { Terminal, Output } from "../src/terminal";
 import { RPP } from "../src/rpp";
-
-
+import { Output, Terminal } from "../src/terminal";
 
 jest.mock("../src/terminal");
 jest.mock("../src/rpp");
 
-const MockedTerminal = <jest.Mock<Terminal>>Terminal;
-const MockedRPP = <jest.Mock<RPP>>RPP;
-
-
+const MockedTerminal = Terminal as jest.Mock<Terminal>;
+const MockedRPP = RPP as jest.Mock<RPP>;
 
 describe("The controller should", () => {
 
     const rpp = new MockedRPP();
     rpp.version = jest.fn()
-        .mockImplementation(() => {return ["0.0.0", "abcdef"]; });
+        .mockImplementation(() => ["0.0.0", "abcdef"]);
 
     const terminal = new MockedTerminal();
     const controller = new Controller(rpp, terminal);
 
-
     test("accept a 'version' command", async () => {
-        await new Promise(resolve => {
+        await new Promise((resolve) => {
             controller.execute(["version"]);
             resolve();
         });
@@ -44,9 +37,8 @@ describe("The controller should", () => {
         expect(terminal.showVersion).toHaveBeenCalledTimes(1);
     });
 
-
     test("accept a 'help' command", async () => {
-        await new Promise(resolve => {
+        await new Promise((resolve) => {
             controller.execute(["help"]);
             resolve();
         });
@@ -54,15 +46,13 @@ describe("The controller should", () => {
         expect(terminal.showHelp).toHaveBeenCalledTimes(1);
     });
 
-
     test("detect invalid command lines", async () => {
-        await new Promise(resolve => {
+        await new Promise((resolve) => {
             controller.execute(["this", "is", "invalid"]);
             resolve();
         });
 
         expect(terminal.invalidArguments).toHaveBeenCalledTimes(1);
     });
-
 
 });

@@ -8,11 +8,7 @@
  * See the LICENSE file for details.
  */
 
-
-
-import { Period, Durations } from "../src/time";
-
-
+import { Durations, Period } from "../src/time";
 
 describe("A period should", () => {
 
@@ -20,17 +16,14 @@ describe("A period should", () => {
     const end = new Date("1982-11-16");
     const period = new Period(start, end);
 
-
     test("expose its start", () => {
         expect(period.start).toBe(start);
 
     });
 
-
     test("expose its end", () => {
         expect(period.end).toBe(end);
     });
-
 
     test("should split itself into months", () => {
         const months = period.splitBy(Durations.MONTH);
@@ -42,7 +35,6 @@ describe("A period should", () => {
         expect(months[23].end).toEqual(new Date("1982-11-16"));
     });
 
-
     test("should split itself into quarters", () => {
         const quarters = period.splitBy(Durations.QUARTER);
 
@@ -52,13 +44,21 @@ describe("A period should", () => {
         expect(quarters[7].end).toEqual(new Date("1982-11-16"));
     });
 
-
     test("should split itself into into years", () => {
         const years = period.splitBy(Durations.YEAR);
 
         expect(years).toHaveLength(2);
         expect(years[0].end).toEqual(new Date("1981-11-16"));
         expect(years[1].end).toEqual(new Date("1982-11-16"));
+    });
+
+    test("should split itself into into calendar years", () => {
+        const years = period.splitBy(Durations.CALENDAR_YEAR);
+
+        expect(years).toHaveLength(3);
+        expect(years[0].end).toEqual(new Date("1981-01-01"));
+        expect(years[1].end).toEqual(new Date("1982-01-01"));
+        expect(years[2].end).toEqual(new Date("1982-11-16"));
     });
 
 });

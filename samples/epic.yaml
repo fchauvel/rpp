@@ -11,6 +11,7 @@
 
 project:
   name: EPIC
+  origin: 2020-07-01
   breakdown:
     - name: Project Management
       breakdown:
@@ -100,7 +101,7 @@ project:
               kind: Software
               due: 24
         - name: Validation through Simulation
-          start: 12
+          start: 13
           duration: 24
           deliverables:
             - name: First report on model simulation
@@ -108,7 +109,7 @@ project:
               due: 24
             - name: Final report on model simulation
               kind: Report
-              due: 35
+              due: 36
         - name: Prototype Development
           start: 25
           duration: 24

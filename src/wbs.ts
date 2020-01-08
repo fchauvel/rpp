@@ -8,43 +8,31 @@
  * See the LICENSE file for details.
  */
 
-
+import { Durations, Period } from "./time";
 
 export abstract class Activity {
 
     private _name: string;
-    private _breakdown: Activity[];
 
-    constructor(name: string, breakdown: Activity[]) {
+    constructor(name: string) {
         this._name = name;
-        this._breakdown = breakdown;
     }
 
-    abstract accept(visitor: Visitor): void;
-
-    get isPackage(): boolean {
-        return this._breakdown.length > 0;
-    }
-
-    get name(): string {
+    public get name(): string {
         return this._name;
     }
 
-    get breakdown(): Activity[] {
-        return this._breakdown;
-    }
+    public abstract get start(): number;
 
-    public abstract start(): number;
+    public abstract get duration(): number;
 
-    public abstract duration(): number;
-
-    public abstract end(): number;
+    public abstract get end(): number;
 
     public abstract get deliverables(): Deliverable[];
 
+    public abstract accept(visitor: Visitor): void;
+
 }
-
-
 
 export class Deliverable {
 
@@ -52,34 +40,29 @@ export class Deliverable {
     private _kind: string;
     private _date: number;
 
-    constructor (name: string, kind: string, date: number) {
+    constructor(name: string, kind: string, date: number) {
         this._name = name;
         this._kind = kind;
         this._date = date;
     }
 
-
     public get name(): string {
         return this._name;
     }
-
 
     public get dueDate(): number {
         return this._date;
     }
 
-
     public get kind(): string {
         return this._kind;
     }
-
 
     public accept(visitor: Visitor): void {
         visitor.onDeliverable(this);
     }
 
 }
-
 
 export class Task extends Activity {
 
@@ -89,34 +72,29 @@ export class Task extends Activity {
 
     constructor(name: string,
                 start: number,
-                duration=1,
-                deliverables: Deliverable[]=[]) {
-        super(name, []);
+                duration= 1,
+                deliverables: Deliverable[]= []) {
+        super(name);
         this._start = start;
         this._duration = duration;
         this._deliverables = deliverables;
     }
 
-
-    public start(): number {
+    public get start(): number {
         return this._start;
     }
 
-
-    public duration(): number {
+    public get duration(): number {
         return this._duration;
     }
 
-
-    public end(): number {
+    public get end(): number {
         return this._start + this._duration - 1;
     }
-
 
     public get deliverables(): Deliverable[] {
         return this._deliverables;
     }
-
 
     public accept(visitor: Visitor): void {
         visitor.onTask(this);
@@ -127,43 +105,36 @@ export class Task extends Activity {
         }
     }
 
-
 }
-
 
 export class Package extends Activity {
 
+    private _breakdown: Activity[];
+
     constructor(name: string, breakdown: Activity[]) {
-        super(name, breakdown);
+        super(name);
+        this._breakdown = breakdown;
     }
 
-
-    public start(): number {
+    public get start(): number {
         return this.breakdown.reduce(
             (earliest, activity) => {
-                return earliest < activity.start() ?
+                return earliest < activity.start ?
                     earliest :
-                    activity.start();
+                    activity.start;
             },
             Number.MAX_VALUE);
     }
 
-
-    public duration(): number {
-        return this.end() - this.start() + 1;
+    public get duration(): number {
+        return this.end - this.start + 1;
     }
 
-
-    public end(): number {
+    public get end(): number {
         return this.breakdown.reduce(
-            (latest, activity) => {
-                return latest > activity.end() ?
-                    latest :
-                    activity.end();
-            },
+            (latest, activity) => Math.max(latest, activity.end),
             0);
     }
-
 
     public get deliverables(): Deliverable[] {
         return this.breakdown.reduce(
@@ -172,12 +143,14 @@ export class Package extends Activity {
             }, []);
     }
 
+    public get breakdown(): Activity[] {
+        return this._breakdown;
+    }
 
     public accept(visitor: Visitor): void {
         visitor.onPackage(this);
         this.iterateOverBreakdown(visitor);
     }
-
 
     protected iterateOverBreakdown(visitor: Visitor): void {
         for (const [index, activity] of this.breakdown.entries()) {
@@ -189,15 +162,25 @@ export class Package extends Activity {
 
 }
 
-
 export class Project extends Package {
 
-    constructor(name: string, breakdown: Activity[]) {
+    private _origin: Date;
+
+    constructor(name: string, breakdown: Activity[], origin: Date= null) {
         super(name, breakdown);
+        this._origin = origin || new Date();
     }
 
     public get origin(): Date {
-        return new Date("2018-05-01");
+        return this._origin;
+    }
+
+    public get period(): Period {
+        return new Period(
+            this.origin,
+            Durations.MONTH.times(this.duration)
+                .from(this.origin),
+        );
     }
 
     public accept(visitor: Visitor): void {
@@ -207,35 +190,29 @@ export class Project extends Package {
 
 }
 
-
-
-
 export class Path {
 
     private _indexes: number[];
 
-
-    constructor(indexes: number[]=[]) {
+    constructor(indexes: number[]= []) {
         this._indexes = indexes;
     }
 
-
-    public get parent() : Path {
+    public get parent(): Path {
         const length = this._indexes.length;
-        if (length <= 1)
+        if (length <= 1) {
             throw new Error("The root element has no parent!");
-        return new Path(this._indexes.slice(0, length-1));
+        }
+        return new Path(this._indexes.slice(0, length - 1));
     }
 
     public get depth(): number {
         return this._indexes.length;
     }
 
-
-    public asIdentifier(prefix: string, separator="."): string {
+    public asIdentifier(prefix: string, separator= "."): string {
         return prefix + " " + this._indexes.map(String).join(separator);
     }
-
 
     public append(index: number): Path {
         return new Path(this._indexes.concat([index]));
@@ -252,9 +229,7 @@ export class Path {
         this._indexes.pop();
     }
 
-
 }
-
 
 export abstract class Visitor {
 

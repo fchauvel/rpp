@@ -8,18 +8,15 @@
  * See the LICENSE file for details.
  */
 
-
-
 import * as fs from "fs";
 
 import { Controller } from "../src/controller";
-import { Terminal } from "../src/terminal"
-import { RPP } from "../src/rpp"
-
-
+import { RPP } from "../src/rpp";
+import { Terminal } from "../src/terminal";
 
 class Acceptance {
 
+    private static readonly PREFIX: string = "test_";
 
     public invoke(commandLine: string[]): void {
         new Controller(
@@ -27,11 +24,10 @@ class Acceptance {
             new Terminal(console)).execute(commandLine.slice(1));
     }
 
-
-    public removeTemporaryFiles (): void {
+    public removeTemporaryFiles(): void {
         fs.readdir(".", (error, files) => {
-            if (error) throw error;
-            for (let anyFile of files) {
+            if (error) { throw error; }
+            for (const anyFile of files) {
                 if (anyFile.startsWith(Acceptance.PREFIX)) {
                     fs.unlinkSync(anyFile);
                 }
@@ -39,20 +35,14 @@ class Acceptance {
         });
     }
 
-
     public createRandomFileName(extension): string {
-        const randomString = Math.random().toString(36).substring(2,15);
+        const randomString = Math.random().toString(36).substring(2, 15);
         return Acceptance.PREFIX
             + randomString
             + extension;
     }
 
-
-    private static readonly PREFIX: string = "test_";
-
 }
-
-
 
 describe("Given the EPIC project", () => {
 
@@ -78,7 +68,6 @@ describe("Given the EPIC project", () => {
             expect(fs.statSync(outputFile).size).toBeGreaterThan(20000);
         });
 
-
         test("generate a new SVG file from a YAML file", () => {
             const outputFile = tester.createRandomFileName(".svg");
 
@@ -92,7 +81,6 @@ describe("Given the EPIC project", () => {
             expect(fs.existsSync(outputFile)).toBe(true);
             expect(fs.statSync(outputFile).size).toBeGreaterThan(20000);
         });
-
 
     });
 

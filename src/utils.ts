@@ -8,7 +8,6 @@
  * See the LICENSE file for details.
  */
 
-
 export function format(template: string, ...args: any[]): string {
     let result = template;
     for (const index in args) {

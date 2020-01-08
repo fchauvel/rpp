@@ -10,13 +10,12 @@
 
 
 
-
 import * as yargs from "yargs";
 import { Argv } from "yargs";
 
 import { RPP } from "./rpp";
+import { FileSystem, Storage } from "./storage";
 import { Terminal } from "./terminal";
-import { Storage, FileSystem } from "./storage";
 
 
 
@@ -49,15 +48,15 @@ export class Controller {
                          alias: "o",
                          desc: "set the name of the file to generate",
                          type: "string",
-                         default: "gantt.svg"
+                         default: "gantt.svg",
                      })
                      .option("project", {
                          alias: "p",
                          desc: "set the project definition file",
                          type: "string",
-                         demand: true
+                         demand: true,
                      }),
-                     (args: any) => { this.generateGantt(args);})
+                     (args: any) => { this.generateGantt(args); })
             .help(false)
             .version(false)
             .fail((msg: string, err: Error) => {
@@ -66,33 +65,28 @@ export class Controller {
             .strict();
     }
 
-    public execute(commandLine: Array<string>): void {
+    public execute(commandLine: string[]): void {
         this._parser.parse(commandLine);
     }
-
 
     private invalidArguments(message: string, error: Error): void {
         this._terminal.invalidArguments(message, error);
         this.showHelp(null);
     }
 
-
     private showVersion(args: any): void {
         const [version, commit] = this._rpp.version();
         this._terminal.showVersion(version, commit);
     }
-
 
     private showHelp(args: any): void {
         this._terminal.showHelp("Usage: rpp [command] [option]+");
         this._parser.showHelp("log");
     }
 
-
     private generateGantt(args: any): void {
         const project = this._storage.loadProject(args.project);
         this._storage.storeGanttChart(project, args.output);
     }
-
 
 }

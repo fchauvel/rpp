@@ -8,28 +8,24 @@
  * See the LICENSE file for details.
  */
 
-
-
-import { Project, Task, Package, Activity, Deliverable } from "../../wbs";
-
-
+import { Activity, Deliverable, Package, Project, Task } from "../../wbs";
 
 export abstract class Format {
-
-    private _name: string;
-    private _extensions: string[];
-
-
-    constructor (name: string, extensions: string[]=[]) {
-        this._name = name;
-        this._extensions = extensions;
-    }
-
 
     public get name(): string {
         return this._name;
     }
 
+    private static readonly EXTENSION_PATTERN: RegExp
+        = /\.([0-9a-z]+)(?:[\?#]|$)/i;
+
+    private _name: string;
+    private _extensions: string[];
+
+    constructor(name: string, extensions: string[]= []) {
+        this._name = name;
+        this._extensions = extensions;
+    }
 
     public accept(resource: string): boolean {
         const extension = resource.match(Format.EXTENSION_PATTERN);
@@ -37,16 +33,11 @@ export abstract class Format {
             this._extensions.includes(extension[0]);
     }
 
-    private static readonly EXTENSION_PATTERN: RegExp
-        = /\.([0-9a-z]+)(?:[\?#]|$)/i;
-
-
     public parseProject(source: string): Project {
         const message = "Loading projects from "
             + `${this.name} files is not yet suported!`;
         throw new Error(message);
     }
-
 
     public writeGantt(project: Project): string {
         const message = "Gantt serialization not yet"
@@ -54,16 +45,15 @@ export abstract class Format {
         throw new Error(message);
     }
 
-
     protected asProject(data: any): Project {
         const activities = this.parseActivities(data.project.breakdown);
         return new Project(data.project.name,
-                           activities);
+                           activities,
+                           new Date(data.project.origin));
     }
 
-
-    protected parseActivities(json: Array<any>): Array<Activity> {
-        const activities: Array<Activity> = [];
+    protected parseActivities(json: any[]): Activity[] {
+        const activities: Activity[] = [];
         for (const item of json) {
             if ("breakdown" in item) {
                 const breakdown = this.parseActivities(item.breakdown);
@@ -81,8 +71,7 @@ export abstract class Format {
         return activities;
     }
 
-
-    protected parseDeliverable(json: Array<any>): Array<Deliverable> {
+    protected parseDeliverable(json: any[]): Deliverable[] {
         const deliverables: Deliverable[] = [];
         if (!(Symbol.iterator in Object(json))) {
             return deliverables;

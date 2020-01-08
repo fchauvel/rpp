@@ -8,60 +8,51 @@
  * See the LICENSE file for details.
  */
 
-
-
-import { Project, Task, Package, Deliverable, Visitor } from "../src/wbs"
-
-
+import { Deliverable, Package, Project, Task, Visitor } from "../src/wbs";
 
 describe("A task should", () => {
 
-    const start = 1
+    const start = 1;
     const duration = 10;
     const deliverables = [
         new Deliverable("D1",
                         "Report",
-                        3)
+                        3),
     ];
 
     const task = new Task(
         "Do something",
         start,
         duration,
-        deliverables
+        deliverables,
     );
 
-
     test("expose its start", () => {
-        expect(task.start()).toBe(start);
+        expect(task.start).toBe(start);
     });
-
 
     test("expose its duration", () => {
-        expect(task.duration()).toBe(duration);
+        expect(task.duration).toBe(duration);
     });
-
 
     test("expose its end", () => {
-        expect(task.end()).toBe(start + duration - 1);
+        expect(task.end).toBe(start + duration - 1);
     });
-
 
     test("expose its deliverables", () => {
         expect(task.deliverables).toHaveLength(deliverables.length);
     });
 
-
     test("ensure visitors access its deliverables", () => {
         const visitor = new class extends Visitor {
             public counter: number;
 
-            constructor () {
+            constructor() {
                 super();
                 this.counter = 0;
             }
 
-            onDeliverable(deliberable: Deliverable): void {
+            public onDeliverable(deliberable: Deliverable): void {
                 this.counter += 1;
             }
         }();
@@ -73,34 +64,27 @@ describe("A task should", () => {
 
 });
 
-
-
 describe("A package should", () => {
-
 
     const task1 = new Task("T1", 3, 10, [
         new Deliverable("D1",
                         "Report",
-                        5)
+                        5),
     ]);
     const task2 = new Task("T2", 4, 5);
     const wp1 = new Package("WP1", [task1, task2]);
 
-
     test("start with its earliest tasks", () => {
-        expect(wp1.start()).toBe(task1.start());
+        expect(wp1.start).toBe(task1.start);
     });
-
 
     test("end with its latest tasks", () => {
-        expect(wp1.end()).toBe(task1.end());
+        expect(wp1.end).toBe(task1.end);
     });
-
 
     test("run as long as there are tasks running", () => {
-        expect(wp1.duration()).toBe(task1.duration());
+        expect(wp1.duration).toBe(task1.duration);
     });
-
 
     test("expose its deliverables", () => {
         expect(wp1.deliverables).toHaveLength(1);
@@ -108,20 +92,23 @@ describe("A package should", () => {
 
 });
 
-
-
 describe("A project should", () => {
 
     const name = "Dummy project";
+    const origin = new Date("2020-07-01");
     const task = new Task("T1", 0);
     const activities = [ task ];
-    const project = new Project(name, activities);
+    const project = new Project(name, activities, origin);
 
-
-    it("expose its name", () => {
+    test("expose its name", () => {
          expect(project.name).toBe(name);
     });
 
+    test("expose its origin", () => {
+        expect(project.origin.getDate()).toBe(1);
+        expect(project.origin.getMonth()).toBe(6);
+        expect(project.origin.getFullYear()).toBe(2020);
+    });
 
     test("expose its work breakdown structure", () => {
         expect(project.breakdown).toBeDefined();
@@ -129,7 +116,6 @@ describe("A project should", () => {
     });
 
 });
-
 
 describe("A deliverable should", () => {
 
@@ -142,15 +128,12 @@ describe("A deliverable should", () => {
         expect(deliverable.name).toBe(name);
     });
 
-
     test("expose its due date", () => {
         expect(deliverable.dueDate).toBe(date);
     });
 
-
     test("expose its kind", () => {
         expect(deliverable.kind).toBe(kind);
     });
-
 
 });

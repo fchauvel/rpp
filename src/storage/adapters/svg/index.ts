@@ -8,17 +8,14 @@
  * See the LICENSE file for details.
  */
 
-
 import { Project } from "../../../wbs";
 import { Format } from "../../adapters";
-import { Layout, GanttPainter } from "./painter";
+import { GanttPainter, Layout } from "./painter";
 import { SVGWriter } from "./svg";
-
-
 
 export class SVGFormat extends Format {
 
-    constructor () {
+    constructor() {
         super("SVG", [".svg"]);
     }
 
@@ -26,6 +23,5 @@ export class SVGFormat extends Format {
         const gantt = new GanttPainter(new Layout());
         return new SVGWriter().write(gantt.draw(project));
     }
-
 
 }

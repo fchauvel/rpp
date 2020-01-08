@@ -8,11 +8,7 @@
  * See the LICENSE file for details.
  */
 
-
-
 import { format } from "./utils";
-
-
 
 export interface Output {
 
@@ -20,8 +16,11 @@ export interface Output {
 
 }
 
-
 export class Terminal {
+
+    public readonly HASH_LENGTH = 7;
+    public readonly VERSION = "RPP v{0}";
+    public readonly VERSION_WITH_HASH = "RPP v{0}+git.{1}";
 
     private _output: Output;
 
@@ -29,13 +28,7 @@ export class Terminal {
         this._output = output;
     }
 
-
-    private write(text: string): void {
-        this._output.log(text);
-    }
-
-
-    showVersion(version: string, commit: string): void {
+    public showVersion(version: string, commit: string): void {
         if (commit != null) {
             this.write(format(this.VERSION_WITH_HASH,
                               version,
@@ -45,20 +38,17 @@ export class Terminal {
         }
     }
 
-    readonly HASH_LENGTH = 7;
-    readonly VERSION = "RPP v{0}"
-    readonly VERSION_WITH_HASH = "RPP v{0}+git.{1}"
-
-
-    showHelp(help: string): void {
+    public showHelp(help: string): void {
         this.write(help);
     }
 
-
-    invalidArguments(message: string, error: Error): void {
+    public invalidArguments(message: string, error: Error): void {
         this.write("Error");
         this.write(message);
     }
 
+    private write(text: string): void {
+        this._output.log(text);
+    }
 
 }
