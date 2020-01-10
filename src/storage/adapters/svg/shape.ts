@@ -140,13 +140,13 @@ export class Box {
 
 export interface Visitor {
 
-    visitRectangle(rectangle: Rectangle);
+    visitRectangle(rectangle: Rectangle): void;
 
-    visitText(rectangle: Rectangle);
+    visitText(rectangle: Rectangle): void;
 
-    visitLine(line: Line);
+    visitLine(line: Line): void;
 
-    visitFigure(figure: Figure);
+    visitFigure(figure: Figure): void;
 }
 
 export abstract class Shape {
@@ -274,7 +274,7 @@ export class Figure extends Shape {
     }
 
     public get boundingBox(): Box {
-        if (this._shapes.length == 0) {
+        if (this._shapes.length === 0) {
             throw Error("An empty figure has no bounding box!");
         }
 
@@ -339,9 +339,14 @@ export class Painter {
         return this._position;
     }
 
-    public moveTo(xOffset: number, yOffset: number): void {
+    public moveBy(xOffset: number, yOffset: number): void {
         this._position = this._position.move(xOffset, yOffset);
     }
+
+    public moveTo(x: number, y: number): void {
+        this._position = new Point(x, y);
+    }
+
 
     public moveVerticallyTo(position: number): void {
         this._position = this._position.moveVerticallyTo(position);

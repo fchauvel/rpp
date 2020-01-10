@@ -1,0 +1,31 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:recommended"
+    ],
+    "jsRules": {},
+    "rules": {
+	"typedef": [
+	    "error",
+	    {
+		"variableDeclaration": "if-not-inferred"
+	    }
+	],
+	"max-classes-per-file": [
+	    true,
+	    10,
+	    "exclude-class-expressions"
+	],
+	"variable-name": {
+	    "options": [
+		"ban-keywords",
+		"check-format",
+		"allow-leading-underscore",
+		"allow-pascal-case"
+	    ]
+	},
+	"interface-name": [true, "never-prefix"],
+	"no-consecutive-blank-lines": [true, 3]
+    },
+    "rulesDirectory": []
+}

@@ -8,7 +8,47 @@
  * See the LICENSE file for details.
  */
 
-import { Activity, Deliverable, Package, Project, Task } from "../../wbs";
+import { Activity, Deliverable, Milestone, Package, Project, Task } from "../../wbs";
+
+
+interface JsonProject {
+    name: string;
+    origin: string;
+    breakdown: JsonActivity[];
+    milestones: JsonMilestone[];
+}
+
+
+type JsonActivity = JsonWorkPackage | JsonTask;
+
+
+interface JsonWorkPackage {
+    name: string;
+    breakdown: JsonActivity[];
+}
+
+
+interface JsonTask {
+    name: string;
+    start: number;
+    duration: number;
+    deliverables: JsonDeliverable[];
+}
+
+
+interface JsonDeliverable {
+    name: string;
+    kind: string;
+    due: number;
+}
+
+
+interface JsonMilestone {
+    name: string;
+    date: number;
+}
+
+
 
 export abstract class Format {
 
@@ -45,25 +85,29 @@ export abstract class Format {
         throw new Error(message);
     }
 
-    protected asProject(data: any): Project {
-        const activities = this.parseActivities(data.project.breakdown);
-        return new Project(data.project.name,
+    protected asProject(jsonProject: JsonProject): Project {
+        const activities = this.parseActivities(jsonProject.breakdown);
+        const milestones = this.parseMilestones(jsonProject.milestones);
+        return new Project(jsonProject.name,
                            activities,
-                           new Date(data.project.origin));
+                           new Date(jsonProject.origin),
+                           milestones);
     }
 
-    protected parseActivities(json: any[]): Activity[] {
+    protected parseActivities(jsonActivities: JsonActivity[]): Activity[] {
         const activities: Activity[] = [];
-        for (const item of json) {
+        for (const item of jsonActivities) {
             if ("breakdown" in item) {
-                const breakdown = this.parseActivities(item.breakdown);
-                activities.push(new Package(item.name, breakdown));
+                const jsonPackage = item as JsonWorkPackage;
+                const breakdown = this.parseActivities(jsonPackage.breakdown);
+                activities.push(new Package(jsonPackage.name, breakdown));
             } else {
-                const deliverables = this.parseDeliverable(item.deliverables);
+                const jsonTask = item as JsonTask;
+                const deliverables = this.parseDeliverable(jsonTask.deliverables);
                 const task = new Task(
-                    item.name,
-                    item.start,
-                    item.duration,
+                    jsonTask.name,
+                    jsonTask.start,
+                    jsonTask.duration,
                     deliverables);
                 activities.push(task);
             }
@@ -71,7 +115,7 @@ export abstract class Format {
         return activities;
     }
 
-    protected parseDeliverable(json: any[]): Deliverable[] {
+    protected parseDeliverable(json: JsonDeliverable[]): Deliverable[] {
         const deliverables: Deliverable[] = [];
         if (!(Symbol.iterator in Object(json))) {
             return deliverables;
@@ -84,4 +128,17 @@ export abstract class Format {
         }
         return deliverables;
     }
+
+    protected parseMilestones(json: JsonMilestone[]= []): Milestone[] {
+        const milestones: Milestone[] = [];
+        for (const item of json) {
+            const milestone = new Milestone(
+                item.name,
+                item.date,
+            );
+            milestones.push(milestone);
+        }
+        return milestones;
+    }
+
 }

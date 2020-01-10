@@ -18,7 +18,7 @@ export class JSONFormat extends Format {
     }
 
     public parseProject(content: string): Project {
-        return this.asProject(JSON.parse(content));
+        return this.asProject(JSON.parse(content).project);
     }
 
 }

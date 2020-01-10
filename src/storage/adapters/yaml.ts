@@ -19,7 +19,7 @@ export class YAMLFormat extends Format {
     }
 
     public parseProject(content: string): Project {
-        return this.asProject(yaml.safeLoad(content));
+        return this.asProject(yaml.safeLoad(content).project);
     }
 
 }

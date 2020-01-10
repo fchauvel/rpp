@@ -8,8 +8,8 @@
  * See the LICENSE file for details.
  */
 
-import { Duration, Durations, Period } from "../../../time";
-import { Activity, Deliverable, Package, Path, Project, Task, Visitor } from "../../../wbs";
+import { Duration, Durations } from "../../../time";
+import { Activity, Deliverable, Milestone, Package, Path, Project, Task, Visitor } from "../../../wbs";
 import { Figure, Painter, Point } from "./shape";
 import { Style } from "./style";
 
@@ -19,6 +19,7 @@ export class Tags {
     public static readonly IDENTIFIER = "identifier";
     public static readonly TIME_AXIS = "time_axis";
     public static readonly DELIVERABLE = "deliverable";
+    public static readonly MILESTONE = "milestone";
 }
 
 class PainterVisitor extends Visitor {
@@ -50,36 +51,38 @@ export class GanttPainter extends Painter {
 
     private durations = [
         {
-            unit: Durations.CALENDAR_YEAR,
+            isGrid: true,
+            isShownLower: false,
+            isShownUpper: true,
             name: (i, p): string => String(p.start.getFullYear()),
-            isShownUpper: true,
-            isShownLower: false,
-            isGrid: true,
+            unit: Durations.CALENDAR_YEAR,
         },
         {
-            unit: Durations.QUARTER,
+            isGrid: true,
+            isShownLower: false,
+            isShownUpper: true,
             name: (i, p): string => "Q" + i,
-            isShownUpper: true,
-            isShownLower: false,
-            isGrid: true,
+            unit: Durations.QUARTER,
         },
         {
-            unit: Durations.MONTH,
-            name: (i, p): string => String(i),
-            isShownUpper: true,
-            isShownLower: true,
             isGrid: false,
+            isShownLower: true,
+            isShownUpper: true,
+            name: (i, p): string => String(i),
+            unit: Durations.MONTH,
         },
     ];
 
     private _layout: Layout;
     private _project: Project;
 
+
     constructor(layout: Layout) {
         super();
         this._layout = layout;
         this._project = null;
     }
+
 
     public draw(project: Project): Figure {
         this.moveTo(this._layout.LEFT_MARGIN,
@@ -88,11 +91,14 @@ export class GanttPainter extends Painter {
         this._project = project;
 
         this.drawUpperTimeLine();
+        this.createSpaceForMilestones();
         this.drawActivities();
         this.drawLowerTimeLine();
         this.drawGrid();
+        this.drawMilestones();
         return this.figure;
     }
+
 
     public drawActivity(activity: Activity,
                         path: Path,
@@ -103,6 +109,7 @@ export class GanttPainter extends Painter {
         this.drawActivityDuration(activity, path, isPackage);
         this.moveDownBy(this._layout.TASK_HEIGHT);
     }
+
 
     public drawDeliverable(deliverable: Deliverable, path: Path): void {
         const text = deliverable.kind.charAt(0).toUpperCase();
@@ -143,12 +150,50 @@ export class GanttPainter extends Painter {
         }
     }
 
+
+    private createSpaceForMilestones(): void {
+        this.moveDownBy(this._layout.spaceForMilestones(this._project));
+    }
+
+
+    private drawMilestones(): void {
+        this.moveUpBy(this._layout.TASK_HEIGHT);
+        for (const [index, milestone] of this._project.milestones.entries()) {
+            this.drawMilestone(index, milestone);
+        }
+    }
+
+
+    private drawMilestone(index: number, milestone: Milestone): void {
+        const ratio = (milestone.date - 1) / this._project.duration;
+        const xPosition = this._layout.scaleDate(ratio);
+        this.moveHorizontallyTo(xPosition);
+        const top = this._layout.topOfMilestone(index);
+        const height = -1 * (this.position.y - top);
+        this.drawLine(0,
+                      height,
+                      this.styleSheet.milestone,
+                      [ "M" + index, Tags.MILESTONE ]);
+        const backUp = new Point(this.position.x, this.position.y);
+        this.moveTo(xPosition
+                    - this._layout.MILESTONE_WIDTH
+                    - this._layout.SEPARATOR,
+                    top);
+        this.writeText(milestone.name,
+                       this._layout.MILESTONE_WIDTH,
+                       this._layout.TASK_HEIGHT,
+                       this.styleSheet.milestone,
+                       []);
+        this.moveTo(backUp.x, backUp.y);
+    }
+
+
     private drawActivities(): void {
         this._project.accept(new PainterVisitor(this));
         this.moveDownBy(this._layout.SPACE_BEFORE_ACTIVITY);
     }
 
-    private moveToTimeAxisStart() {
+    private moveToTimeAxisStart(): void {
         this.moveHorizontallyTo(this._layout.timeAxisStart.x);
     }
 
@@ -255,6 +300,10 @@ export class Layout {
         return new Point(x, y);
     }
 
+    public get spaceBeforeMilestones(): number {
+        return this.SPACE_BEFORE_MILESTONES;
+    }
+
     public readonly TOP_MARGIN = 5;
     public readonly LEFT_MARGIN = 5;
     public readonly TASK_IDENTIFIER_WIDTH = 50;
@@ -262,14 +311,23 @@ export class Layout {
     public readonly TASK_HEIGHT = 20;
     public readonly TIME_AXIS_LENGTH = 900;
 
+    public readonly MILESTONE_WIDTH = 300;
+
     public readonly DELIVERABLE_WIDTH = 50;
 
     public readonly SPACE_BEFORE_ACTIVITY = 20;
+    public readonly SPACE_BEFORE_MILESTONES = 10;
     public readonly SEPARATOR = 5;
     public readonly INDENTATION = 10;
 
     public spaceBeforeActivity(path: Path): number {
         return this.SPACE_BEFORE_ACTIVITY / path.depth;
+    }
+
+    public topOfMilestone(index: number): number {
+        return this.timeAxisStart.y
+            + this.spaceBeforeMilestones
+            + (index + 1) * this.TASK_HEIGHT;
     }
 
     public activityIdentifierStart(path: Path): number {
@@ -310,6 +368,11 @@ export class Layout {
 
     public scaleDuration(duration: number): number {
         return this.TIME_AXIS_LENGTH * duration;
+    }
+
+    public spaceForMilestones(project: Project): number {
+        const count = project.milestones.length;
+        return this.TASK_HEIGHT * count;
     }
 
     private indentation(path: Path): number {

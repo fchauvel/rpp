@@ -14,11 +14,11 @@ export class SpyOutput implements Output {
 
     public text: string;
 
-    public log(text: string) {
-	this.text += text;
+    public log(text: string): void {
+        this.text += text;
     }
 
-    public reset() {
-	this.text = "";
+    public reset(): void {
+        this.text = "";
     }
 }

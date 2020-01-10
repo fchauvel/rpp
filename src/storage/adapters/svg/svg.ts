@@ -9,10 +9,10 @@
  */
 
 import * as d3 from "d3";
-import { JSDOM } from  "jsdom";
+import { JSDOM } from "jsdom";
 
 import { Figure, Line, Rectangle, Text } from "./shape";
-import { StyleSheet } from "./style";
+
 
 function xPosition(text: Text): number {
     switch (text.style.font.textAnchor) {
@@ -90,6 +90,7 @@ export class SVGWriter {
             .attr("y", yPosition(text))
             .attr("font-family", text.style.font.family)
             .attr("font-size", text.style.font.size)
+            .attr("font-style", text.style.font.style)
             .attr("font-weight", text.style.font.weight)
             .attr("text-anchor", text.style.font.textAnchor)
             .attr("dominant-baseline", text.style.font.dominantBaseline)

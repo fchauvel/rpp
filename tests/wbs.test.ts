@@ -8,7 +8,25 @@
  * See the LICENSE file for details.
  */
 
-import { Deliverable, Package, Project, Task, Visitor } from "../src/wbs";
+import { Deliverable, Package, Project, Task, Visitor, Milestone, Path } from "../src/wbs";
+
+
+
+describe("The root path should", () => {
+
+    const path = new Path();
+
+    test("reject access to its parent", () => {
+        expect(() => { path.parent }).toThrow();
+    });
+
+
+    test("reject exit", () => {
+        expect(() => { path.exit() }).toThrow();
+    });
+
+});
+
 
 describe("A task should", () => {
 
@@ -43,26 +61,9 @@ describe("A task should", () => {
         expect(task.deliverables).toHaveLength(deliverables.length);
     });
 
-    test("ensure visitors access its deliverables", () => {
-        const visitor = new class extends Visitor {
-            public counter: number;
-
-            constructor() {
-                super();
-                this.counter = 0;
-            }
-
-            public onDeliverable(deliberable: Deliverable): void {
-                this.counter += 1;
-            }
-        }();
-
-        task.accept(visitor);
-
-        expect(visitor.counter).toBe(1);
-    });
-
 });
+
+
 
 describe("A package should", () => {
 
@@ -92,13 +93,16 @@ describe("A package should", () => {
 
 });
 
+
+
 describe("A project should", () => {
 
     const name = "Dummy project";
     const origin = new Date("2020-07-01");
     const task = new Task("T1", 0);
     const activities = [ task ];
-    const project = new Project(name, activities, origin);
+    const milestone = new Milestone("MS1", 12);
+    const project = new Project(name, activities, origin, [milestone]);
 
     test("expose its name", () => {
          expect(project.name).toBe(name);
@@ -115,7 +119,56 @@ describe("A project should", () => {
         expect(project.breakdown.length).toBe(1);
     });
 
+    test("expose its milestones", () => {
+        expect(project.milestones).toHaveLength(1);
+        expect(project.milestones[0]).toBe(milestone);
+    });
+
+
+    test("ensure visitors access its structure", () => {
+        const visitor = new class extends Visitor {
+            public deliverableCount: number;
+            public packageCount: number;
+            public taskCount: number;
+            public milestoneCount: number;
+
+            constructor() {
+                super();
+                this.deliverableCount = 0;
+                this.packageCount = 0;
+                this.taskCount = 0;
+                this.milestoneCount = 0;
+            }
+
+            public onDeliverable(deliberable: Deliverable): void {
+                this.deliverableCount += 1;
+            }
+
+            public onPackage(workPackage: Package): void {
+                this.packageCount += 1;
+            }
+
+            public onTask(task: Task): void {
+                this.taskCount += 1;
+            }
+
+            public onMilestone(milestone: Milestone): void {
+                this.milestoneCount += 1;
+            }
+
+        }();
+
+        project.accept(visitor);
+
+        expect(visitor.deliverableCount).toBe(0);
+        expect(visitor.milestoneCount).toBe(1);
+        expect(visitor.taskCount).toBe(1);
+        expect(visitor.packageCount).toBe(0);
+    });
+
 });
+
+
 
 describe("A deliverable should", () => {
 
@@ -135,5 +188,25 @@ describe("A deliverable should", () => {
     test("expose its kind", () => {
         expect(deliverable.kind).toBe(kind);
     });
+
+});
+
+
+describe("A milestone should", () => {
+
+    const name = "My Milestone";
+    const date = 12;
+    const milestone = new Milestone(name, date);
+
+
+    test("expose its name", () => {
+        expect(milestone.name).toBe(name);
+    });
+
+
+    test("expose its date", () => {
+        expect(milestone.date).toBe(date);
+    });
+
 
 });

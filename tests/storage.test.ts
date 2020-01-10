@@ -56,6 +56,9 @@ class FakeSource extends DataSource {
     private readonly yaml: string =
         "project: \n" +
         "  name: Dummy\n" +
+        "  milestones: \n" +
+        "    - name: MS1\n" +
+        "      date: 16\n" +
         "  breakdown:\n" +
         "    - name: Task 1\n" +
         "      start: 1\n" +
@@ -119,6 +122,7 @@ describe("The storage should", () => {
         expect(project.name).toBe("Dummy");
         expect(project.breakdown.length).toBe(2);
         expect(project.breakdown[1].name).toBe("Task 2");
+        expect(project.milestones).toHaveLength(0);
     });
 
     test("Read project from YAML file", () => {
@@ -128,6 +132,7 @@ describe("The storage should", () => {
         expect(project.breakdown.length).toBe(2);
         expect(project.breakdown[1].name).toBe("Task 2");
         expect(project.deliverables).toHaveLength(1);
+        expect(project.milestones).toHaveLength(1);
     });
 
 });

@@ -63,6 +63,7 @@ describe("SVG converter should", () => {
                 "<text x=\"25\" y=\"12.5\" " +
                 "font-family=\"sans-serif\" " +
                 "font-size=\"12pt\" " +
+                "font-style=\"normal\" " +
                 "font-weight=\"normal\" " +
                 "text-anchor=\"middle\" " +
                 "dominant-baseline=\"middle\" " +

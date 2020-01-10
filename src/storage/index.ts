@@ -59,7 +59,7 @@ export class Storage {
         return reader.parseProject(content);
     }
 
-    public storeGanttChart(project: Project, location: string) {
+    public storeGanttChart(project: Project, location: string): void {
         const format = this.selectReader(location);
         const content = format.writeGantt(project);
         this._sources[0].store(location, content);

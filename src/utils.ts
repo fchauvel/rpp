@@ -10,9 +10,9 @@
 
 export function format(template: string, ...args: any[]): string {
     let result = template;
-    for (const index in args) {
+    for (const [index, value] of args.entries()) {
         const pattern = new RegExp("\\{" + index + "\\}", "g");
-        result = result.replace(pattern, args[index]);
+        result = result.replace(pattern, value);
     }
     const remainingSlots = result.match(/\{(\d+)\}/g);
     if (remainingSlots) {

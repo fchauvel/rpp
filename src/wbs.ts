@@ -10,7 +10,14 @@
 
 import { Durations, Period } from "./time";
 
-export abstract class Activity {
+interface Element {
+
+    accept(visitor: Visitor): void;
+
+}
+
+
+export abstract class Activity implements Element {
 
     private _name: string;
 
@@ -32,9 +39,18 @@ export abstract class Activity {
 
     public abstract accept(visitor: Visitor): void;
 
+    protected iterateOver(visitor: Visitor, array: Element[]): void {
+        for (const [index, entry] of array.entries()) {
+            visitor.path.enter(index + 1);
+            entry.accept(visitor);
+            visitor.path.exit();
+        }
+    }
+
+
 }
 
-export class Deliverable {
+export class Deliverable implements Element {
 
     private _name: string;
     private _kind: string;
@@ -98,11 +114,7 @@ export class Task extends Activity {
 
     public accept(visitor: Visitor): void {
         visitor.onTask(this);
-        for (const [index, deliverable] of this._deliverables.entries()) {
-            visitor.path.enter(index + 1);
-            deliverable.accept(visitor);
-            visitor.path.exit();
-        }
+        this.iterateOver(visitor, this.deliverables);
     }
 
 }
@@ -118,11 +130,7 @@ export class Package extends Activity {
 
     public get start(): number {
         return this.breakdown.reduce(
-            (earliest, activity) => {
-                return earliest < activity.start ?
-                    earliest :
-                    activity.start;
-            },
+            (earliest, activity) => Math.min(earliest, activity.start),
             Number.MAX_VALUE);
     }
 
@@ -149,26 +157,24 @@ export class Package extends Activity {
 
     public accept(visitor: Visitor): void {
         visitor.onPackage(this);
-        this.iterateOverBreakdown(visitor);
+        this.iterateOver(visitor, this.breakdown);
     }
 
-    protected iterateOverBreakdown(visitor: Visitor): void {
-        for (const [index, activity] of this.breakdown.entries()) {
-            visitor.path.enter(index + 1);
-            activity.accept(visitor);
-            visitor.path.exit();
-        }
-    }
 
 }
 
 export class Project extends Package {
 
     private _origin: Date;
+    private _milestones: Milestone[];
 
-    constructor(name: string, breakdown: Activity[], origin: Date= null) {
+    constructor(name: string,
+                breakdown: Activity[],
+                origin: Date= null,
+                milestones: Milestone[]= []) {
         super(name, breakdown);
         this._origin = origin || new Date();
+        this._milestones = milestones;
     }
 
     public get origin(): Date {
@@ -183,9 +189,14 @@ export class Project extends Package {
         );
     }
 
+    public get milestones(): Milestone[] {
+        return this._milestones;
+    }
+
     public accept(visitor: Visitor): void {
         visitor.onProject(this);
-        this.iterateOverBreakdown(visitor);
+        this.iterateOver(visitor, this.breakdown);
+        this.iterateOver(visitor, this.milestones);
     }
 
 }
@@ -214,16 +225,12 @@ export class Path {
         return prefix + " " + this._indexes.map(String).join(separator);
     }
 
-    public append(index: number): Path {
-        return new Path(this._indexes.concat([index]));
-    }
-
     public enter(index: number): void {
         this._indexes.push(index);
     }
 
     public exit(): void {
-        if (this._indexes.length == 0) {
+        if (this._indexes.length === 0) {
             throw new Error("Cannot exit root!");
         }
         this._indexes.pop();
@@ -243,12 +250,51 @@ export abstract class Visitor {
         return this._path;
     }
 
-    public onTask(task: Task): void {}
+    public onTask(task: Task): void {
+        // Do nothing by default
+    }
 
-    public onPackage(workPackage: Package): void {}
+    public onPackage(workPackage: Package): void {
+        // Do nothing by default
+    }
 
-    public onProject(project: Project): void {}
+    public onProject(project: Project): void {
+        // Do nothing by default
+    }
 
-    public onDeliverable(deliverable: Deliverable): void {}
+    public onDeliverable(deliverable: Deliverable): void {
+        // Do nothing by default
+    }
+
+    public onMilestone(milestone: Milestone): void {
+        // Do nothing by default
+    }
+
+}
+
+
+
+export class Milestone implements Element {
+
+    private _name: string;
+    private _date: number;
+
+    constructor(name: string, date: number) {
+        this._name = name;
+        this._date = date;
+    }
+
+    get name(): string {
+        return this._name;
+    }
+
+    get date(): number {
+        return this._date;
+    }
+
+
+    public accept(visitor: Visitor): void {
+        visitor.onMilestone(this);
+    }
 
 }

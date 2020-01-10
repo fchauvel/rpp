@@ -10,7 +10,7 @@
 
 import { GanttPainter, Layout, Tags } from "../../../../src/storage/adapters/svg/painter";
 import { Figure, Shape } from "../../../../src/storage/adapters/svg/shape";
-import { Activity, Deliverable, Package, Project, Task, Visitor } from "../../../../src/wbs";
+import { Activity, Deliverable, Package, Project, Task, Milestone, Visitor } from "../../../../src/wbs";
 
 class Reader {
 
@@ -39,6 +39,16 @@ class Reader {
         const width = timeAxis.boundingBox.right - timeAxis.boundingBox.left;
         return (deliverable.boundingBox.center.x - timeAxis.boundingBox.left) / width;
     }
+
+
+    public readMilestoneDate(identifier: string): number {
+        const timeAxis = this._chart.findShapesWithTags([Tags.TIME_AXIS])[0];
+        const milestone = this._chart.findShapesWithTags([identifier,
+                                                          Tags.MILESTONE])[0];
+        const width = timeAxis.boundingBox.right - timeAxis.boundingBox.left;
+        return (milestone.boundingBox.center.x - timeAxis.boundingBox.left) / width;
+    }
+
 
     public findDeliverable(identifier: string): Shape {
         return this._chart.findShapesWithTags([identifier,
@@ -94,7 +104,10 @@ describe("A Gantt chart should", () => {
                 new Task("Fairly hard", 5, 5),
                 new Task("Really hard", 7, 7),
             ]),
-        ]);
+        ],
+        undefined,
+        [ new Milestone("MS1 key milestone", 6) ]
+    );
 
     const gantt = new GanttPainter(new Layout());
     const chart = new Reader(gantt.draw(project));
@@ -185,6 +198,16 @@ describe("A Gantt chart should", () => {
         }();
 
         project.accept(tester);
+    });
+
+
+    test("have milestones aligned with their due date", () => {
+        for (const [index, milestone] of project.milestones.entries()) {
+            const identifier = "M" +  index;;
+            const actualDate = chart.readMilestoneDate(identifier);
+
+            expect(actualDate).toBeCloseTo(normalize(milestone.date-1));
+        }
     });
 
 });

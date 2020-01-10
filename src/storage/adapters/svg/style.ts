@@ -10,6 +10,7 @@
 
 class Font {
     public family: string;
+    public style: string;
     public size: string;
     public weight: string;
     public textAnchor: string;
@@ -25,6 +26,7 @@ class Font {
         this.weight = weight;
         this.textAnchor = textAnchor;
         this.dominantBaseline = dominantBaseline;
+        this.style = "normal";
     }
 
 }
@@ -108,6 +110,8 @@ export class StyleSheet {
     public timeAxis: Style;
     public timeLabels: Hierarchy<Style>;
 
+    public milestone: Style;
+
     public grids: Hierarchy<Style>;
 
     public deliverable: Style;
@@ -126,13 +130,20 @@ export class StyleSheet {
         this.timeLabels.level(2).font.size = "10pt";
         this.timeLabels.level(3).font.size = "9pt";
 
+        this.milestone = new Style();
+        this.milestone.stroke.color = "green";
+        this.milestone.stroke.width = 4;
+        this.milestone.fill.color = "green";
+        this.milestone.font.style = "oblique";
+        this.milestone.font.textAnchor = "end";
+
         this.grids = new Hierarchy<Style>(3, () => new Style());
         this.grids.level(1).stroke.width = 1;
         this.grids.level(2).stroke.dashArray = "4";
 
     }
 
-    public activity(depth: number, isPackage = false) {
+    public activity(depth: number, isPackage = false): Activity {
         if (isPackage) {
             return this._tasks.level(depth);
         }
