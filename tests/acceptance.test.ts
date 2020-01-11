@@ -12,16 +12,49 @@ import * as fs from "fs";
 
 import { Controller } from "../src/controller";
 import { RPP } from "../src/rpp";
-import { Terminal } from "../src/terminal";
+import { Output, Terminal } from "../src/terminal";
+
+
+class CaptureOutput implements Output {
+    public output: string;
+
+    constructor() {
+        this.output = "";
+    }
+
+    public log(text: string): void {
+        this.output += text;
+    }
+
+    public reset(): void {
+        this.output = "";
+    }
+
+}
+
 
 class Acceptance {
 
     private static readonly PREFIX: string = "test_";
 
+    private _output: CaptureOutput;
+
+    constructor() {
+        this._output = new CaptureOutput();
+    }
+
+    get output(): string {
+        return this._output.output;
+    }
+
+    public clearOutput(): void {
+        this._output.reset();
+    }
+
     public invoke(commandLine: string[]): void {
         new Controller(
             new RPP(),
-            new Terminal(console)).execute(commandLine.slice(1));
+            new Terminal(this._output)).execute(commandLine.slice(1));
     }
 
     public removeTemporaryFiles(): void {
@@ -80,6 +113,38 @@ describe("Given the EPIC project", () => {
 
             expect(fs.existsSync(outputFile)).toBe(true);
             expect(fs.statSync(outputFile).size).toBeGreaterThan(20000);
+        });
+
+    });
+
+
+    describe("RPP verify should", () => {
+
+
+        function verifyOutput(warningCount: number, errorCount: number) {
+            const pattern = `${warningCount} warning(s), ${errorCount} error(s)`;
+            expect(tester.output).toMatch(pattern);
+        }
+
+        beforeEach(() => tester.clearOutput());
+
+        test("find no issues in samples.epic.yaml", () => {
+            tester.invoke(["rpp",
+                           "verify",
+                           "-p",
+                           "samples/epic.yaml"]);
+
+            verifyOutput(0, 0);
+        });
+
+
+        test("find issues in samples/erroneous.yaml", () => {
+            tester.invoke(["rpp",
+                           "verify",
+                           "-p",
+                           "samples/erroneous.yaml"]);
+
+            verifyOutput(2, 1);
         });
 
     });

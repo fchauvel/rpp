@@ -8,10 +8,25 @@
  * See the LICENSE file for details.
  */
 
+
+
+import { Project } from "../wbs";
+import { Guard } from "./verify/guard";
+import { Report } from "./verify/report";
+
+
+
 export class RPP {
 
     public version(): [string, string] {
         return ["0.0.0", "" ];
+    }
+
+
+    public verify(project: Project): Report {
+        const guard = new Guard();
+        const report = guard.scrutinize(project);
+        return report;
     }
 
 }

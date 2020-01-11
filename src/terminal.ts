@@ -8,7 +8,9 @@
  * See the LICENSE file for details.
  */
 
+import { Report } from "./rpp/verify/report";
 import { format } from "./utils";
+
 
 export interface Output {
 
@@ -40,6 +42,17 @@ export class Terminal {
 
     public showHelp(help: string): void {
         this.write(help);
+    }
+
+    public showVerificationReport(report: Report): void {
+        for (const [index, issue] of report.issues.entries()) {
+            this.write(` ${index + 1}. ${issue.level}: ${issue.description}`);
+            this.write(`   -> ${issue.advice}\n`);
+        }
+        const summary =
+            report.warnings.length + " warning(s), "
+            + report.errors.length + " error(s).";
+        this.write(summary);
     }
 
     public invalidArguments(message: string, error: Error): void {

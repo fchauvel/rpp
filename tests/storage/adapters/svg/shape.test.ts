@@ -10,7 +10,7 @@
 
 import { GanttPainter, Layout, Tags } from "../../../../src/storage/adapters/svg/painter";
 import { Figure, Shape } from "../../../../src/storage/adapters/svg/shape";
-import { Activity, Deliverable, Package, Project, Task, Milestone, Visitor } from "../../../../src/wbs";
+import { Activity, Deliverable, Milestone, Package, Project, Task, Visitor } from "../../../../src/wbs";
 
 class Reader {
 
@@ -106,7 +106,7 @@ describe("A Gantt chart should", () => {
             ]),
         ],
         undefined,
-        [ new Milestone("MS1 key milestone", 6) ]
+        [ new Milestone("MS1 key milestone", 6) ],
     );
 
     const gantt = new GanttPainter(new Layout());
@@ -203,10 +203,10 @@ describe("A Gantt chart should", () => {
 
     test("have milestones aligned with their due date", () => {
         for (const [index, milestone] of project.milestones.entries()) {
-            const identifier = "M" +  index;;
+            const identifier = "M" +  index;
             const actualDate = chart.readMilestoneDate(identifier);
 
-            expect(actualDate).toBeCloseTo(normalize(milestone.date-1));
+            expect(actualDate).toBeCloseTo(normalize(milestone.date - 1));
         }
     });
 

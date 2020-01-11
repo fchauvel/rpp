@@ -8,7 +8,7 @@
  * See the LICENSE file for details.
  */
 
-import { Deliverable, Package, Project, Task, Visitor, Milestone, Path } from "../src/wbs";
+import { Deliverable, Milestone, Package, Path, Project, Task, Visitor } from "../src/wbs";
 
 
 
@@ -17,12 +17,12 @@ describe("The root path should", () => {
     const path = new Path();
 
     test("reject access to its parent", () => {
-        expect(() => { path.parent }).toThrow();
+        expect(() => path.parent ).toThrow();
     });
 
 
     test("reject exit", () => {
-        expect(() => { path.exit() }).toThrow();
+        expect(() => { path.exit(); }).toThrow();
     });
 
 });
@@ -59,6 +59,31 @@ describe("A task should", () => {
 
     test("expose its deliverables", () => {
         expect(task.deliverables).toHaveLength(deliverables.length);
+    });
+
+    test("detect following contiguous tasks", () => {
+        const nextTask = new Task("Next", 11, 5);
+        expect(task.isContiguousWith(nextTask)).toBe(true);
+    });
+
+    test("detect previous contiguous tasks", () => {
+        const nextTask = new Task("Next", 11, 5);
+        expect(nextTask.isContiguousWith(task)).toBe(true);
+    });
+
+    test("detect tasks that are not contiguous", () => {
+        const disconnectedTask = new Task("Next", 18, 5);
+        expect(task.isContiguousWith(disconnectedTask)).toBe(false);
+    });
+
+    test("detect later tasks that overlaps", () => {
+        const overlapping = new Task("Step 2", 8, 10);
+        expect(task.overlapWith(overlapping)).toBe(true);
+    });
+
+    test("detect tasks that do not overlap", () => {
+        const overlapping = new Task("Step 2", 15, 10);
+        expect(task.overlapWith(overlapping)).toBe(false);
     });
 
 });
@@ -148,11 +173,11 @@ describe("A project should", () => {
                 this.packageCount += 1;
             }
 
-            public onTask(task: Task): void {
+            public onTask(task2: Task): void {
                 this.taskCount += 1;
             }
 
-            public onMilestone(milestone: Milestone): void {
+            public onMilestone(milestone2: Milestone): void {
                 this.milestoneCount += 1;
             }
 
