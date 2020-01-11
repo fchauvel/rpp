@@ -10,13 +10,17 @@
 
 import { Controller } from "../src/controller";
 import { RPP } from "../src/rpp";
-import { Output, Terminal } from "../src/terminal";
+import { Storage } from "../src/storage";
+import { Terminal } from "../src/terminal";
 
 jest.mock("../src/terminal");
 jest.mock("../src/rpp");
 
+
+const MockedStorage = Storage as jest.Mock<Storage>;
 const MockedTerminal = Terminal as jest.Mock<Terminal>;
 const MockedRPP = RPP as jest.Mock<RPP>;
+
 
 describe("The controller should", () => {
 
@@ -24,8 +28,17 @@ describe("The controller should", () => {
     rpp.version = jest.fn()
         .mockImplementation(() => ["0.0.0", "abcdef"]);
 
+    const storage = new MockedStorage();
+    storage.loadProject = jest.fn()
+        .mockImplementation(() => "");
+
     const terminal = new MockedTerminal();
-    const controller = new Controller(rpp, terminal);
+    const controller = new Controller(rpp, terminal, storage);
+
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
 
     test("accept a 'version' command", async () => {
         await new Promise((resolve) => {
@@ -36,6 +49,19 @@ describe("The controller should", () => {
         expect(rpp.version).toHaveBeenCalledTimes(1);
         expect(terminal.showVersion).toHaveBeenCalledTimes(1);
     });
+
+
+    test("accept a 'verify' command", async () => {
+
+        await new Promise((resolve) => {
+            controller.execute(["verify", "-p", "dummy.yaml"]);
+            resolve();
+        });
+
+        expect(rpp.verify).toHaveBeenCalledTimes(1);
+        expect(terminal.showVerificationReport).toHaveBeenCalledTimes(1);
+    });
+
 
     test("accept a 'help' command", async () => {
         await new Promise((resolve) => {

@@ -1,51 +1,55 @@
 {
-   "name": "@fchauvel/rpp",
-   "version": "0.5.0",
-   "commit": null,
-   "description": "Rapid Project Planning",
-   "author": "Franck Chauvel",
-   "license": "MIT",
-   "bugs": {
-      "url": "https://github.com/fchauvel/rpp/issues"
-   },
-   "main": "./build/src/index.js",
-   "bin": {
-      "rpp": "./build/src/index.js"
-   },
-   "scripts": {
-      "test": "jest"
-   },
-   "devDependencies": {
-      "@types/jest": "^24.0.23",
-      "@types/yargs": "^13.0.3",
-      "@typescript-eslint/eslint-plugin": "^2.15.0",
-      "@typescript-eslint/parser": "^2.15.0",
-      "eslint": "^6.8.0",
-      "jest": "^24.9.0",
-      "ts-jest": "^24.2.0"
-   },
-   "dependencies": {
-      "@babel/core": "^7.7.5",
-      "@babel/preset-env": "^7.7.6",
-      "@types/node": "^12.12.18",
-      "babel-jest": "^24.9.0",
-      "d3": "^5.14.2",
-      "js-yaml": "^3.13.1",
-      "jsdom": "^15.2.1",
-      "tslint": "^5.20.1",
-      "typescript": "^3.7.3"
-   },
-   "jest": {
-      "preset": "ts-jest",
-      "roots": [
-         "<rootDir>/src",
-         "<rootDir>/tests"
-      ],
-      "modulePaths": [
-         "."
-      ],
-      "collectCoverageFrom": [
-         "src/**/*.ts"
-      ]
-   }
+    "name": "@fchauvel/rpp",
+    "version": "0.5.0",
+    "commit": null,
+    "description": "Rapid Project Planning",
+    "author": "Franck Chauvel",
+    "license": "MIT",
+    "bugs": {
+	"url": "https://github.com/fchauvel/rpp/issues"
+    },
+    "repository": {
+	"type": "git",
+	"url": "https://github.com/fchauvel/rpp.git"
+    },
+    "main": "./build/src/index.js",
+    "bin": {
+	"rpp": "./build/src/index.js"
+    },
+    "scripts": {
+	"test": "jest"
+    },
+    "devDependencies": {
+	"@types/jest": "^24.0.23",
+	"@types/yargs": "^13.0.3",
+	"@typescript-eslint/eslint-plugin": "^2.15.0",
+	"@typescript-eslint/parser": "^2.15.0",
+	"eslint": "^6.8.0",
+	"jest": "^24.9.0",
+	"ts-jest": "^24.2.0",
+	"tslint": "^5.20.1"
+    },
+    "dependencies": {
+	"@babel/core": "^7.7.5",
+	"@babel/preset-env": "^7.7.6",
+	"@types/node": "^12.12.18",
+	"babel-jest": "^24.9.0",
+	"d3": "^5.14.2",
+	"js-yaml": "^3.13.1",
+	"jsdom": "^15.2.1",
+	"typescript": "^3.7.3"
+    },
+    "jest": {
+	"preset": "ts-jest",
+	"roots": [
+            "<rootDir>/src",
+            "<rootDir>/tests"
+	],
+	"modulePaths": [
+            "."
+	],
+	"collectCoverageFrom": [
+            "src/**/*.ts"
+	]
+    }
 }

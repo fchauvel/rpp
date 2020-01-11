@@ -8,9 +8,12 @@
  * See the LICENSE file for details.
  */
 
+import { Report } from "../src/rpp/verify/report";
 import { Terminal } from "../src/terminal";
 import { format } from "../src/utils";
 import { SpyOutput } from "./spies";
+
+
 
 describe("The terminal should", () => {
 
@@ -46,6 +49,16 @@ describe("The terminal should", () => {
         terminal.showHelp(message);
 
         expect(output.text).toMatch(message);
+    });
+
+
+    test("format verification report", () => {
+        const report = new Report();
+        report.warn("Very nice!", "Good job");
+
+        terminal.showVerificationReport(report);
+
+        expect(output.text).toMatch("Very nice!");
     });
 
     test("format invalid arguments", () => {

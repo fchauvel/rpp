@@ -29,21 +29,53 @@ export class Controller {
     private _parser: Argv;
     private _storage: Storage;
 
-    public constructor(rpp: RPP, terminal: Terminal) {
+    public constructor(rpp: RPP,
+                       terminal: Terminal,
+                       storage?: Storage) {
         this._rpp = rpp;
         this._terminal = terminal;
-        this._storage = new Storage([ new FileSystem() ]);
+        this._storage = storage && storage || new Storage([ new FileSystem() ]);
         this._parser = yargs
             .scriptName("rpp")
             .usage("$0 [command] [options...]")
+            .fail((msg: string, err: Error) => {
+                this.invalidArguments(msg, err);
+            })
+            .strict();
+        this.configureHelpCommand();
+        this.configureVersionCommand();
+        this.configureGanttCommand();
+        this.configureVerifyCommand();
+    }
+
+
+    public execute(commandLine: string[]): void {
+        this._parser.parse(commandLine);
+    }
+
+
+    private configureHelpCommand(): void {
+        this._parser = this._parser
+            .help(false)
             .command("help",
                      "generate project visualisations",
                      (yargs2: Argv<Arguments>) => {/**/},
-                     (args: Arguments) => { this.showHelp(args); })
+                     (args: Arguments) => { this.showHelp(args); });
+    }
+
+
+    private configureVersionCommand(): void {
+        this._parser = this._parser
             .command("version",
                      "show RPP's version",
                      (yargs2: Argv<Arguments>) => {/**/},
                      (args: Arguments) => { this.showVersion(args); })
+            .version(false);
+    }
+
+
+    private configureGanttCommand(): void {
+        this._parser = this._parser
             .command("gantt",
                      "Generate Gantt chart",
                      (yargs2: Argv<Arguments>) => {
@@ -60,18 +92,25 @@ export class Controller {
                                  desc: "set the project definition file",
                                  type: "string",
                              }); },
-                     (args: Arguments) => { this.generateGantt(args); })
-            .help(false)
-            .version(false)
-            .fail((msg: string, err: Error) => {
-                this.invalidArguments(msg, err);
-            })
-            .strict();
+                             (args: Arguments) => { this.generateGantt(args); });
     }
 
-    public execute(commandLine: string[]): void {
-        this._parser.parse(commandLine);
+
+    private configureVerifyCommand(): void {
+        this._parser = this._parser
+            .command("verify",
+                     "Check the consistency of the given input file",
+                     (yargs2: Argv<Arguments>) => {
+                         yargs2.option("project", {
+                             alias: "p",
+                             demand: true,
+                             description: "Set the project file to verify",
+                             type: "string",
+                         });
+                     },
+                     (args: Arguments) => { this.verify(args); });
     }
+
 
     private invalidArguments(message: string, error: Error): void {
         this._terminal.invalidArguments(message, error);
@@ -91,6 +130,12 @@ export class Controller {
     private generateGantt(args: Arguments): void {
         const project = this._storage.loadProject(args.project);
         this._storage.storeGanttChart(project, args.output);
+    }
+
+    private verify(args: Arguments): void {
+        const project = this._storage.loadProject(args.project);
+        const report = this._rpp.verify(project);
+        this._terminal.showVerificationReport(report);
     }
 
 }

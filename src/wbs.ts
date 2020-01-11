@@ -19,12 +19,6 @@ interface Element {
 
 export abstract class Activity implements Element {
 
-    private _name: string;
-
-    constructor(name: string) {
-        this._name = name;
-    }
-
     public get name(): string {
         return this._name;
     }
@@ -37,7 +31,24 @@ export abstract class Activity implements Element {
 
     public abstract get deliverables(): Deliverable[];
 
+    private _name: string;
+
+    constructor(name: string) {
+        this._name = name;
+    }
+
     public abstract accept(visitor: Visitor): void;
+
+    public overlapWith(other: Activity): boolean {
+        return this.activeOn(other.start) || this.activeOn(other.end)
+            || other.activeOn(this.start) || other.activeOn(this.end);
+    }
+
+
+    public isContiguousWith(other: Activity): boolean {
+        return this.end + 1 === other.start
+            || other.end + 1 === this.start;
+    }
 
     protected iterateOver(visitor: Visitor, array: Element[]): void {
         for (const [index, entry] of array.entries()) {
@@ -45,6 +56,11 @@ export abstract class Activity implements Element {
             entry.accept(visitor);
             visitor.path.exit();
         }
+    }
+
+
+    private activeOn(date: number): boolean {
+        return date >= this.start && date <= this.end;
     }
 
 
