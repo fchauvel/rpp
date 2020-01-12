@@ -121,8 +121,9 @@ describe("Given the EPIC project", () => {
     describe("RPP verify should", () => {
 
 
-        function verifyOutput(warningCount: number, errorCount: number) {
-            const pattern = `${warningCount} warning(s), ${errorCount} error(s)`;
+        function verifyOutput(warningCount: number, errorCount: number): void {
+            const pattern =
+                `${warningCount} warning(s), ${errorCount} error(s)`;
             expect(tester.output).toMatch(pattern);
         }
 

@@ -80,14 +80,14 @@ $ rpp verify -p samples/erroneous.yaml
 RPP checks for the following:
 
 *   Empty work package, that is, work packages that do not contain any
-	tasks or work packages.
-	
+    tasks or work packages.
+
 *   Single activity work packages, that is, work packages that contain a
     single task or work package.
 
 *   Discontinuity in work packages, that is, tasks in work packages that
-	are neither overlapping nor contiguous in time. In other words, RPP
-	search for work packages, that are idle at some point.
+    are neither overlapping nor contiguous in time. In other words, RPP
+    search for work packages, that are idle at some point.
 
 *   Tasks without any deliberable.
 
