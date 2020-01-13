@@ -12,6 +12,12 @@
 	"type": "git",
 	"url": "https://github.com/fchauvel/rpp.git"
     },
+    "keywords": [
+	"project planning",
+	"gantt chart",
+	"cli",
+	"leightweight"
+    ],
     "main": "./build/src/index.js",
     "bin": {
 	"rpp": "./build/src/index.js"
