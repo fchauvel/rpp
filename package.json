@@ -14,16 +14,19 @@
     },
     "keywords": [
 	"project planning",
-	"gantt chart",
+	"Gantt chart",
 	"cli",
-	"leightweight"
+	"lightweight"
     ],
     "main": "./build/src/index.js",
     "bin": {
 	"rpp": "./build/src/index.js"
     },
     "scripts": {
-	"test": "jest"
+	"test": "jest",
+	"eslint": "eslint ./**/*.{ts,json} --fix",
+	"tslint": "tslint ./**/*.ts --fix",
+	"lint": "npm run eslint && npm run tslint"
     },
     "devDependencies": {
 	"@types/jest": "^24.0.23",
