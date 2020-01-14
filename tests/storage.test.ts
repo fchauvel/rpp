@@ -9,20 +9,10 @@
  */
 
 import { DataSource, Storage } from "../src/storage";
-import { Format } from "../src/storage/adapters";
-import { Project } from "../src/wbs";
+import { Path } from "../src/wbs";
+import { FakeFormat, FakeSource } from "./storage/fakes";
 
-class FakeFormat extends Format {
 
-    constructor() {
-        super("SVG", [".svg"]);
-    }
-
-    public parseProject(content: string): Project {
-        return null;
-    }
-
-}
 
 describe("A format should", () => {
 
@@ -38,58 +28,6 @@ describe("A format should", () => {
 
 });
 
-class FakeSource extends DataSource {
-
-    private readonly json: string =
-        "{ \"project\": {"
-        + "      \"name\": \"Dummy\", "
-        + "      \"breakdown\": ["
-        + "         { \"name\": \"Task 1\","
-        + "           \"start\": 1,"
-        + "           \"duration\": 10 }, "
-        + "         { \"name\": \"Task 2\", "
-        + "           \"start\":  5, "
-        + "           \"duration\": 7 }"
-        + "       ]"
-        + "}}";
-
-    private readonly yaml: string =
-        "project: \n" +
-        "  name: Dummy\n" +
-        "  milestones: \n" +
-        "    - name: MS1\n" +
-        "      date: 16\n" +
-        "  breakdown:\n" +
-        "    - name: Task 1\n" +
-        "      start: 1\n" +
-        "      duration: 10\n" +
-        "    - name: Task 2\n" +
-        "      start: 5\n" +
-        "      duration: 7\n" +
-        "      deliverables:\n" +
-        "        - name: Dummy Report\n" +
-        "          kind: Report\n" +
-        "          due: 6\n"
-    ;
-
-    private _contents: { [extension: string]: string };
-
-    constructor() {
-        super();
-        this._contents = {};
-        this._contents[".json"] = this.json;
-        this._contents[".yml" ] = this.yaml;
-        this._contents[".yaml" ] = this.yaml;
-    }
-
-    public fetch(resource: string): string {
-        const marker = ".";
-        const lastMarker = resource.lastIndexOf(marker);
-        const extension = resource.substr(lastMarker);
-        return this._contents[extension];
-    }
-
-}
 
 describe("A data source should", () => {
 
@@ -117,7 +55,21 @@ describe("The storage should", () => {
     });
 
     test("Read project from JSON file", () => {
-        const project = storage.loadProject("whatever.json");
+        const file = "project.json";
+        source.contentOf[file] =
+            "{ \"project\": {"
+            + "      \"name\": \"Dummy\", "
+            + "      \"breakdown\": ["
+            + "         { \"name\": \"Task 1\","
+            + "           \"start\": 1,"
+            + "           \"duration\": 10 }, "
+            + "         { \"name\": \"Task 2\", "
+            + "           \"start\":  5, "
+            + "           \"duration\": 7 }"
+            + "       ]"
+            + "}}";
+
+        const project = storage.loadProject(file);
 
         expect(project.name).toBe("Dummy");
         expect(project.breakdown.length).toBe(2);
@@ -126,13 +78,88 @@ describe("The storage should", () => {
     });
 
     test("Read project from YAML file", () => {
-        const project = storage.loadProject("whatever.yaml");
+        const file = "project.yaml";
+        source.contentOf[file] =
+            "project: \n" +
+            "  name: Dummy\n" +
+            "  milestones: \n" +
+            "    - name: MS1\n" +
+            "      date: 16\n" +
+            "  breakdown:\n" +
+            "    - name: Task 1\n" +
+            "      start: 1\n" +
+            "      duration: 10\n" +
+            "    - name: Task 2\n" +
+            "      start: 5\n" +
+            "      duration: 7\n" +
+            "      deliverables:\n" +
+            "        - name: Dummy Report\n" +
+            "          kind: Report\n" +
+            "          due: 6\n"
+        ;
+
+        const project = storage.loadProject(file);
 
         expect(project.name).toBe("Dummy");
         expect(project.breakdown.length).toBe(2);
         expect(project.breakdown[1].name).toBe("Task 2");
         expect(project.deliverables).toHaveLength(1);
         expect(project.milestones).toHaveLength(1);
+    });
+
+
+    test("Read teams from YAML files", () => {
+        const file = "team.yaml";
+        source.contentOf[file] =
+            "team:\n" +
+            "  name: Dummy\n" +
+            "  members: \n" +
+            "   - firstname: Franck \n" +
+            "     lastname: Chauvel \n" +
+            "     leads: [WP1, T1.1, T1.2]\n" +
+            "     contributes: [WP2, WP3] \n" +
+            "   - firstname: Bob\n" +
+            "     lastname: Sponge\n" +
+            "     leads: [WP5] \n"
+        ;
+
+        const team = storage.loadTeam(file);
+
+        expect(team.name).toBe("Dummy");
+        expect(team.members).toHaveLength(2);
+        expect(team.members[0].name).toBe("Franck Chauvel");
+        expect(team.members[0].contributesTo(new Path([1, 1]))).toBe(true);
+        expect(team.members[0].leads(new Path([1, 1]))).toBe(true);
+        expect(team.members[0].leads(new Path([1, 2]))).toBe(true);
+        expect(team.members[1].leads(new Path([5]))).toBe(true);
+    });
+
+
+    test("Read teams from JSON files", () => {
+        const file = "team.json";
+        source.contentOf[file] =
+            "{ \"team\": {"  +
+            "  \"name\": \"Dummy\", " +
+            "  \"members\": [" +
+            "     { \"firstname\": \"Franck\", " +
+            "       \"lastname\": \"Chauvel\", " +
+            "       \"leads\": [\"WP1\", \"T1.1\", \"T1.2\"], " +
+            "       \"contributes\": [\"WP2\", \"WP3\"] }, " +
+            "     { \"firstname\": \"Bob\", " +
+            "       \"lastname\": \"Sponge\", " +
+            "       \"leads\": [\"WP5\"] }" +
+            "  ] } }"
+        ;
+
+        const team = storage.loadTeam(file);
+
+        expect(team.name).toBe("Dummy");
+        expect(team.members).toHaveLength(2);
+        expect(team.members[0].name).toBe("Franck Chauvel");
+        expect(team.members[0].contributesTo(new Path([1, 1]))).toBe(true);
+        expect(team.members[0].leads(new Path([1, 1]))).toBe(true);
+        expect(team.members[0].leads(new Path([1, 2]))).toBe(true);
+        expect(team.members[1].leads(new Path([5]))).toBe(true);
     });
 
 });

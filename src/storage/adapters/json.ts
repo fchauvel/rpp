@@ -8,7 +8,8 @@
  * See the LICENSE file for details.
  */
 
-import { Project  } from "../../wbs";
+import { Team } from "../../rpp/team";
+import { Project } from "../../wbs";
 import { Format } from "../adapters";
 
 export class JSONFormat extends Format {
@@ -19,6 +20,10 @@ export class JSONFormat extends Format {
 
     public parseProject(content: string): Project {
         return this.asProject(JSON.parse(content).project);
+    }
+
+    public parseTeam(content: string): Team {
+        return this.asTeam(JSON.parse(content).team);
     }
 
 }

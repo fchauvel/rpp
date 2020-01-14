@@ -28,6 +28,57 @@ describe("The root path should", () => {
 });
 
 
+
+describe("Paths should", () => {
+
+    test("be build from a text using spaces", () => {
+        const path = Path.fromText("WP 1.3");
+        expect(path.asIdentifier()).toBe(new Path([1, 3]).asIdentifier());
+    });
+
+    test("be build from a text using spaces", () => {
+        const path = Path.fromText("WP1.3.5.6.7");
+        expect(path.asIdentifier()).toBe(new Path([1, 3, 5, 6, 7]).asIdentifier());
+    });
+
+
+    test("be build from a text using alternative separator", () => {
+        const path = Path.fromText("WP1/3/5/6");
+        expect(path.asIdentifier()).toBe(new Path([1, 3, 5, 6]).asIdentifier());
+    });
+
+});
+
+
+describe("A path should", () => {
+    const path = new Path([5, 1]);
+
+    test("knows whether it includes another path", () => {
+        expect(path.includes(new Path([5]))).toBe(false);
+        expect(path.includes(new Path([5, 1]))).toBe(true);
+        expect(path.includes(new Path([5, 1, 2]))).toBe(true);
+        expect(path.includes(new Path([6, 1]))).toBe(false);
+    });
+
+
+    test("equal itself", () => {
+        expect(path.equals(path)).toBe(true);
+    });
+
+
+    test("equal an equivalent path", () => {
+        expect(path.equals(new Path([5, 1]))).toBe(true);
+    });
+
+
+    test("differ from a different path", () => {
+        expect(path.equals(new Path([5]))).toBe(false);
+    });
+
+
+});
+
+
 describe("A task should", () => {
 
     const start = 1;
