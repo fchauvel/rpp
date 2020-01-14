@@ -8,6 +8,7 @@
  * See the LICENSE file for details.
  */
 
+import { Team } from "../rpp/team";
 import { Project  } from "../wbs";
 import { Format } from "./adapters";
 import { JSONFormat } from "./adapters/json";
@@ -15,6 +16,8 @@ import { SVGFormat } from "./adapters/svg";
 import { YAMLFormat } from "./adapters/yaml";
 
 import * as fs from "fs";
+
+
 
 export abstract class DataSource {
 
@@ -58,6 +61,14 @@ export class Storage {
         const reader = this.selectReader(location);
         return reader.parseProject(content);
     }
+
+
+    public loadTeam(location: string): Team {
+        const content = this._sources[0].fetch(location);
+        const reader = this.selectReader(location);
+        return reader.parseTeam(content);
+    }
+
 
     public storeGanttChart(project: Project, location: string): void {
         const format = this.selectReader(location);

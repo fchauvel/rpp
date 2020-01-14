@@ -9,6 +9,7 @@
  */
 
 import * as yaml from "js-yaml";
+import { Team  } from "../../rpp/team";
 import { Project  } from "../../wbs";
 import { Format } from "../adapters";
 
@@ -20,6 +21,11 @@ export class YAMLFormat extends Format {
 
     public parseProject(content: string): Project {
         return this.asProject(yaml.safeLoad(content).project);
+    }
+
+
+    public parseTeam(content: string): Team {
+        return this.asTeam(yaml.safeLoad(content).team);
     }
 
 }

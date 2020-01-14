@@ -219,6 +219,13 @@ export class Project extends Package {
 
 export class Path {
 
+    public static fromText(text: string, separator= "."): Path {
+        const pattern = /(\d+)/g;
+        const path = text.match(pattern);
+        return new Path(path.map((i) => parseInt(i, 10)));
+    }
+
+
     private _indexes: number[];
 
     constructor(indexes: number[]= []) {
@@ -237,7 +244,7 @@ export class Path {
         return this._indexes.length;
     }
 
-    public asIdentifier(prefix: string, separator= "."): string {
+    public asIdentifier(prefix= "", separator= "."): string {
         return prefix + " " + this._indexes.map(String).join(separator);
     }
 
@@ -252,7 +259,15 @@ export class Path {
         this._indexes.pop();
     }
 
+    public includes(other: Path): boolean {
+        return other.asIdentifier().startsWith(this.asIdentifier());
+    }
+
+    public equals(other: Path): boolean {
+        return this.asIdentifier() === other.asIdentifier();
+    }
 }
+
 
 export abstract class Visitor {
 
