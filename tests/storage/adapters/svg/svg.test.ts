@@ -8,7 +8,7 @@
  * See the LICENSE file for details.
  */
 
-import { Figure, Painter } from "../../../../src/storage/adapters/svg/shape";
+import { Painter } from "../../../../src/storage/adapters/svg/shape";
 import { StyleSheet } from "../../../../src/storage/adapters/svg/style";
 import { SVGWriter } from "../../../../src/storage/adapters/svg/svg";
 

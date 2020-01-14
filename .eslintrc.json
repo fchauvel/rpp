@@ -34,5 +34,13 @@
 		"ignoreRestArgs": true
 	    }
 	]
-    }
+    },
+    "overrides": [
+      {
+        "files": ["./**/*.json"], 
+        "rules": {
+	    "semi": ["error", "never" ]
+        }
+      }
+    ]
 }

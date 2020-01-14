@@ -43,7 +43,7 @@ describe("The 'format' function should", () => {
     });
 
     test("detect invalid index", () => {
-        const block = () => { format("{0}, {1}, {2}", "Franck"); };
+        const block = (): void => { format("{0}, {1}, {2}", "Franck"); };
 
         expect(block).toThrow("Invalid indexes: {1},{2}");
     });
