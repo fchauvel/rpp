@@ -11,9 +11,31 @@
 
 
 import { Project } from "../wbs";
+import { Team } from "./team";
 import { Guard } from "./verify/guard";
 import { Report } from "./verify/report";
 
+
+export class Blueprint {
+
+    private _project: Project;
+    private _team: Team;
+
+
+    constructor (project: Project, team?: Team) {
+        this._project = project;
+        this._team = team;
+    }
+
+    public get project(): Project {
+        return this._project;
+    }
+
+    public get team(): Team {
+        return this._team;
+    }
+
+}
 
 
 export class RPP {
@@ -23,9 +45,9 @@ export class RPP {
     }
 
 
-    public verify(project: Project): Report {
+    public verify(blueprint: Blueprint): Report {
         const guard = new Guard();
-        const report = guard.scrutinize(project);
+        const report = guard.scrutinize(blueprint.project);
         return report;
     }
 

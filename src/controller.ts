@@ -11,7 +11,7 @@
 import * as yargs from "yargs";
 import { Argv } from "yargs";
 
-import { RPP } from "./rpp";
+import { RPP, Blueprint } from "./rpp";
 import { FileSystem, Storage } from "./storage";
 import { Terminal } from "./terminal";
 
@@ -141,13 +141,18 @@ export class Controller {
     }
 
     private verify(args: Arguments): void {
+        const blueprint = this.loadBlueprint(args);
+        const report = this._rpp.verify(blueprint);
+        this._terminal.showVerificationReport(report);
+    }
+
+    private loadBlueprint(args: Arguments): Blueprint {
         const project = this._storage.loadProject(args.project);
         var team = undefined;
         if (args.team) {
             team = this._storage.loadTeam(args.team);
         }
-        const report = this._rpp.verify(project);
-        this._terminal.showVerificationReport(report);
+        return new Blueprint(project, team);
     }
 
 }
