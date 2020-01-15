@@ -8,6 +8,8 @@
  * See the LICENSE file for details.
  */
 
+
+
 import { Controller } from "../src/controller";
 import { RPP } from "../src/rpp";
 import { Storage } from "../src/storage";
@@ -30,6 +32,8 @@ describe("The controller should", () => {
 
     const storage = new MockedStorage();
     storage.loadProject = jest.fn()
+        .mockImplementation(() => "");
+    storage.loadTeam = jest.fn()
         .mockImplementation(() => "");
 
     const terminal = new MockedTerminal();
@@ -63,6 +67,20 @@ describe("The controller should", () => {
     });
 
 
+    test("accept a 'verify' command with a team", async () => {
+
+        await new Promise((resolve) => {
+            controller.execute(["verify",
+                                "-p", "dummy.yaml",
+                                "-t", "team.yaml"]);
+            resolve();
+        });
+
+        expect(rpp.verify).toHaveBeenCalledTimes(1);
+        expect(terminal.showVerificationReport).toHaveBeenCalledTimes(1);
+    });
+
+
     test("accept a 'help' command", async () => {
         await new Promise((resolve) => {
             controller.execute(["help"]);
@@ -71,6 +89,7 @@ describe("The controller should", () => {
 
         expect(terminal.showHelp).toHaveBeenCalledTimes(1);
     });
+
 
     test("detect invalid command lines", async () => {
         await new Promise((resolve) => {
