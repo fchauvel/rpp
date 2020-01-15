@@ -18,6 +18,7 @@ import { Terminal } from "./terminal";
 interface Arguments {
 
     project: string;
+    team: string;
     output: string;
 
 }
@@ -58,7 +59,7 @@ export class Controller {
         this._parser = this._parser
             .help(false)
             .command("help",
-                     "generate project visualisations",
+                     "Show this help message",
                      (yargs2: Argv<Arguments>) => {/**/},
                      (args: Arguments) => { this.showHelp(args); });
     }
@@ -101,12 +102,19 @@ export class Controller {
             .command("verify",
                      "Check the consistency of the given input file",
                      (yargs2: Argv<Arguments>) => {
-                         yargs2.option("project", {
-                             alias: "p",
-                             demand: true,
-                             description: "Set the project file to verify",
-                             type: "string",
-                         });
+                         yargs2
+                             .option("project", {
+                                 alias: "p",
+                                 demand: true,
+                                 description: "Set the project file to verify",
+                                 type: "string",
+                             })
+                             .option("team", {
+                                 alias: "t",
+                                 demand: false,
+                                 description: "Set the team to verify (if any)",
+                                 type: "string",
+                             });
                      },
                      (args: Arguments) => { this.verify(args); });
     }
@@ -134,6 +142,10 @@ export class Controller {
 
     private verify(args: Arguments): void {
         const project = this._storage.loadProject(args.project);
+        var team = undefined;
+        if (args.team) {
+            team = this._storage.loadTeam(args.team);
+        }
         const report = this._rpp.verify(project);
         this._terminal.showVerificationReport(report);
     }
