@@ -26,6 +26,27 @@ describe("A format should", () => {
         expect(format.accept("myfile.cannot")).toBe(false);
     });
 
+
+    test("reject parsing project by default", () => {
+        expect(() => {
+            format.parseProject("fake project data")
+        }).toThrow();
+    });
+
+
+    test("reject parsing teams by default", () => {
+        expect(() => {
+            format.parseTeam("fake team data")
+        }).toThrow();
+    });
+
+
+    test("reject writting Gantt by default", () => {
+        expect(() => {
+            format.writeGantt(undefined)
+        }).toThrow();
+    });
+
 });
 
 
@@ -120,13 +141,17 @@ describe("The storage should", () => {
             "     contributes: [WP2, WP3] \n" +
             "   - firstname: Bob\n" +
             "     lastname: Sponge\n" +
-            "     leads: [WP5] \n"
+            "     leads: [WP5] \n" +
+            "   - name: Backup \n" +
+            "     members:\n" +
+            "      - firstname: Harry\n" +
+            "        lastname: Potter\n"
         ;
 
         const team = storage.loadTeam(file);
 
         expect(team.name).toBe("Dummy");
-        expect(team.members).toHaveLength(2);
+        expect(team.members).toHaveLength(3);
         expect(team.members[0].name).toBe("Franck Chauvel");
         expect(team.members[0].contributesTo(new Path([1, 1]))).toBe(true);
         expect(team.members[0].leads(new Path([1, 1]))).toBe(true);

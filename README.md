@@ -20,12 +20,12 @@ $ npm install @fchauvel/rpp
 To export the associated Gantt chart, use:
 
 ```console
-$ rpp gantt -p "samples/epic.yaml" -o epic.gantt.svg
+$ rpp gantt -p samples/epic/workplan.yaml -o samples/epic/gantt.svg
 
 ``` 
 
 RPP consumes a description of the project in a separate YAML file, see
-for instance `samples/epic.yaml`. This file specifies the project
+for instance `samples/epic/workplan.yaml`. This file specifies the project
 structure in term of tasks and work packages. For instance:
 
 ```yaml
@@ -53,10 +53,10 @@ project:
               due: 48
 ``` 
 
-For instance, the 'samples/epic.yaml' yields the following Gantt
+For instance, the 'samples/epic/workplan.yaml' yields the following Gantt
 Chart:
 
-![Sample Gantt Chart](https://raw.github.com/fchauvel/rpp/master/samples/epic.gantt.svg?sanitize=true)
+![Sample Gantt Chart](https://raw.github.com/fchauvel/rpp/master/samples/epic/gantt.svg?sanitize=true)
 
 ## Verification of Project Structure
 

@@ -93,7 +93,7 @@ describe("Given the EPIC project", () => {
             tester.invoke(["rpp",
                            "gantt",
                            "-p",
-                           "samples/epic.json",
+                           "samples/epic/workplan.json",
                            "-o",
                            outputFile]);
 
@@ -107,7 +107,7 @@ describe("Given the EPIC project", () => {
             tester.invoke(["rpp",
                            "gantt",
                            "-p",
-                           "samples/epic.yaml",
+                           "samples/epic/workplan.yaml",
                            "-o",
                            outputFile]);
 
@@ -129,21 +129,21 @@ describe("Given the EPIC project", () => {
 
         beforeEach(() => tester.clearOutput());
 
-        test("find no issues in samples.epic.yaml", () => {
+        test("find no issues in samples/epic", () => {
             tester.invoke(["rpp",
                            "verify",
                            "-p",
-                           "samples/epic.yaml"]);
+                           "samples/epic/workplan.yaml"]);
 
             verifyOutput(0, 0);
         });
 
 
-        test("find issues in samples/erroneous.yaml", () => {
+        test("find issues in samples/erroneous", () => {
             tester.invoke(["rpp",
                            "verify",
                            "-p",
-                           "samples/erroneous.yaml"]);
+                           "samples/erroneous/workplan.yaml"]);
 
             verifyOutput(2, 1);
         });

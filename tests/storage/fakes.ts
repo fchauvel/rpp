@@ -20,10 +20,6 @@ export class FakeFormat extends Format {
         super("SVG", [".svg"]);
     }
 
-    public parseProject(content: string): Project {
-        return null;
-    }
-
 }
 
 
