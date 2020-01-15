@@ -1,0 +1,39 @@
+team:
+  name: EPIC
+  members:
+  - name: SINTEF
+    members:
+      - firstname: Franck
+        lastname: Chauvel
+        leads:
+          - project
+          - WP1
+          - T1.1
+          - T1.2
+          - T1.3
+      - firstname: Brice
+        lastname: Morin
+        leads:
+          - WP3
+          - T3.3
+  - name: UiO
+    members:
+      - firstname: Olaf
+        lastname: Owe
+        leads:
+          - WP5
+        contributes:
+          - WP1
+  - name: OMet
+    members:
+      - firstname: Stephano
+        lastname: Nichele
+        leads:
+          - WP2
+
+    
+        
+      
+              
+              
+              

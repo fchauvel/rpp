@@ -171,7 +171,7 @@ export abstract class Format {
     private parsePartners(jsonPartners: JsonPartner[]): Partner[] {
         const partners: Partner[] = [];
         for (const anyJsonPartner of jsonPartners) {
-            if ("member" in anyJsonPartner) {
+            if ("members" in anyJsonPartner) {
                 partners.push(
                     this.asTeam(anyJsonPartner as JsonTeam),
                 );
