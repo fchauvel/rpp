@@ -10,8 +10,11 @@
 
 
 
+import { Blueprint } from "../../../src/rpp"
+import { Person, Role, Team } from "../../../src/rpp/team";
 import { Guard } from "../../../src/rpp/verify/guard";
-import { Deliverable, Milestone, Package, Project, Task } from "../../../src/wbs";
+import { Report } from "../../../src/rpp/verify/report";
+import { Deliverable, Milestone, Package, Project, Task, Path } from "../../../src/wbs";
 
 describe("The guard should", () => {
 
@@ -21,6 +24,11 @@ describe("The guard should", () => {
 
     const guard = new Guard();
 
+    function verify(project: Project, team?: Team): Report {
+        return guard.scrutinize(
+            new Blueprint(project, team)
+        );
+    }
 
     test("not report issues when there is none", () => {
         const project = new Project(
@@ -35,7 +43,7 @@ describe("The guard should", () => {
                   ]),
             ]);
 
-        const report = guard.scrutinize(project);
+        const report = verify(project);
 
         expect (report.issues).toHaveLength(0);
     });
@@ -44,7 +52,7 @@ describe("The guard should", () => {
     test("report empty project", () => {
         const project = new Project(projectName, []);
 
-        const report = guard.scrutinize(project);
+        const report = verify(project);
 
         expect(report.issues).toHaveLength(1);
     });
@@ -59,7 +67,7 @@ describe("The guard should", () => {
             ],
         );
 
-        const report = guard.scrutinize(project);
+        const report = verify(project);
 
         expect(report.issues).toHaveLength(1);
     });
@@ -81,7 +89,7 @@ describe("The guard should", () => {
             ],
         );
 
-        const report = guard.scrutinize(project);
+        const report = verify(project);
 
         expect(report.issues).toHaveLength(1);
     });
@@ -95,7 +103,7 @@ describe("The guard should", () => {
             [ new Milestone("MS1", 10) ],
         );
 
-        const report = guard.scrutinize(project);
+        const report = verify(project);
 
         expect(report.issues).toHaveLength(1);
     });
@@ -109,7 +117,7 @@ describe("The guard should", () => {
             [ new Milestone("MS1", 1) ],
         );
 
-        const report = guard.scrutinize(project);
+        const report = verify(project);
 
         expect(report.issues).toHaveLength(1);
     });
@@ -122,7 +130,7 @@ describe("The guard should", () => {
             null,
         );
 
-        const report = guard.scrutinize(project);
+        const report = verify(project);
 
         expect(report.issues).toHaveLength(1);
     });
@@ -145,7 +153,7 @@ describe("The guard should", () => {
             ],
         );
 
-        const report = guard.scrutinize(project);
+        const report = verify(project);
 
         expect(report.issues).toHaveLength(1);
 
@@ -169,7 +177,7 @@ describe("The guard should", () => {
             ],
         );
 
-        const report = guard.scrutinize(project);
+        const report = verify(project);
 
         expect(report.issues).toHaveLength(1);
 
@@ -190,7 +198,38 @@ describe("The guard should", () => {
             ],
         );
 
-        const report = guard.scrutinize(project);
+        const report = verify(project);
+
+        expect(report.issues).toHaveLength(1);
+
+    });
+
+
+    test("report tasks without contributors", () => {
+        const project = new Project(
+            projectName,
+            [
+                new Task("First task", 1, 5,
+                         [ new Deliverable("Thing 1", "Report", 3) ]),
+                new Task("Second tasks", 3, 5,
+                         [ new Deliverable("Thing 2", "Report", 5) ]),
+
+            ],
+        );
+
+        const team = new Team(
+            "worker",
+            [
+                new Person(
+                    "John", "Doe",
+                    [
+                        Role.contributeTo(Path.fromText("A1"))
+                    ]
+                )
+            ]
+        );
+
+        const report = verify(project, team);
 
         expect(report.issues).toHaveLength(1);
 

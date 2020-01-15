@@ -52,6 +52,8 @@ export abstract class Partner {
 
     public abstract leads(activity: Path): boolean;
 
+    public abstract contributorsTo(activity: Path): Partner[];
+
 }
 
 
@@ -80,6 +82,14 @@ export class Team extends Partner {
 
     public leads(activity: Path): boolean {
         return this._members.some((member) => member.leads(activity));
+    }
+
+    public contributorsTo(activity: Path): Partner[] {
+        return this._members.reduce(
+            (contributors, member) => {
+                return contributors.concat(member.contributorsTo(activity));
+            },
+            []);
     }
 
 }
@@ -116,6 +126,13 @@ export class Person extends Partner {
 
     public leads(activity: Path): boolean {
         return this.roles.some( (r) => r.activity.equals(activity) && r.isLeader);
+    }
+
+    public contributorsTo(activity: Path): Partner[] {
+        if (this.contributesTo(activity)) {
+            return [ this ]
+        }
+        return [];
     }
 
 }

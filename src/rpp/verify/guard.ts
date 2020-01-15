@@ -9,7 +9,7 @@
  */
 
 
-
+import { Blueprint } from "../../rpp"
 import { Activity, Deliverable, Milestone, Package, Project, Task, Visitor } from "../../wbs";
 import { Report } from "./report";
 
@@ -17,18 +17,22 @@ import { Report } from "./report";
 
 abstract class Rule extends Visitor {
 
+    private _blueprint: Blueprint;
     private _report: Report;
 
-    public applyTo(project: Project, report: Report): void {
+    public applyTo(blueprint: Blueprint, report: Report): void {
+        this._blueprint = blueprint;
         this._report = report;
-        project.accept(this);
+        blueprint.project.accept(this);
     }
 
+    protected get blueprint(): Blueprint {
+        return this._blueprint;
+    }
 
     protected warn(description: string, advice: string): void {
         this._report.warn(description, advice);
     }
-
 
     protected error(description: string, advice: string): void {
         this._report.error(description, advice);
@@ -166,6 +170,24 @@ class DiscontinuousWorkPackage extends Rule {
 
 }
 
+
+class ActivityWithoutContributors extends Rule  {
+
+    public onTask(task: Task): void {
+        if (this.blueprint.team) {
+            const contributors =
+                this.blueprint.team.contributorsTo(this.path);
+            if (contributors.length === 0) {
+                const identifier = this.path.asIdentifier("T");
+                this.error(
+                    `No one contributes to ${identifier}.`,
+                    `Please check the roles set up in the team.`
+                );
+            }
+        }
+    }
+}
+
 export class Guard {
 
     private _rules: Rule[];
@@ -179,13 +201,14 @@ export class Guard {
             new TaskWithoutDeliverable(),
             new DeliverableOutsideTask(),
             new DiscontinuousWorkPackage(),
+            new ActivityWithoutContributors()
         ];
     }
 
-    public scrutinize(project: Project): Report {
+    public scrutinize(blueprint: Blueprint): Report {
         const report = new Report();
         for (const eachRule of this._rules) {
-            eachRule.applyTo(project, report);
+            eachRule.applyTo(blueprint, report);
         }
         return report;
     }
