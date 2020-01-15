@@ -47,7 +47,7 @@ export class RPP {
 
     public verify(blueprint: Blueprint): Report {
         const guard = new Guard();
-        const report = guard.scrutinize(blueprint.project);
+        const report = guard.scrutinize(blueprint);
         return report;
     }
 
