@@ -8,8 +8,8 @@
  * See the LICENSE file for details.
  */
 
-import { Deliverable, Milestone, Package, Path, Project, Task, Visitor } from "../../src/rpp/wbs";
-
+import { Deliverable, Milestone, Package, Path, Project, Task } from "../../src/rpp/wbs";
+import { Visitor } from "../../src/rpp/visitor";
 
 
 describe("The root path should", () => {

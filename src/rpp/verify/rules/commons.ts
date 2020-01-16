@@ -10,7 +10,7 @@
 
 
 import { Blueprint } from "../../../rpp";
-import { Visitor } from "../../../rpp/wbs";
+import { Visitor } from "../../../rpp/visitor";
 import { Report } from "../report";
 
 

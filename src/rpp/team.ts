@@ -12,10 +12,29 @@
 import { Path } from "./wbs";
 
 
-export class Role {
+export interface Visitor {
 
-    public static readonly LEADER = "leader";
+    visitTeam(team: Team): void;
+
+    visitPerson(person: Person): void;
+
+    visitRole(role: Role): void;
+
+}
+
+
+export interface Visitable {
+
+    accept(visitor: Visitor): void;
+
+}
+
+
+export class Role implements Visitable {
+
     public static readonly CONTRIBUTOR = "contributor";
+    public static readonly LEADER = "leader";
+
 
     public static lead(activity: Path): Role {
         return new Role(Role.LEADER, activity);
@@ -41,10 +60,14 @@ export class Role {
         return this._role === Role.LEADER;
     }
 
+    public accept(visitor: Visitor): void {
+        visitor.visitRole(this);
+    }
+
 }
 
 
-export abstract class Partner {
+export abstract class Partner implements Visitable {
 
     public abstract get name(): string;
 
@@ -53,6 +76,8 @@ export abstract class Partner {
     public abstract leads(activity: Path): boolean;
 
     public abstract contributorsTo(activity: Path): Partner[];
+
+    public abstract accept(visitor: Visitor): void;
 
 }
 
@@ -92,6 +117,10 @@ export class Team extends Partner {
             []);
     }
 
+    public accept(visitor: Visitor): void {
+        visitor.visitTeam(this);
+    }
+
 }
 
 
@@ -99,13 +128,13 @@ export class Person extends Partner {
 
     private _firstName: string;
     private _lastName: string;
-    private roles: Role[];
+    private _roles: Role[];
 
     constructor(firstName: string, lastName: string, roles: Role[]= []) {
         super();
         this._firstName = firstName;
         this._lastName = lastName;
-        this.roles = roles;
+        this._roles = roles;
     }
 
     public get firstName(): string {
@@ -121,11 +150,15 @@ export class Person extends Partner {
     }
 
     public contributesTo(activity: Path): boolean {
-        return this.roles.some((r) => activity.includes(r.activity));
+        return this._roles.some(
+            r => activity.includes(r.activity)
+        );
     }
 
     public leads(activity: Path): boolean {
-        return this.roles.some( (r) => r.activity.equals(activity) && r.isLeader);
+        return this._roles.some(
+            r => r.activity.equals(activity) && r.isLeader
+        );
     }
 
     public contributorsTo(activity: Path): Partner[] {
@@ -133,6 +166,14 @@ export class Person extends Partner {
             return [ this ];
         }
         return [];
+    }
+
+    public get roles(): Role[] {
+        return this._roles;
+    }
+
+    public accept(visitor: Visitor): void {
+        visitor.visitPerson(this);
     }
 
 }

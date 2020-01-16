@@ -10,7 +10,8 @@
 
 import { GanttPainter, Layout, Tags } from "../../../../src/storage/adapters/svg/painter";
 import { Figure, Shape } from "../../../../src/storage/adapters/svg/shape";
-import { Activity, Deliverable, Milestone, Package, Project, Task, Visitor } from "../../../../src/rpp/wbs";
+import { Activity, Deliverable, Milestone, Package, Project, Task } from "../../../../src/rpp/wbs";
+import { Visitor } from "../../../../src/rpp/visitor";
 
 class Reader {
 

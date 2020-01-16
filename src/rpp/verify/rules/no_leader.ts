@@ -10,13 +10,21 @@
 
 
 
-import { Task } from "../../../rpp/wbs";
+import { Activity, Package, Task } from "../../../rpp/wbs";
 import { Codes, Rule } from "./commons";
 
 
 export class ActivityWithoutLeader extends Rule  {
 
     public onTask(task: Task): void {
+        this.onActivity(task);
+    }
+
+    public onPackage(workPackage: Package): void {
+        this.onActivity(workPackage);
+    }
+
+    private onActivity(activity: Activity): void {
         if (this.blueprint.team) {
             const missingLeader =
                 !this.blueprint.team.members.some((m) => m.leads(this.path));

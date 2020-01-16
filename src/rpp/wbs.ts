@@ -10,7 +10,7 @@
 
 import { Durations, Period } from "../time";
 
-interface Element {
+export interface Element {
 
     accept(visitor: Visitor): void;
 
@@ -50,15 +50,6 @@ export abstract class Activity implements Element {
             || other.end + 1 === this.start;
     }
 
-    protected iterateOver(visitor: Visitor, array: Element[]): void {
-        for (const [index, entry] of array.entries()) {
-            visitor.path.enter(index + 1);
-            entry.accept(visitor);
-            visitor.path.exit();
-        }
-    }
-
-
     private activeOn(date: number): boolean {
         return date >= this.start && date <= this.end;
     }
@@ -91,7 +82,7 @@ export class Deliverable implements Element {
     }
 
     public accept(visitor: Visitor): void {
-        visitor.onDeliverable(this);
+        visitor.visitDeliverable(this);
     }
 
 }
@@ -129,8 +120,7 @@ export class Task extends Activity {
     }
 
     public accept(visitor: Visitor): void {
-        visitor.onTask(this);
-        this.iterateOver(visitor, this.deliverables);
+        visitor.visitTask(this);
     }
 
 }
@@ -172,8 +162,7 @@ export class Package extends Activity {
     }
 
     public accept(visitor: Visitor): void {
-        visitor.onPackage(this);
-        this.iterateOver(visitor, this.breakdown);
+        visitor.visitPackage(this);
     }
 
 
@@ -210,9 +199,7 @@ export class Project extends Package {
     }
 
     public accept(visitor: Visitor): void {
-        visitor.onProject(this);
-        this.iterateOver(visitor, this.breakdown);
-        this.iterateOver(visitor, this.milestones);
+        visitor.visitProject(this);
     }
 
 }
@@ -269,37 +256,17 @@ export class Path {
 }
 
 
-export abstract class Visitor {
+export interface Visitor {
 
-    private _path: Path;
+    visitProject(project: Project): void;
 
-    constructor() {
-        this._path = new Path();
-    }
+    visitPackage(workPackage: Package): void;
 
-    public get path(): Path {
-        return this._path;
-    }
+    visitTask(task: Task): void;
 
-    public onTask(task: Task): void {
-        // Do nothing by default
-    }
+    visitMilestone(milestone: Milestone): void;
 
-    public onPackage(workPackage: Package): void {
-        // Do nothing by default
-    }
-
-    public onProject(project: Project): void {
-        // Do nothing by default
-    }
-
-    public onDeliverable(deliverable: Deliverable): void {
-        // Do nothing by default
-    }
-
-    public onMilestone(milestone: Milestone): void {
-        // Do nothing by default
-    }
+    visitDeliverable(deliverable: Deliverable): void;
 
 }
 
@@ -325,7 +292,7 @@ export class Milestone implements Element {
 
 
     public accept(visitor: Visitor): void {
-        visitor.onMilestone(this);
+        visitor.visitMilestone(this);
     }
 
 }
