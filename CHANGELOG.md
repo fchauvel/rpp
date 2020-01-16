@@ -1,6 +1,17 @@
 # Version History
 
 ## [Unreleased][unreleased]
+
+*   Add support for projects' team
+
+    *   Add reading team from both YAML and JSON files
+
+    *   Add verification rules, including:
+
+        *   Detect tasks and work packages without contributors
+
+        *   Detect tasks and work packages without leader
+
 ## [RPP 0.6.0 (Jan. 12, 2020)][v0.6.0]
 
 *   Add project verification, including:
@@ -43,7 +54,6 @@
 
     *   Expose project origin in the JSON/YAML files
 
-
 *   Fix start and duration of Task 3.2 in EPIC samples
 
 *   Add example of generated Gantt chart
@@ -74,7 +84,7 @@
 *   Add reading project from JSON file
 *   Add how to generate Gantt chart in the README
 
-[unreleased]: https://github.com/fchauvel/rpp/compare/v0.6.0...HEAD
+[unreleased]: https://github.com/fchauvel/rpp/compare/v0.6.0..dev
 [v0.6.0]: https://github.com/fchauvel/rpp/compare/v0.5.0...v0.6.0
 [v0.5.0]: https://github.com/fchauvel/rpp/compare/v0.4.0...v0.5.0
 [v0.4.0]: https://github.com/fchauvel/rpp/compare/v0.3.0...v0.4.0
