@@ -12,261 +12,310 @@
 
 import { Blueprint } from "../../../src/rpp"
 import { Person, Role, Team } from "../../../src/rpp/team";
-import { Guard } from "../../../src/rpp/verify/guard";
+import { Guard, Codes } from "../../../src/rpp/verify/guard";
 import { Report } from "../../../src/rpp/verify/report";
 import { Deliverable, Milestone, Package, Project, Task, Path } from "../../../src/wbs";
+import { ObjectParser } from "../../../src/storage/adapters/object"
+
+class SampleProject {
+
+
+    private get raw(): any {
+        return {
+            project: {
+                name: "Sample Project",
+                milestones: [
+                    {
+                        name: "First Milestone",
+                        date: 3
+                    },
+                    {
+                        name: "Second Miletsone",
+                        date: 6
+                    }
+                ],
+                breakdown: [
+                    {
+                        name: "Activity 1",
+                        start: 1,
+                        duration: 5,
+                        deliverables: [
+                            {
+                                name: "Report on Activity 1",
+                                kind: "Report",
+                                due: 4
+                            }
+                        ]
+                    },
+                    {
+                        name: "Activity 2",
+                        start: 3,
+                        duration: 5,
+                        deliverables: [
+                            {
+                                name: "Report on Activity 2",
+                                kind: "Report",
+                                due: 5
+                            }
+                        ]
+                    },
+                    {
+                        name: "Activity 3",
+                        breakdown: [
+                            {
+                                name: "Activity 3.1",
+                                start: 3,
+                                duration: 8,
+                                deliverables: [
+                                    {
+                                        name: "Report on Activity 3.1",
+                                        kind: "Report",
+                                        due: 10
+                                    }
+                                ]
+                            },
+                            {
+                                name: "Activity 3.2",
+                                start: 6,
+                                duration: 10,
+                                deliverables: [
+                                    {
+                                        name: "Report on Activity 3.2",
+                                        kind: "Report",
+                                        due: 15
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            team: {
+                name: "Sample Team",
+                members: [
+                    {
+                        firstname: "John",
+                        lastname: "Doe",
+                        leads: [ "A 1",  "A 3.1", "A 3.2" ],
+                        contributes: [ "A 2" ]
+                    },
+                    {
+                        firstname: "Bob",
+                        lastname: "Spong",
+                        leads: [ "A 2", "A 3" ],
+                        contributes: [ "A 1" ]
+                    }
+                ]
+            }
+        }
+    }
+
+
+    public get asIs(): Blueprint {
+        return this.modify();
+    }
+
+    public get withoutAnyActivity(): Blueprint {
+        return this.modify(sample => {
+            sample.project.breakdown.splice(0, 3);
+            sample.project.milestones.splice(0, 2);
+        });
+    }
+
+
+    public get withEmptyWP3(): Blueprint {
+        return this.modify(sample => {
+            sample.project
+                .breakdown[2]
+                .breakdown.splice(0, 2);
+        });
+    }
+
+    public get withoutActivity32(): Blueprint {
+        return this.modify( sample => {
+            sample.project
+                .breakdown[2]
+                .breakdown.splice(1, 1);
+        });
+    }
+
+
+    get withAMilestoneAfterProjectEnd() : Blueprint {
+        return this.modify( sample => {
+            sample.project.milestones[1].date = 56
+        });
+    }
+
+    get withAMilestoneBeforeProjectStart() : Blueprint {
+        return this.modify( sample => {
+            sample.project.milestones[1].date = 0
+        });
+    }
+
+    get withActivity1WithoutDeliverable(): Blueprint {
+        return this.modify( sample => {
+            sample.project.breakdown[0].deliverables.splice(0, 1)
+        });
+    }
+
+    get withD111DueAfterA1(): Blueprint {
+        return this.modify( sample => {
+            sample.project.breakdown[0].deliverables[0].due = 156;
+        });
+    }
+
+    get withD21BeforeA2(): Blueprint {
+        return this.modify( sample => {
+            sample.project.breakdown[1].deliverables[0].due = 1;
+        });
+    }
+
+    get withDiscontinuityInA3(): Blueprint {
+        return this.modify( sample => {
+            sample.project.breakdown[2].breakdown[1].start = 14;
+        });
+    }
+
+    public get withoutContributorToTask1(): Blueprint {
+        return this.modify( sample => {
+            sample.team.members[0].leads.splice(0, 1);
+            sample.team.members[1].contributes.splice(0, 1);
+        });
+    }
+
+    public get withoutLeaderOfTask2(): Blueprint {
+        return this.modify( sample => {
+            sample.team.members[1].leads.splice(0, 1);
+        });
+    }
+
+
+    private modify(change?: (any) => void): Blueprint {
+        const sample = this.raw;
+        if (change) {
+            change(sample);
+        }
+        return SampleProject.asBlueprint(sample);
+    }
+
+    private static asBlueprint(sample: any): Blueprint {
+        const read = new ObjectParser();
+        const project = read.asProject(sample.project);
+        const team = read.asTeam(sample.team);
+        return new Blueprint(project, team);
+    }
+
+
+}
+
 
 describe("The guard should", () => {
 
-    const projectName = "Fake Project";
-    const fakeDeliverable = new Deliverable("Fake demo", "Software", 4);
-    const fakeTask = new Task("Fake task", 3, 5, [ fakeDeliverable ]);
-
+    const sampleProject = new SampleProject();
     const guard = new Guard();
 
-    function verify(project: Project, team?: Team): Report {
-        return guard.scrutinize(
-            new Blueprint(project, team)
-        );
+
+    function check(blueprint: Blueprint, expectedErrors: number[]): void {
+        const report = guard.scrutinize(blueprint);
+        expect(report.issues).toHaveLength(expectedErrors.length);
+        for(const eachCode of expectedErrors) {
+            expect(report.issues.some(i => i.code === eachCode)).toBe(true);
+        }
     }
 
     test("not report issues when there is none", () => {
-        const project = new Project(
-            projectName,
-            [ fakeTask,
-              new Package(
-                  "First",
-                  [ new Task("Step 1", 1, 5,
-                             [ new Deliverable("Product 1", "Report", 4) ]),
-                    new Task("Step 2", 6, 5,
-                             [ new Deliverable("Product 2", "Report", 10) ]),
-                  ]),
-            ]);
-
-        const report = verify(project);
-
-        expect (report.issues).toHaveLength(0);
+        check(
+            sampleProject.asIs,
+            []
+        );
     });
-
 
     test("report empty project", () => {
-        const project = new Project(projectName, []);
-
-        const report = verify(project);
-
-        expect(report.issues).toHaveLength(1);
+        check(
+            sampleProject.withoutAnyActivity,
+            [ Codes.EMPTY_PROJECT ]
+        );
     });
-
 
     test("report empty work packages", () => {
-        const project = new Project(
-            projectName,
-            [
-                fakeTask,
-                new Package("Bonjour", []),
-            ],
+        check(
+            sampleProject.withEmptyWP3,
+            [ Codes.EMPTY_WORK_PACKAGE ]
         );
-
-        const report = verify(project);
-
-        expect(report.issues).toHaveLength(1);
     });
 
-
-    test("warn about single task work packages", () => {
-        const project = new Project(
-            projectName,
-            [
-                fakeTask,
-                new Package(
-                    "Hard work",
-                    [
-                        new Task("Do first",
-                                 2,
-                                 10,
-                                 [ new Deliverable("stuff", "report", 7) ]),
-                    ]),
-            ],
+    test("warn about work packages that have only one activity", () => {
+        check(
+            sampleProject.withoutActivity32,
+            [ Codes.SINGLE_TASK_WORK_PACKAGE ]
         );
-
-        const report = verify(project);
-
-        expect(report.issues).toHaveLength(1);
     });
-
 
     test("report milestones after the project end", () => {
-        const project = new Project(
-            projectName,
-            [ fakeTask ],
-            null,
-            [ new Milestone("MS1", 10) ],
+        check(
+            sampleProject.withAMilestoneAfterProjectEnd,
+            [ Codes.MILESTONE_AFTER_PROJECT_END ]
         );
-
-        const report = verify(project);
-
-        expect(report.issues).toHaveLength(1);
     });
-
 
     test("report milestones before the project end", () => {
-        const project = new Project(
-            projectName,
-            [ fakeTask ],
-            null,
-            [ new Milestone("MS1", 1) ],
+        check(
+            sampleProject.withAMilestoneBeforeProjectStart,
+            [ Codes.MILESTONE_BEFORE_PROJECT_START ]
         );
-
-        const report = verify(project);
-
-        expect(report.issues).toHaveLength(1);
     });
-
 
     test("warn about tasks without deliverables", () => {
-        const project = new Project(
-            "Fake",
-            [ new Task("First task", 1, 5) ],
-            null,
+        check(
+            sampleProject.withActivity1WithoutDeliverable,
+            [ Codes.TASK_WITHOUT_DELIVERABLE ]
         );
-
-        const report = verify(project);
-
-        expect(report.issues).toHaveLength(1);
     });
-
 
     test("report deliverables due after task ends", () => {
-        const project = new Project(
-            projectName,
-            [
-                fakeTask,
-                new Task("Another task",
-                         5,
-                         7,
-                         [
-                             new Deliverable(
-                                 "Second deliverable",
-                                 "Report",
-                                 20),
-                         ]),
-            ],
+        check(
+            sampleProject.withD111DueAfterA1,
+            [ Codes.WRONG_DELIVERABLE_DATE ]
         );
-
-        const report = verify(project);
-
-        expect(report.issues).toHaveLength(1);
 
     });
 
-
     test("report deliverables due before task starts", () => {
-        const project = new Project(
-            projectName,
-            [
-                fakeTask,
-                new Task("Another task",
-                         5,
-                         7,
-                         [
-                             new Deliverable(
-                                 "Second deliverable",
-                                 "Report",
-                                 2),
-                         ]),
-            ],
+        check(
+            sampleProject.withD21BeforeA2,
+            [ Codes.WRONG_DELIVERABLE_DATE ]
         );
-
-        const report = verify(project);
-
-        expect(report.issues).toHaveLength(1);
-
     });
 
 
     test("report discontinuous work packages", () => {
-        const project = new Project(
-            projectName,
-            [
-                fakeTask,
-                new Package("Discontinuous", [
-                    new Task("Another task", 5, 2,
-                             [ new Deliverable("Thing 1", "Report", 6) ]),
-                    new Task("Yet another task", 10, 2,
-                             [ new Deliverable("Thing 2", "Report", 11) ]),
-                ]),
-            ],
+        check(
+            sampleProject.withDiscontinuityInA3,
+            [ Codes.DISCONTINUITY_IN_WORK_PACKAGE ]
         );
-
-        const report = verify(project);
-
-        expect(report.issues).toHaveLength(1);
-
     });
 
 
     test("report tasks without contributors", () => {
-        const project = new Project(
-            projectName,
+        check(
+            sampleProject.withoutContributorToTask1,
             [
-                new Task("First task", 1, 5,
-                         [ new Deliverable("Thing 1", "Report", 3) ]),
-                new Task("Second tasks", 3, 5,
-                         [ new Deliverable("Thing 2", "Report", 5) ]),
-
-            ],
-        );
-
-        const team = new Team(
-            "worker",
-            [
-                new Person(
-                    "John", "Doe",
-                    [
-                        Role.contributeTo(Path.fromText("A1"))
-                    ]
-                )
+                Codes.NO_LEADER,
+                Codes.NO_CONTRIBUTOR
             ]
         );
-
-        const report = verify(project, team);
-
-        expect(report.issues).toHaveLength(1);
-
     });
-
-
 
 
     test("report tasks without leaders", () => {
-        const project = new Project(
-            projectName,
+        check(
+            sampleProject.withoutLeaderOfTask2,
             [
-                new Task("First task", 1, 5,
-                         [ new Deliverable("Thing 1", "Report", 3) ]),
-                new Task("Second tasks", 3, 5,
-                         [ new Deliverable("Thing 2", "Report", 5) ]),
-
-            ],
-        );
-
-        const team = new Team(
-            "worker",
-            [
-                new Person(
-                    "John", "Doe",
-                    [
-                        Role.contributeTo(Path.fromText("T1")),
-                        Role.lead(Path.fromText("T2"))
-                    ]
-                )
+                Codes.NO_LEADER
             ]
         );
-
-        const report = verify(project, team);
-
-        expect(report.issues).toHaveLength(1);
-
     });
+
+
 
 });

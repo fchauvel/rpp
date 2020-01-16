@@ -20,11 +20,13 @@ export class Issue {
     private _level: Level;
     private _description: string;
     private _advice: string;
+    private _code: number;
 
-    constructor(level: Level, description: string, advice: string) {
+    constructor(level: Level, description: string, advice: string, code: number=0) {
         this._level = level;
         this._description = description;
         this._advice = advice;
+        this._code = code;
     }
 
     public get level(): Level {
@@ -39,11 +41,19 @@ export class Issue {
         return this._advice;
     }
 
+    public get code(): number {
+        return this._code;
+    }
 }
 
 
 export class Report {
 
+    private _issues: Issue[];
+
+    constructor() {
+        this._issues = [];
+    }
 
     public get issues(): Issue[] {
         return this._issues;
@@ -57,31 +67,23 @@ export class Report {
         return this.issuesByLevel(Level.ERROR);
     }
 
-    private _issues: Issue[];
-
-
-    constructor() {
-        this._issues = [];
-    }
-
-
-    public warn(description: string, advice: string): void {
-        this.push(Level.WARNING, description, advice);
-    }
-
-
-    public error(description: string, advice: string): void {
-        this.push(Level.ERROR, description, advice);
-    }
-
     private issuesByLevel(level: Level): Issue[] {
         return this._issues.filter(
             (issue) => issue.level as Level === level,
         );
     }
 
-    private push(level: Level, description: string, advice: string): void {
-        this._issues.push(new Issue(level, description, advice));
+    public warn(description: string, advice: string, code: number=0): void {
+        this.push(Level.WARNING, description, advice, code);
     }
+
+    public error(description: string, advice: string, code: number=0): void {
+        this.push(Level.ERROR, description, advice, code);
+    }
+
+    private push(level: Level, description: string, advice: string, code: number): void {
+        this._issues.push(new Issue(level, description, advice, code));
+    }
+
 
 }
