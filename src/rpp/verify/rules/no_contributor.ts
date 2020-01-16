@@ -10,23 +10,35 @@
 
 
 
-import { Task } from "../../../rpp/wbs";
+import { Activity, Package, Task } from "../../../rpp/wbs";
 import { Codes, Rule } from "./commons";
+
 
 
 export class ActivityWithoutContributor extends Rule  {
 
+    public onPackage(workPackage: Package): void {
+        this.onActivity(workPackage);
+    }
+
+
     public onTask(task: Task): void {
+        this.onActivity(task);
+    }
+
+
+    private onActivity(activity: Activity): void {
         if (this.blueprint.team) {
-            const contributors =
-                this.blueprint.team.contributorsTo(this.path);
-            if (contributors.length === 0) {
-                const identifier = this.path.asIdentifier("T");
+            const existContributor =
+                this.blueprint.team.members.some(
+                    m => m.contributesTo(this.path)
+                );
+            if (!existContributor) {
+                const identifier = this.path.asIdentifier("WP");
                 this.error(
                     `No one contributes to ${identifier}.`,
-                    "Please check the roles set up in the team.",
-                    Codes.NO_CONTRIBUTOR,
-                );
+                    "Please check the roles set up in the team",
+                    Codes.NO_CONTRIBUTOR);
             }
         }
     }

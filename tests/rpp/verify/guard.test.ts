@@ -182,9 +182,22 @@ class SampleProject {
         });
     }
 
+    public get withoutContributorToWP3 (): Blueprint {
+        return this.modify( sample => {
+            sample.team.members[0].leads.splice(1, 2);
+            sample.team.members[1].leads.splice(1, 1);
+        });
+    }
+
     public get withoutLeaderOfTask2(): Blueprint {
         return this.modify( sample => {
             sample.team.members[1].leads.splice(0, 1);
+        });
+    }
+
+    public get withoutLeaderOfWP3(): Blueprint {
+        return this.modify( sample => {
+            sample.team.members[1].leads.splice(1, 1);
         });
     }
 
@@ -214,11 +227,19 @@ describe("The guard should", () => {
     const guard = new Guard();
 
 
-    function check(blueprint: Blueprint, expectedErrors: number[]): void {
+    function check(blueprint: Blueprint,
+                   expectedErrors: [number, number][]): void {
         const report = guard.scrutinize(blueprint);
-        expect(report.issues).toHaveLength(expectedErrors.length);
-        for(const eachCode of expectedErrors) {
-            expect(report.issues.some(i => i.code === eachCode)).toBe(true);
+        const expectedTotal = expectedErrors.reduce(
+            (sum, [error, count]) => sum + count,
+            0);
+        expect(report.issues).toHaveLength(expectedTotal);
+        for(const [eachCode, expectedCount] of expectedErrors) {
+            const actualCount =
+                report.issues.filter(
+                    i => i.code === eachCode
+                ).length;
+            expect(actualCount).toBe(expectedCount);
         }
     }
 
@@ -232,49 +253,63 @@ describe("The guard should", () => {
     test("report empty project", () => {
         check(
             sampleProject.withoutAnyActivity,
-            [ Codes.EMPTY_PROJECT ]
+            [
+                [Codes.EMPTY_PROJECT, 1],
+            ]
         );
     });
 
     test("report empty work packages", () => {
         check(
             sampleProject.withEmptyWP3,
-            [ Codes.EMPTY_WORK_PACKAGE ]
+            [
+                [Codes.EMPTY_WORK_PACKAGE, 1],
+            ]
         );
     });
 
     test("warn about work packages that have only one activity", () => {
         check(
             sampleProject.withoutActivity32,
-            [ Codes.SINGLE_TASK_WORK_PACKAGE ]
+            [
+                [ Codes.SINGLE_TASK_WORK_PACKAGE, 1],
+            ]
         );
     });
 
     test("report milestones after the project end", () => {
         check(
             sampleProject.withAMilestoneAfterProjectEnd,
-            [ Codes.MILESTONE_AFTER_PROJECT_END ]
+            [
+                [ Codes.MILESTONE_AFTER_PROJECT_END, 1]
+            ]
         );
     });
 
     test("report milestones before the project end", () => {
         check(
             sampleProject.withAMilestoneBeforeProjectStart,
-            [ Codes.MILESTONE_BEFORE_PROJECT_START ]
+            [
+                [Codes.MILESTONE_BEFORE_PROJECT_START, 1],
+            ]
         );
     });
 
     test("warn about tasks without deliverables", () => {
         check(
             sampleProject.withActivity1WithoutDeliverable,
-            [ Codes.TASK_WITHOUT_DELIVERABLE ]
+            [
+                [ Codes.TASK_WITHOUT_DELIVERABLE, 1 ],
+            ]
         );
     });
 
     test("report deliverables due after task ends", () => {
         check(
             sampleProject.withD111DueAfterA1,
-            [ Codes.WRONG_DELIVERABLE_DATE ]
+            [
+                [ Codes.WRONG_DELIVERABLE_DATE, 1]
+            ]
         );
 
     });
@@ -282,7 +317,9 @@ describe("The guard should", () => {
     test("report deliverables due before task starts", () => {
         check(
             sampleProject.withD21BeforeA2,
-            [ Codes.WRONG_DELIVERABLE_DATE ]
+            [
+                [ Codes.WRONG_DELIVERABLE_DATE, 1]
+            ]
         );
     });
 
@@ -290,7 +327,9 @@ describe("The guard should", () => {
     test("report discontinuous work packages", () => {
         check(
             sampleProject.withDiscontinuityInA3,
-            [ Codes.DISCONTINUITY_IN_WORK_PACKAGE ]
+            [
+                [ Codes.DISCONTINUITY_IN_WORK_PACKAGE, 1 ],
+            ]
         );
     });
 
@@ -299,8 +338,18 @@ describe("The guard should", () => {
         check(
             sampleProject.withoutContributorToTask1,
             [
-                Codes.NO_LEADER,
-                Codes.NO_CONTRIBUTOR
+                [ Codes.NO_LEADER, 1 ],
+                [ Codes.NO_CONTRIBUTOR, 1 ],
+            ]
+        );
+    });
+
+    test("report work packages without contributors", () => {
+        check(
+            sampleProject.withoutContributorToWP3,
+            [
+                [ Codes.NO_LEADER, 3 ],
+                [ Codes.NO_CONTRIBUTOR, 3],
             ]
         );
     });
@@ -310,10 +359,29 @@ describe("The guard should", () => {
         check(
             sampleProject.withoutLeaderOfTask2,
             [
-                Codes.NO_LEADER
+                [ Codes.NO_LEADER, 1 ],
             ]
         );
     });
+
+    test("report work packages without leaders", () => {
+        check(
+            sampleProject.withoutLeaderOfWP3,
+            [
+                [ Codes.NO_LEADER, 1 ],
+            ]
+        );
+    });
+
+    test.todo("report empty teams");
+
+    test.todo("report idle team / person");
+
+    test.todo("report 1-partner teams");
+
+    test.todo("teams that do not lead anything");
+
+    test.todo("duplicated task/work package leaders");
 
 
 
