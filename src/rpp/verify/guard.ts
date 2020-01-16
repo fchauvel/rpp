@@ -15,6 +15,27 @@ import { Report } from "./report";
 
 
 
+export class Codes {
+
+    // Work-breakdown related issues
+    public static readonly EMPTY_PROJECT = 1;
+    public static readonly EMPTY_WORK_PACKAGE = 2;
+    public static readonly SINGLE_TASK_WORK_PACKAGE = 3;
+    public static readonly TASK_WITHOUT_DELIVERABLE = 4;
+    public static readonly WRONG_DELIVERABLE_DATE = 5;
+    public static readonly DISCONTINUITY_IN_WORK_PACKAGE = 6;
+
+    // Milestone related issue
+    public static readonly MILESTONE_AFTER_PROJECT_END = 10;
+    public static readonly MILESTONE_BEFORE_PROJECT_START = 11;
+
+    // Team-related issues
+    public static readonly NO_LEADER = 100;
+    public static readonly NO_CONTRIBUTOR = 101;
+
+}
+
+
 abstract class Rule extends Visitor {
 
     private _blueprint: Blueprint;
@@ -30,12 +51,12 @@ abstract class Rule extends Visitor {
         return this._blueprint;
     }
 
-    protected warn(description: string, advice: string): void {
-        this._report.warn(description, advice);
+    protected warn(description: string, advice: string, code: number=0): void {
+        this._report.warn(description, advice, code);
     }
 
-    protected error(description: string, advice: string): void {
-        this._report.error(description, advice);
+    protected error(description: string, advice: string, code: number=0): void {
+        this._report.error(description, advice, code);
     }
 
 }
@@ -47,7 +68,9 @@ class EmptyProject extends Rule {
         if (project.breakdown.length === 0) {
             this.error(
                 `Project ${project.name} is empty.`,
-                "Have we forgotten some tasks or work packages there?");
+                "Have we forgotten some tasks or work packages there?",
+                Codes.EMPTY_PROJECT
+            );
         }
     }
 
@@ -60,7 +83,8 @@ class EmptyWorkPackage extends Rule {
         if (workPackage.breakdown.length === 0) {
             this.warn(
                 `Work package '${workPackage.name}' is empty.`,
-                "Have we forgotten some tasks or work packages there?");
+                "Have we forgotten some tasks or work packages there?",
+                Codes.EMPTY_WORK_PACKAGE);
         }
     }
 
@@ -74,7 +98,8 @@ class SingleActivityWorkPackage extends Rule {
             const identifier = this.path.asIdentifier("WP");
             this.warn(
                 `${identifier} ($workPackage.name) includes only one activity.`,
-                "Is it really necessary?");
+                "Is it really necessary?",
+                Codes.SINGLE_TASK_WORK_PACKAGE);
         }
     }
 }
@@ -87,7 +112,8 @@ class TaskWithoutDeliverable extends Rule {
             const identifier = this.path.asIdentifier("T");
             this.warn(
                 `${identifier} (${task.name}) has no deliverable`,
-                "Do we miss some?");
+                "Do we miss some?",
+                Codes.TASK_WITHOUT_DELIVERABLE);
         }
     }
 
@@ -107,13 +133,15 @@ class DeliverableOutsideTask extends Rule {
             const identifier = this.path.asIdentifier("D");
             this.error(
                 `${identifier} (${deliverable.name}) is due after the task ends.`,
-                "Please check task start, duration and deliverable date.");
+                "Please check task start, duration and deliverable date.",
+                Codes.WRONG_DELIVERABLE_DATE);
         }
         if (deliverable.dueDate < this._task.start) {
             const identifier = this.path.asIdentifier("D");
             this.error(
                 `${identifier} (${deliverable.name}) is due before the task starts.`,
-                "Please check task start, duration and deliverable date.");
+                "Please check task start, duration and deliverable date.",
+                Codes.WRONG_DELIVERABLE_DATE);
         }
     }
 }
@@ -132,12 +160,14 @@ class MilestoneOutsideProject extends Rule {
         if (milestone.date > this._project.end) {
             this.error(
                 `Milestone '${milestone.name}' comes after project end.`,
-                "Check the milestone date");
+                "Check the milestone date",
+                Codes.MILESTONE_AFTER_PROJECT_END);
         }
         if (milestone.date < this._project.start) {
             this.error(
                 `Milestone '${milestone.name}' comes before the project starts.`,
-                "Please check milestone date and project start.");
+                "Please check milestone date and project start.",
+                Codes.MILESTONE_BEFORE_PROJECT_START);
         }
     }
 
@@ -164,7 +194,8 @@ class DiscontinuousWorkPackage extends Rule {
             const identifier = this.path.asIdentifier("WP");
             this.warn(`${identifier} (${workPackage.name}) is discontinuous. `
                        + `Activity '${disconnected.name}' is disconnected from the others.`,
-                      `Please check start and duration of ${identifier} activities.`);
+                      `Please check start and duration of ${identifier} activities.`,
+                     Codes.DISCONTINUITY_IN_WORK_PACKAGE);
         }
     }
 
@@ -181,7 +212,8 @@ class ActivityWithoutContributors extends Rule  {
                 const identifier = this.path.asIdentifier("T");
                 this.error(
                     `No one contributes to ${identifier}.`,
-                    `Please check the roles set up in the team.`
+                    `Please check the roles set up in the team.`,
+                    Codes.NO_CONTRIBUTOR
                 );
             }
         }
@@ -194,12 +226,13 @@ class ActivityWithoutLeader extends Rule  {
     public onTask(task: Task): void {
         if (this.blueprint.team) {
             const missingLeader =
-                this.blueprint.team.members.some(m => m.leads(this.path));
+                !this.blueprint.team.members.some(m => m.leads(this.path));
             if (missingLeader) {
                 const identifier = this.path.asIdentifier("T");
                 this.error(
                     `No one leads ${identifier}.`,
-                    `Please check the roles set up in the team.`
+                    `Please check the roles set up in the team.`,
+                    Codes.NO_LEADER
                 );
             }
         }
