@@ -269,5 +269,4 @@ describe("The guard should", () => {
 
     });
 
-
 });

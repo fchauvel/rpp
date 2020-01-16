@@ -11,19 +11,24 @@
 import { Team } from "../../rpp/team";
 import { Project } from "../../wbs";
 import { Format } from "../adapters";
+import { ObjectParser } from "./object";
+
 
 export class JSONFormat extends Format {
 
+    private _read: ObjectParser;
+
     constructor() {
         super("JSON", [".json"]);
+        this._read = new ObjectParser();
     }
 
     public parseProject(content: string): Project {
-        return this.asProject(JSON.parse(content).project);
+        return this._read.asProject(JSON.parse(content).project);
     }
 
     public parseTeam(content: string): Team {
-        return this.asTeam(JSON.parse(content).team);
+        return this._read.asTeam(JSON.parse(content).team);
     }
 
 }
