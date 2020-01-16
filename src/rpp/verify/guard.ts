@@ -188,6 +188,26 @@ class ActivityWithoutContributors extends Rule  {
     }
 }
 
+
+class ActivityWithoutLeader extends Rule  {
+
+    public onTask(task: Task): void {
+        if (this.blueprint.team) {
+            const missingLeader =
+                this.blueprint.team.members.some(m => m.leads(this.path));
+            if (missingLeader) {
+                const identifier = this.path.asIdentifier("T");
+                this.error(
+                    `No one leads ${identifier}.`,
+                    `Please check the roles set up in the team.`
+                );
+            }
+        }
+    }
+}
+
+
+
 export class Guard {
 
     private _rules: Rule[];
@@ -201,7 +221,8 @@ export class Guard {
             new TaskWithoutDeliverable(),
             new DeliverableOutsideTask(),
             new DiscontinuousWorkPackage(),
-            new ActivityWithoutContributors()
+            new ActivityWithoutContributors(),
+            new ActivityWithoutLeader()
         ];
     }
 

@@ -236,4 +236,38 @@ describe("The guard should", () => {
     });
 
 
+
+
+    test("report tasks without leaders", () => {
+        const project = new Project(
+            projectName,
+            [
+                new Task("First task", 1, 5,
+                         [ new Deliverable("Thing 1", "Report", 3) ]),
+                new Task("Second tasks", 3, 5,
+                         [ new Deliverable("Thing 2", "Report", 5) ]),
+
+            ],
+        );
+
+        const team = new Team(
+            "worker",
+            [
+                new Person(
+                    "John", "Doe",
+                    [
+                        Role.contributeTo(Path.fromText("T1")),
+                        Role.lead(Path.fromText("T2"))
+                    ]
+                )
+            ]
+        );
+
+        const report = verify(project, team);
+
+        expect(report.issues).toHaveLength(1);
+
+    });
+
+
 });
