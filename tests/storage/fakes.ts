@@ -10,8 +10,6 @@
 
 import { DataSource } from "../../src/storage";
 import { Format } from "../../src/storage/adapters";
-import { Project } from "../../src/wbs";
-
 
 
 export class FakeFormat extends Format {

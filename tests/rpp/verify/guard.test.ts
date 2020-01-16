@@ -10,20 +10,19 @@
 
 
 
-import { Blueprint } from "../../../src/rpp"
-import { Person, Role, Team } from "../../../src/rpp/team";
-import { Guard, Codes } from "../../../src/rpp/verify/guard";
-import { Report } from "../../../src/rpp/verify/report";
-import { Deliverable, Milestone, Package, Project, Task, Path } from "../../../src/wbs";
-import { ObjectParser } from "../../../src/storage/adapters/object"
+import { Blueprint } from "../../../src/rpp";
+import { Guard } from "../../../src/rpp/verify/guard";
+import { Codes } from "../../../src/rpp/verify/rules/commons";
+import { ObjectParser, JsonBlueprint } from "../../../src/storage/adapters/object";
 
 class SampleProject {
 
 
-    private get raw(): any {
+    private get raw(): JsonBlueprint {
         return {
             project: {
                 name: "Sample Project",
+                origin: "2020-01-16",
                 milestones: [
                     {
                         name: "First Milestone",
@@ -107,7 +106,7 @@ class SampleProject {
                     }
                 ]
             }
-        }
+        };
     }
 
 
@@ -140,21 +139,21 @@ class SampleProject {
     }
 
 
-    get withAMilestoneAfterProjectEnd() : Blueprint {
+    get withAMilestoneAfterProjectEnd(): Blueprint {
         return this.modify( sample => {
-            sample.project.milestones[1].date = 56
+            sample.project.milestones[1].date = 56;
         });
     }
 
-    get withAMilestoneBeforeProjectStart() : Blueprint {
+    get withAMilestoneBeforeProjectStart(): Blueprint {
         return this.modify( sample => {
-            sample.project.milestones[1].date = 0
+            sample.project.milestones[1].date = 0;
         });
     }
 
     get withActivity1WithoutDeliverable(): Blueprint {
         return this.modify( sample => {
-            sample.project.breakdown[0].deliverables.splice(0, 1)
+            sample.project.breakdown[0].deliverables.splice(0, 1);
         });
     }
 
@@ -190,7 +189,7 @@ class SampleProject {
     }
 
 
-    private modify(change?: (any) => void): Blueprint {
+    private modify(change?: (JsonBlueprint) => void): Blueprint {
         const sample = this.raw;
         if (change) {
             change(sample);
@@ -198,7 +197,7 @@ class SampleProject {
         return SampleProject.asBlueprint(sample);
     }
 
-    private static asBlueprint(sample: any): Blueprint {
+    private static asBlueprint(sample: JsonBlueprint): Blueprint {
         const read = new ObjectParser();
         const project = read.asProject(sample.project);
         const team = read.asTeam(sample.team);

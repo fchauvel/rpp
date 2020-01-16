@@ -130,7 +130,7 @@ export class Person extends Partner {
 
     public contributorsTo(activity: Path): Partner[] {
         if (this.contributesTo(activity)) {
-            return [ this ]
+            return [ this ];
         }
         return [];
     }

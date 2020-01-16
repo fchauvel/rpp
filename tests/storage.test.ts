@@ -29,21 +29,21 @@ describe("A format should", () => {
 
     test("reject parsing project by default", () => {
         expect(() => {
-            format.parseProject("fake project data")
+            format.parseProject("fake project data");
         }).toThrow();
     });
 
 
     test("reject parsing teams by default", () => {
         expect(() => {
-            format.parseTeam("fake team data")
+            format.parseTeam("fake team data");
         }).toThrow();
     });
 
 
     test("reject writting Gantt by default", () => {
         expect(() => {
-            format.writeGantt(undefined)
+            format.writeGantt(undefined);
         }).toThrow();
     });
 
