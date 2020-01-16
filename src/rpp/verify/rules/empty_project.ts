@@ -10,7 +10,7 @@
 
 
 
-import { Project } from "../../../wbs";
+import { Project } from "../../../rpp/wbs";
 import { Codes, Rule } from "./commons";
 
 

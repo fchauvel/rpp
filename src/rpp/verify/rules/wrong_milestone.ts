@@ -10,7 +10,7 @@
 
 
 
-import { Milestone, Project } from "../../../wbs";
+import { Milestone, Project } from "../../../rpp/wbs";
 import { Codes, Rule } from "./commons";
 
 

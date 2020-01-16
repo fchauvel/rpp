@@ -9,7 +9,7 @@
  */
 
 import { Duration, Durations } from "../../../time";
-import { Activity, Deliverable, Milestone, Package, Path, Project, Task, Visitor } from "../../../wbs";
+import { Activity, Deliverable, Milestone, Package, Path, Project, Task, Visitor } from "../../../rpp/wbs";
 import { Figure, Painter, Point } from "./shape";
 import { Style } from "./style";
 

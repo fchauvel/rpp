@@ -9,7 +9,7 @@
  */
 
 import { Team } from "../../rpp/team";
-import { Project } from "../../wbs";
+import { Project } from "../../rpp/wbs";
 
 
 export abstract class Format {

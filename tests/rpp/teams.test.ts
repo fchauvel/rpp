@@ -11,7 +11,7 @@
 
 
 import { Person, Role, Team } from "../../src/rpp/team";
-import { Path } from "../../src/wbs";
+import { Path } from "../../src/rpp/wbs";
 
 
 

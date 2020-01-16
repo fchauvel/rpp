@@ -8,7 +8,7 @@
  * See the LICENSE file for details.
  */
 
-import { Deliverable, Milestone, Package, Path, Project, Task, Visitor } from "../src/wbs";
+import { Deliverable, Milestone, Package, Path, Project, Task, Visitor } from "../../src/rpp/wbs";
 
 
 

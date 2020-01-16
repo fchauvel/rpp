@@ -9,7 +9,7 @@
  */
 
 import { Team } from "../../rpp/team";
-import { Project } from "../../wbs";
+import { Project } from "../../rpp/wbs";
 import { Format } from "../adapters";
 import { ObjectParser } from "./object";
 

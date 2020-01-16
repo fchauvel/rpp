@@ -10,7 +10,7 @@
 
 
 
-import { Task } from "../../../wbs";
+import { Task } from "../../../rpp/wbs";
 import { Codes, Rule } from "./commons";
 
 

@@ -9,7 +9,7 @@
  */
 
 import { Partner, Person, Role,  Team } from "../../rpp/team";
-import { Activity, Deliverable, Milestone, Package, Path, Project, Task } from "../../wbs";
+import { Activity, Deliverable, Milestone, Package, Path, Project, Task } from "../../rpp/wbs";
 
 
 export interface JsonBlueprint {
