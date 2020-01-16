@@ -8,7 +8,7 @@
  * See the LICENSE file for details.
  */
 
-import { Durations, Period } from "./time";
+import { Durations, Period } from "../time";
 
 interface Element {
 

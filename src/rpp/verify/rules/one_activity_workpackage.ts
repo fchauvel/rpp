@@ -10,7 +10,7 @@
 
 
 
-import { Package } from "../../../wbs";
+import { Package } from "../../../rpp/wbs";
 import { Codes, Rule } from "./commons";
 
 

@@ -10,7 +10,7 @@
 
 
 
-import { Project } from "../wbs";
+import { Project } from "./wbs";
 import { Team } from "./team";
 import { Guard } from "./verify/guard";
 import { Report } from "./verify/report";

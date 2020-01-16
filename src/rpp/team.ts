@@ -9,7 +9,7 @@
  */
 
 
-import { Path } from "../wbs";
+import { Path } from "./wbs";
 
 
 export class Role {

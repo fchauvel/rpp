@@ -8,7 +8,7 @@
  * See the LICENSE file for details.
  */
 
-import { Project } from "../../../wbs";
+import { Project } from "../../../rpp/wbs";
 import { Format } from "../../adapters";
 import { GanttPainter, Layout } from "./painter";
 import { SVGWriter } from "./svg";

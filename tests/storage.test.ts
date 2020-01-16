@@ -9,7 +9,7 @@
  */
 
 import { DataSource, Storage } from "../src/storage";
-import { Path } from "../src/wbs";
+import { Path } from "../src/rpp/wbs";
 import { FakeFormat, FakeSource } from "./storage/fakes";
 
 
