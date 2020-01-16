@@ -12,6 +12,11 @@ import { Partner, Person, Role,  Team } from "../../rpp/team";
 import { Activity, Deliverable, Milestone, Package, Path, Project, Task } from "../../wbs";
 
 
+export interface JsonBlueprint {
+    project: JsonProject;
+    team: JsonTeam;
+}
+
 interface JsonProject {
     name: string;
     origin: string;

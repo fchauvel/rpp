@@ -22,7 +22,7 @@ export class Blueprint {
     private _team: Team;
 
 
-    constructor (project: Project, team?: Team) {
+    constructor(project: Project, team?: Team) {
         this._project = project;
         this._team = team;
     }

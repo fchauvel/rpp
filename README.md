@@ -1,4 +1,4 @@
-# RPP &mdash; Rapid Project Plan
+# RPP — Rapid Project Plan
 
 [![NPM Version](https://img.shields.io/npm/v/@fchauvel/rpp)](https://www.npmjs.com/package/@fchauvel/rpp)
 [![NPM Monthly download rate](https://img.shields.io/npm/dm/@fchauvel/rpp)](https://www.npmjs.com/package/@fchauvel/rpp)
@@ -22,7 +22,7 @@ To export the associated Gantt chart, use:
 ```console
 $ rpp gantt -p samples/epic/workplan.yaml -o samples/epic/gantt.svg
 
-``` 
+```
 
 RPP consumes a description of the project in a separate YAML file, see
 for instance `samples/epic/workplan.yaml`. This file specifies the project
@@ -51,7 +51,7 @@ project:
             - name: Final Financial Report
               kind: Report
               due: 48
-``` 
+```
 
 For instance, the 'samples/epic/workplan.yaml' yields the following Gantt
 Chart:
@@ -79,18 +79,18 @@ $ rpp verify -p samples/erroneous.yaml
 
 RPP checks for the following:
 
-*   Empty work package, that is, work packages that do not contain any
+-   Empty work package, that is, work packages that do not contain any
     tasks or work packages.
 
-*   Single activity work packages, that is, work packages that contain a
+-   Single activity work packages, that is, work packages that contain a
     single task or work package.
 
-*   Discontinuity in work packages, that is, tasks in work packages that
+-   Discontinuity in work packages, that is, tasks in work packages that
     are neither overlapping nor contiguous in time. In other words, RPP
     search for work packages, that are idle at some point.
 
-*   Tasks without any deliberable.
+-   Tasks without any deliberable.
 
-*   Deliverable due outside the task period.
+-   Deliverable due outside the task period.
 
-*   Milestones set outside the project period.
+-   Milestones set outside the project period.
