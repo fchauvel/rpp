@@ -50,7 +50,11 @@ export class Codes {
     public static readonly NO_CONTRIBUTOR = "NO CONTRIBUTOR";
     public static readonly EMPTY_TEAM = "EMPTY TEAM";
     public static readonly NO_ROLE = "NO ROLE";
+<<<<<<< HEAD
 >>>>>>> 1ea8f14... Detect idle persons, without responsibility
+=======
+    public static readonly DUPLICATE_LEADER =  "DUPLICATE LEADER";
+>>>>>>> 285d612... Detect duplicate leaders
 
 }
 

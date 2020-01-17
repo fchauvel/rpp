@@ -31,7 +31,8 @@ export class Guard {
             new rules.ActivityWithoutContributor(),
             new rules.ActivityWithoutLeader(),
             new rules.EmptyTeam(),
-            new rules.UselessPartner()
+            new rules.UselessPartner(),
+            new rules.DuplicateLeader()
         ];
     }
 
