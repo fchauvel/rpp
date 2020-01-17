@@ -201,6 +201,12 @@ class SampleProject {
         });
     }
 
+    public get withoutAnyone(): Blueprint {
+        return this.modify( sample => {
+            sample.team.members.splice(0, 2);
+        });
+    }
+
 
     private modify(change?: (JsonBlueprint) => void): Blueprint {
         const sample = this.raw;
@@ -373,7 +379,16 @@ describe("The guard should", () => {
         );
     });
 
-    test.todo("report empty teams");
+    test("report empty teams", () => {
+        check(
+            sampleProject.withoutAnyone,
+            [
+                [ Codes.NO_LEADER, 5 ],
+                [ Codes.NO_CONTRIBUTOR, 5],
+                [ Codes.EMPTY_TEAM, 1],
+            ]
+        );
+    });
 
     test.todo("report idle team / person");
 
