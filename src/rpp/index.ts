@@ -16,6 +16,7 @@ import { Guard } from "./verify/guard";
 import { Report } from "./verify/report";
 
 
+
 export class Blueprint {
 
     private _project: Project;
@@ -34,6 +35,16 @@ export class Blueprint {
     public get team(): Team {
         return this._team;
     }
+
+    public accept(visitor: Visitor): void {
+        visitor.visitBlueprint(this);
+    }
+
+}
+
+export interface Visitor {
+
+    visitBlueprint(blueprint: Blueprint): void;
 
 }
 

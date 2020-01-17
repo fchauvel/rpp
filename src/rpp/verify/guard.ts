@@ -30,6 +30,7 @@ export class Guard {
             new rules.InterruptedWorkPackage(),
             new rules.ActivityWithoutContributor(),
             new rules.ActivityWithoutLeader(),
+            new rules.EmptyTeam(),
         ];
     }
 

@@ -29,3 +29,4 @@ export * from "./no_leader";
 export * from "./no_contributor";
 export * from "./interrupted_workpackage";
 export * from "./wrong_milestone";
+export * from "./empty_teams";

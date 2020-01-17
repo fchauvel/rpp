@@ -32,6 +32,7 @@ export class Codes {
     // Team-related issues
     public static readonly NO_LEADER = 100;
     public static readonly NO_CONTRIBUTOR = 101;
+    public static readonly EMPTY_TEAM = 102;
 
 }
 
@@ -45,7 +46,7 @@ export abstract class Rule extends Visitor {
     public applyTo(blueprint: Blueprint, report: Report): void {
         this._blueprint = blueprint;
         this._report = report;
-        blueprint.project.accept(this);
+        blueprint.accept(this);
     }
 
     protected get blueprint(): Blueprint {

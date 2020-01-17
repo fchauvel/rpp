@@ -13,12 +13,15 @@
 
 import * as wbs from "./wbs";
 import * as team from "./team";
+import * as rpp from "../rpp";
+
+type Visitable = wbs.Element
+    | team.Visitable
+    | rpp.Blueprint
+;
 
 
-type Visitable = wbs.Element | team.Visitable;
-
-
-export class Visitor implements wbs.Visitor, team.Visitor {
+export class Visitor implements wbs.Visitor, team.Visitor, rpp.Visitor {
 
     private _path: wbs.Path;
 
@@ -28,6 +31,13 @@ export class Visitor implements wbs.Visitor, team.Visitor {
 
     public get path(): wbs.Path {
         return this._path;
+    }
+
+    public visitBlueprint(blueprint: rpp.Blueprint): void {
+        blueprint.project.accept(this);
+        if (blueprint.team) {
+            blueprint.team.accept(this);
+        }
     }
 
     public visitProject(project: wbs.Project): void {
