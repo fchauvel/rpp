@@ -18,17 +18,17 @@ export interface Output {
 
 }
 
-
 function capitalize(text: string): string {
     return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 }
+    
 
 export class Terminal {
 
     public readonly HASH_LENGTH = 7;
     public readonly VERSION = "RPP v{0}";
     public readonly VERSION_WITH_HASH = "RPP v{0}+git.{1}";
-    public static readonly ISSUE_TEMPLATE =
+    public readonly ISSUE_TEMPLATE =
         "{0}. {1}: '{2}' on '{3}'\n" +
         "     - {4}\n" +
         "     - Tip: {5}\n";
@@ -57,7 +57,7 @@ export class Terminal {
     public showVerificationReport(report: Report): void {
         for (const [index, issue] of report.issues.entries()) {
             const text =
-                format(Terminal.ISSUE_TEMPLATE,
+                format(this.ISSUE_TEMPLATE,
                        String(index + 1).padStart(3, " "),
                        capitalize(issue.level),
                        issue.code,
@@ -80,5 +80,6 @@ export class Terminal {
     private write(text: string): void {
         this._output.log(text);
     }
+
 
 }
