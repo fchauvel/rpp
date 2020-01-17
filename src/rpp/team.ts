@@ -75,6 +75,8 @@ export abstract class Partner implements Visitable {
 
     public abstract leads(activity: Path): boolean;
 
+    public abstract leadersOf(activity: Path): Partner[];
+
     public abstract contributorsTo(activity: Path): Partner[];
 
     public abstract accept(visitor: Visitor): void;
@@ -113,6 +115,15 @@ export class Team extends Partner {
         return this._members.reduce(
             (contributors, member) => {
                 return contributors.concat(member.contributorsTo(activity));
+            },
+            []);
+    }
+
+
+    public leadersOf(activity: Path): Partner[] {
+        return this._members.reduce(
+            (contributors, member) => {
+                return contributors.concat(member.leadersOf(activity));
             },
             []);
     }
@@ -163,6 +174,13 @@ export class Person extends Partner {
 
     public contributorsTo(activity: Path): Partner[] {
         if (this.contributesTo(activity)) {
+            return [ this ];
+        }
+        return [];
+    }
+
+    public leadersOf(activity: Path): Partner[] {
+        if (this.leads(activity)) {
             return [ this ];
         }
         return [];

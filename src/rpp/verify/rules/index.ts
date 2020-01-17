@@ -31,3 +31,4 @@ export * from "./interrupted_workpackage";
 export * from "./wrong_milestone";
 export * from "./empty_teams";
 export * from "./useless_partner";
+export * from "./duplicate_leader";

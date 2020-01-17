@@ -216,6 +216,20 @@ class SampleProject {
         });
     }
 
+    public get withTwoLeadersForA1(): Blueprint {
+        return this.modify( sample => {
+            sample.team.members[1].leads.push("A 1");
+        });
+    }
+
+
+    public get withTwoLeadersForA3(): Blueprint {
+        return this.modify( sample => {
+            sample.team.members[0].leads.push("A 3");
+        });
+    }
+
+
     private modify(change?: (JsonBlueprint) => void): Blueprint {
         const sample = this.raw;
         if (change) {
@@ -411,8 +425,22 @@ describe("The guard should", () => {
 
     test.todo("teams that do not lead anything");
 
-    test.todo("duplicated task/work package leaders");
+    test("report duplicated task leaders", () =>{
+        check(
+            sampleProject.withTwoLeadersForA1,
+            [
+                [ Codes.DUPLICATE_LEADER, 1 ],
+            ]
+        );
+    });
 
-
+    test("report duplicated work package leaders", () =>{
+        check(
+            sampleProject.withTwoLeadersForA3,
+            [
+                [ Codes.DUPLICATE_LEADER, 1 ],
+            ]
+        );
+    });
 
 });

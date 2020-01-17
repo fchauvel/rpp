@@ -16,6 +16,8 @@
 
         -   Detect idle partners (without any responsibility)
 
+        -   Detect duplicated leaders
+
 ## [RPP 0.6.0 (Jan. 12, 2020)][v0.6.0]
 
 -   Add project verification, including:
