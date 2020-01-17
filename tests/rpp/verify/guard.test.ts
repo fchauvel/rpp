@@ -256,7 +256,7 @@ describe("The guard should", () => {
 
 
     function check(blueprint: Blueprint,
-                   expectedErrors: [number, number][]): void {
+                   expectedErrors: [string, number][]): void {
         const report = guard.scrutinize(blueprint);
         const expectedTotal = expectedErrors.reduce(
             (sum, [error, count]) => sum + count,

@@ -21,9 +21,11 @@ export class TaskWithoutDeliverable extends Rule {
         if (task.deliverables.length === 0) {
             const identifier = this.path.asIdentifier("T");
             this.warn(
-                `${identifier} (${task.name}) has no deliverable`,
+                `Task '${task.name}' has no deliverable`,
                 "Do we miss some?",
-                Codes.TASK_WITHOUT_DELIVERABLE);
+                Codes.TASK_WITHOUT_DELIVERABLE,
+                identifier
+            );
         }
     }
 

@@ -21,7 +21,9 @@ export class EmptyWorkPackage extends Rule {
             this.warn(
                 `Work package '${workPackage.name}' is empty.`,
                 "Have we forgotten some tasks or work packages there?",
-                Codes.EMPTY_WORK_PACKAGE);
+                Codes.EMPTY_WORK_PACKAGE,
+                this.path.asIdentifier("WP"),
+            );
         }
     }
 

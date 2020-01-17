@@ -21,6 +21,7 @@ export class EmptyTeam extends Rule {
                 `Team ${team.name} has no member.`,
                 "Have we forgotten some collaborators?",
                 Codes.EMPTY_TEAM,
+                `Team ${team.name}`,
             );
         }
     }

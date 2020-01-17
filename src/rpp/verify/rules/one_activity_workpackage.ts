@@ -21,9 +21,10 @@ export class SingleActivityWorkPackage extends Rule {
         if (workPackage.breakdown.length === 1) {
             const identifier = this.path.asIdentifier("WP");
             this.warn(
-                `${identifier} ($workPackage.name) includes only one activity.`,
-                "Is it really necessary?",
-                Codes.SINGLE_TASK_WORK_PACKAGE);
+                `Work package '${workPackage.name}' includes only one activity.`,
+                "Is this work package really necessary?",
+                Codes.SINGLE_TASK_WORK_PACKAGE,
+                identifier);
         }
     }
 }

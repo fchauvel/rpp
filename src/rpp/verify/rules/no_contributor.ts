@@ -34,11 +34,12 @@ export class ActivityWithoutContributor extends Rule  {
                     m => m.contributesTo(this.path)
                 );
             if (!existContributor) {
-                const identifier = this.path.asIdentifier("WP");
+                const identifier = this.path.asIdentifier("A");
                 this.error(
-                    `No one contributes to ${identifier}.`,
+                    `No one contributes to Activity '${activity.name}'.`,
                     "Please check the roles set up in the team",
-                    Codes.NO_CONTRIBUTOR);
+                    Codes.NO_CONTRIBUTOR,
+                    identifier);
             }
         }
     }
