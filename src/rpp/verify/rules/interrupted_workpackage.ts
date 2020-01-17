@@ -35,7 +35,8 @@ export class InterruptedWorkPackage extends Rule {
             this.warn(`${identifier} (${workPackage.name}) is discontinuous. `
                        + `Activity '${disconnected.name}' is disconnected from the others.`,
                       `Please check start and duration of ${identifier} activities.`,
-                     Codes.DISCONTINUITY_IN_WORK_PACKAGE);
+                      Codes.DISCONTINUITY_IN_WORK_PACKAGE,
+                      identifier);
         }
     }
 

@@ -27,16 +27,20 @@ export class DeliverableOutsideTask extends Rule {
         if (deliverable.dueDate > this._task.end) {
             const identifier = this.path.asIdentifier("D");
             this.error(
-                `${identifier} (${deliverable.name}) is due after the task ends.`,
+                `Deliverable '${deliverable.name}' is due after the task ends.`,
                 "Please check task start, duration and deliverable date.",
-                Codes.WRONG_DELIVERABLE_DATE);
+                Codes.WRONG_DELIVERABLE_DATE,
+                identifier
+            );
         }
         if (deliverable.dueDate < this._task.start) {
             const identifier = this.path.asIdentifier("D");
             this.error(
-                `${identifier} (${deliverable.name}) is due before the task starts.`,
+                `Deliverable '${deliverable.name}' is due before the task starts.`,
                 "Please check task start, duration and deliverable date.",
-                Codes.WRONG_DELIVERABLE_DATE);
+                Codes.WRONG_DELIVERABLE_DATE,
+                identifier
+            );
         }
     }
 }

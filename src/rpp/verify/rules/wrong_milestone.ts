@@ -29,13 +29,15 @@ export class MilestoneOutsideProject extends Rule {
             this.error(
                 `Milestone '${milestone.name}' comes after project end.`,
                 "Check the milestone date",
-                Codes.MILESTONE_AFTER_PROJECT_END);
+                Codes.MILESTONE_AFTER_PROJECT_END,
+                this.path.asIdentifier("MS"));
         }
         if (milestone.date < this._project.start) {
             this.error(
                 `Milestone '${milestone.name}' comes before the project starts.`,
                 "Please check milestone date and project start.",
-                Codes.MILESTONE_BEFORE_PROJECT_START);
+                Codes.MILESTONE_BEFORE_PROJECT_START,
+                this.path.asIdentifier("MS"));
         }
     }
 

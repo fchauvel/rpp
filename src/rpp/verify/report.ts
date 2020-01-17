@@ -17,16 +17,25 @@ export enum Level {
 
 export class Issue {
 
+    public static readonly DEFAULT_CODE = "unknown";
+    public static readonly DEFAULT_LOCATION = "unknown";
+
     private _level: Level;
     private _description: string;
     private _advice: string;
-    private _code: number;
+    private _code: string;
+    private _location: string;
 
-    constructor(level: Level, description: string, advice: string, code= 0) {
+    constructor(level: Level,
+                description: string,
+                advice: string,
+                code:string,
+                location:string) {
         this._level = level;
         this._description = description;
         this._advice = advice;
-        this._code = code;
+        this._code = code || Issue.DEFAULT_CODE;
+        this._location = location || Issue.DEFAULT_LOCATION;
     }
 
     public get level(): Level {
@@ -41,13 +50,48 @@ export class Issue {
         return this._advice;
     }
 
-    public get code(): number {
+    public get code(): string {
         return this._code;
+    }
+
+    public get location(): string {
+        return this._location;
     }
 }
 
 
 export class Report {
+
+
+    private _issues: Issue[];
+
+    constructor() {
+        this._issues = [];
+    }
+
+    public warn(description: string,
+                advice: string,
+                code?:string,
+                location?:string): void {
+        this.push(Level.WARNING, description, advice, code, location);
+    }
+
+    public error(description: string,
+                 advice: string,
+                 code?:string,
+                 location?:string): void {
+        this.push(Level.ERROR, description, advice, code, location);
+    }
+
+    private push(level: Level,
+                 description: string,
+                 advice: string,
+                 code?:string,
+                 location?: string): void {
+        this._issues.push(
+            new Issue(level, description, advice, code, location)
+        );
+    }
 
     public get issues(): Issue[] {
         return this._issues;
@@ -61,29 +105,10 @@ export class Report {
         return this.issuesByLevel(Level.ERROR);
     }
 
-    private _issues: Issue[];
-
-    constructor() {
-        this._issues = [];
-    }
-
-    public warn(description: string, advice: string, code= 0): void {
-        this.push(Level.WARNING, description, advice, code);
-    }
-
-    public error(description: string, advice: string, code= 0): void {
-        this.push(Level.ERROR, description, advice, code);
-    }
-
     private issuesByLevel(level: Level): Issue[] {
         return this._issues.filter(
             (issue) => issue.level as Level === level,
         );
     }
-
-    private push(level: Level, description: string, advice: string, code: number): void {
-        this._issues.push(new Issue(level, description, advice, code));
-    }
-
 
 }

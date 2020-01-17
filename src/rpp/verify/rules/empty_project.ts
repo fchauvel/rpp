@@ -22,6 +22,7 @@ export class EmptyProject extends Rule {
                 `Project ${project.name} is empty.`,
                 "Have we forgotten some tasks or work packages there?",
                 Codes.EMPTY_PROJECT,
+                project.name
             );
         }
     }

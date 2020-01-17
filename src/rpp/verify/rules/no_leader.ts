@@ -29,11 +29,12 @@ export class ActivityWithoutLeader extends Rule  {
             const missingLeader =
                 !this.blueprint.team.members.some((m) => m.leads(this.path));
             if (missingLeader) {
-                const identifier = this.path.asIdentifier("T");
+                const identifier = this.path.asIdentifier("A");
                 this.error(
-                    `No one leads ${identifier}.`,
+                    `No one leads Activity '${activity.name}'.`,
                     "Please check the roles set up in the team.",
                     Codes.NO_LEADER,
+                    identifier
                 );
             }
         }
