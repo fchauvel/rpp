@@ -12,6 +12,10 @@
 
         -   Detect tasks and work packages without leader
 
+        -   Detect empty teams
+
+        -   Detect idle partners (without any responsibility)
+
 ## [RPP 0.6.0 (Jan. 12, 2020)][v0.6.0]
 
 -   Add project verification, including:
