@@ -207,6 +207,14 @@ class SampleProject {
         });
     }
 
+    public get withExtraIdlePerson(): Blueprint {
+        return this.modify( sample => {
+            sample.team.members.push({
+                firstname: "Extra",
+                lastname: "Person"
+            });
+        });
+    }
 
     private modify(change?: (JsonBlueprint) => void): Blueprint {
         const sample = this.raw;
@@ -390,7 +398,14 @@ describe("The guard should", () => {
         );
     });
 
-    test.todo("report idle team / person");
+    test("report idle person", () => {
+        check(
+            sampleProject.withExtraIdlePerson,
+            [
+                [ Codes.NO_ROLE, 1 ],
+            ]
+        );
+    });
 
     test.todo("report 1-partner teams");
 
