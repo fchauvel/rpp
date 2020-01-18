@@ -4,7 +4,7 @@
 
 -   Add support for projects' team
 
-    -   Add reading team from both YAML and JSON files
+    -   Add reading a team description from either a YAML or JSON file
 
     -   Add verification rules, including:
 
@@ -17,6 +17,8 @@
         -   Detect idle partners (without any responsibility)
 
         -   Detect duplicated leaders
+
+-   Improve formatting of issues reported by `rpp verify`
 
 ## [RPP 0.6.0 (Jan. 12, 2020)][v0.6.0]
 
