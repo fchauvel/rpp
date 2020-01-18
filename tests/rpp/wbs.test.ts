@@ -8,8 +8,8 @@
  * See the LICENSE file for details.
  */
 
-import { Deliverable, Milestone, Package, Path, Project, Task } from "../../src/rpp/wbs";
 import { Visitor } from "../../src/rpp/visitor";
+import { Deliverable, Milestone, Package, Path, Project, Task } from "../../src/rpp/wbs";
 
 
 describe("The root path should", () => {
@@ -45,6 +45,13 @@ describe("Paths should", () => {
     test("be build from a text using alternative separator", () => {
         const path = Path.fromText("WP1/3/5/6");
         expect(path.asIdentifier()).toBe(new Path([1, 3, 5, 6]).asIdentifier());
+    });
+
+
+    test("not be built from strings that do not reference an activity", () => {
+        expect(() => {
+            Path.fromText("This is not an activity");
+        }).toThrow();
     });
 
 });

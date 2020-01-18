@@ -100,7 +100,7 @@ project:
           duration: 24
           deliverables:
             - name: First release of the simulation platform
-              kind: Software 
+              kind: Software
               due: 12
             - name: Second Release of the simulation platform
               kind: Software
@@ -195,4 +195,3 @@ project:
             - name: Final report on Communication & Exploitation
               kind: Report
               due: 48
-          

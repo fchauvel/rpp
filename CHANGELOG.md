@@ -9,13 +9,9 @@
     -   Add verification rules, including:
 
         -   Detect tasks and work packages without contributors
-
         -   Detect tasks and work packages without leader
-
         -   Detect empty teams
-
         -   Detect idle partners (without any responsibility)
-
         -   Detect duplicated leaders
 
 -   Improve formatting of issues reported by `rpp verify`
@@ -25,17 +21,11 @@
 -   Add project verification, including:
 
     -   Detect empty projects and work packages
-
     -   Detect milestones after project end
-
     -   Report work packages with a single activity
-
     -   Detect milestones that occur before the project starts
-
     -   Warn about tasks without deliverable
-
     -   Detect deliverables due after task end
-
     -   Detect discontinuities in work packages
 
 -   Add example of erroneous project
@@ -47,7 +37,6 @@
 -   Add support for projects' milestones
 
     -   Read projects' milestones from JSON and YAML
-
     -   Draw milestones on Gantt charts
 
 -   Add milestones to the EPIC example
@@ -57,7 +46,6 @@
 -   Add a time-grid on top of Gantt chart
 
     -   Show calendar years on the Gantt chart
-
     -   Expose project origin in the JSON/YAML files
 
 -   Fix start and duration of Task 3.2 in EPIC samples
@@ -69,7 +57,6 @@
 -   Add support for projects' deliverables, including:
 
     -   Load deliverables from both JSON and YAML files
-
     -   Draw deliverables on the Gantt chart
 
 -   Use YAML in addition of JSON as EPIC project example
