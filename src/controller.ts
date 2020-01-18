@@ -87,6 +87,11 @@ export class Controller {
                                  desc: "set the name of the file to generate",
                                  type: "string",
                              })
+                             .option("team", {
+                                 alias: "t",
+                                 desc: "set the team description",
+                                 type: "string",
+                             })
                              .option("project", {
                                  alias: "p",
                                  demand: true,
