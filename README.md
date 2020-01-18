@@ -24,9 +24,21 @@ $ rpp gantt -p samples/epic/workplan.yaml -o samples/epic/gantt.svg
 
 ```
 
-RPP consumes a description of the project in a separate YAML file, see
-for instance `samples/epic/workplan.yaml`. This file specifies the project
-structure in term of tasks and work packages. For instance:
+This yields the following Gantt Chart:
+
+![Sample Gantt Chart](https://raw.github.com/fchauvel/rpp/master/samples/epic/gantt.svg?sanitize=true)
+
+
+## Project Descriptions
+
+### Work Plan
+
+RPP consumes a description of the project split into multiple YAML
+files, one for the woorkplan, one for the teams, etc. See for instance
+`samples/epic/workplan.yaml`. This file specifies the work plan (work
+packages, tasks, deliverables and milestones) of our sample EPIC
+project. Here is an excerpt:
+
 
 ```yaml
 project:
@@ -53,44 +65,98 @@ project:
               due: 48
 ```
 
-For instance, the 'samples/epic/workplan.yaml' yields the following Gantt
-Chart:
+### Project Team
 
-![Sample Gantt Chart](https://raw.github.com/fchauvel/rpp/master/samples/epic/gantt.svg?sanitize=true)
+RPP also accepts a description of the team, that this, the persons
+assigned to the projects with their roles. Here is an excerpt of the EPIC team
+description.
 
-## Verification of Project Structure
+```yaml
+team:
+  name: EPIC
+  members:
+  - name: SINTEF
+    members:
+      - firstname: Franck
+        lastname: Chauvel
+        leads: [ WP1, T1.1, T1.2, T3.1, T4.4 ]
+      - firstname: Brice
+        lastname: Morin
+        leads: [ WP3, T2.1, T3.3 ]
+      - firstname: Ketil
+        lastname: Stølen
+        leads: [ T1.3 ]
+  - name: UiO
+    members:
+      - firstname: Olaf
+        lastname: Owe
+        leads: [ WP4, T2.2, T4.1, T4.2, T4.3, T5.2]
+```
+
+You can pass the team to the `rpp gantt` command using `--team|-t`
+option, so that the Gantt chart indicates who leads the Tasks. For
+instance:
+
+```console
+$ cd samples/epic
+$ rpp gantt -p workplan.yaml -t team.yaml -o gantt.svg
+```
+
+
+## Sanity Checks
 
 RPP can also run sanity checks on your project description. To do so,
 use the following command:
 
 ```console
-$ rpp verify -p samples/erroneous.yaml
- 1. WARNING: Work package 'First Package' is empty.
-   -> Have we forgotten some tasks or work packages there?
+$ npx rpp verify -p samples/erroneous/workplan.yaml
+  1. Warning: 'EMPTY WORK PACKAGE' on 'WP 2'
+     - Work package 'First Package' is empty.
+     - Tip: Have we forgotten some tasks or work packages there?
 
- 2. ERROR: Milestone 'First milestone' comes after project end.
-   -> Check the milestone date
+  2. Warning: 'NO DELIVERABLE' on 'T 1'
+     - Task 'First Tasks' has no deliverable
+     - Tip: Do we miss some?
 
- 3. WARNING: T 1 (First Tasks) has no deliverable
-   -> Do we miss some?
+  3. Error: 'LATE MILESTONE' on 'MS 1'
+     - Milestone 'First milestone' comes after project end.
+     - Tip: Check the milestone date
 
 2 warning(s), 1 error(s).
 ```
 
+Here as well the `-t|--team` option allows us to include the team
+description.
+
 RPP checks for the following:
 
--   Empty work package, that is, work packages that do not contain any
-    tasks or work packages.
+-   Work plan consistency
 
--   Single activity work packages, that is, work packages that contain a
-    single task or work package.
+    -   Empty work package, that is, work packages that do not contain
+        any tasks or work packages.
 
--   Discontinuity in work packages, that is, tasks in work packages that
-    are neither overlapping nor contiguous in time. In other words, RPP
-    search for work packages, that are idle at some point.
+    -   Single activity work packages, that is, work packages that
+        contain a single task or work package.
 
--   Tasks without any deliberable.
+    -   Discontinuity in work packages, that is, activities in work
+        packages that are neither overlapping nor contiguous in
+        time. In other words, RPP search for work packages that are
+        idle at some point.
 
--   Deliverable due outside the task period.
+    -   Tasks without any deliberable.
 
--   Milestones set outside the project period.
+    -   Deliverable due outside the task period.
+
+    -   Milestones set outside the project period.
+
+-   Teams consistency
+
+    -   Empty teams
+
+    -   Duplicate activity leader
+
+    -   Tasks without contributors
+
+    -   Activities without leader
+
+    -   Idle partners (without any role)
