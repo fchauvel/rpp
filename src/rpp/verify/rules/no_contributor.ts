@@ -31,7 +31,7 @@ export class ActivityWithoutContributor extends Rule  {
         if (this.blueprint.team) {
             const existContributor =
                 this.blueprint.team.members.some(
-                    m => m.contributesTo(this.path)
+                    (m) => m.contributesTo(this.path),
                 );
             if (!existContributor) {
                 const identifier = this.path.asIdentifier("A");

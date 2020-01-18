@@ -8,10 +8,10 @@
  * See the LICENSE file for details.
  */
 
-import { Duration, Durations } from "../../../time";
-import { Activity, Deliverable, Milestone, Package, Path, Project, Task} from "../../../rpp/wbs";
 import { Blueprint } from "../../../rpp";
 import { Visitor } from "../../../rpp/visitor";
+import { Activity, Deliverable, Milestone, Package, Path, Project, Task} from "../../../rpp/wbs";
+import { Duration, Durations } from "../../../time";
 import { Figure, Painter, Point } from "./shape";
 import { Style } from "./style";
 
@@ -287,7 +287,7 @@ export class GanttPainter extends Painter {
     private drawActivityLeader(activity: Activity, path: Path, isPackage): void {
         this.moveHorizontallyTo(this._layout.taskLeaderStart(path));
         const leader =
-            this._blueprint.team.members.find(p => p.leads(path));
+            this._blueprint.team.members.find((p) => p.leads(path));
         this.writeText(leader.name,
                        this._layout.LEADER_WIDTH,
                        this._layout.TASK_HEIGHT,
@@ -390,7 +390,7 @@ export class Layout {
             + this.SEPARATOR
             + this.taskNameWidth(path)
             + this.SEPARATOR;
-        ;
+
     }
 
     public identifier(path: Path, isPackage: boolean): string {

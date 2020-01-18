@@ -211,7 +211,7 @@ export class Path {
         const paths = text.match(pattern);
         if (!paths) {
             throw new Error(
-                `Text '${text}' is not a valid reference to an activity.`
+                `Text '${text}' is not a valid reference to an activity.`,
             );
         }
         return new Path(paths.map((i) => parseInt(i, 10)));

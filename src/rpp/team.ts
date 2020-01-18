@@ -162,13 +162,13 @@ export class Person extends Partner {
 
     public contributesTo(activity: Path): boolean {
         return this._roles.some(
-            r => activity.includes(r.activity)
+            (r) => activity.includes(r.activity),
         );
     }
 
     public leads(activity: Path): boolean {
         return this._roles.some(
-            r => r.activity.equals(activity) && r.isLeader
+            (r) => r.activity.equals(activity) && r.isLeader,
         );
     }
 

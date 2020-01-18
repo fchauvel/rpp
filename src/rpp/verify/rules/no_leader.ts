@@ -34,7 +34,7 @@ export class ActivityWithoutLeader extends Rule  {
                     `No one leads Activity '${activity.name}'.`,
                     "Please check the roles set up in the team.",
                     Codes.NO_LEADER,
-                    identifier
+                    identifier,
                 );
             }
         }

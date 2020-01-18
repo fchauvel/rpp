@@ -30,7 +30,7 @@ export class DeliverableOutsideTask extends Rule {
                 `Deliverable '${deliverable.name}' is due after the task ends.`,
                 "Please check task start, duration and deliverable date.",
                 Codes.WRONG_DELIVERABLE_DATE,
-                identifier
+                identifier,
             );
         }
         if (deliverable.dueDate < this._task.start) {
@@ -39,7 +39,7 @@ export class DeliverableOutsideTask extends Rule {
                 `Deliverable '${deliverable.name}' is due before the task starts.`,
                 "Please check task start, duration and deliverable date.",
                 Codes.WRONG_DELIVERABLE_DATE,
-                identifier
+                identifier,
             );
         }
     }

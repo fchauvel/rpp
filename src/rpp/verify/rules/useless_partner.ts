@@ -10,7 +10,7 @@
 
 
 
-import { Partner, Person, Team } from "../../../rpp/team";
+import { Person } from "../../../rpp/team";
 import { Codes, Rule } from "./commons";
 
 

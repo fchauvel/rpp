@@ -10,10 +10,9 @@
 
 
 
-
-import * as wbs from "./wbs";
-import * as team from "./team";
 import * as rpp from "../rpp";
+import * as team from "./team";
+import * as wbs from "./wbs";
 
 type Visitable = wbs.Element
     | team.Visitable
@@ -23,14 +22,14 @@ type Visitable = wbs.Element
 
 export class Visitor implements wbs.Visitor, team.Visitor, rpp.Visitor {
 
+    public get path(): wbs.Path {
+        return this._path;
+    }
+
     private _path: wbs.Path;
 
     constructor() {
         this._path = new wbs.Path();
-    }
-
-    public get path(): wbs.Path {
-        return this._path;
     }
 
     public visitBlueprint(blueprint: rpp.Blueprint): void {
@@ -44,14 +43,6 @@ export class Visitor implements wbs.Visitor, team.Visitor, rpp.Visitor {
         this.onProject(project);
         this.iterateOver(project.breakdown);
         this.iterateOver(project.milestones);
-    }
-
-    private iterateOver(array: Visitable[]): void {
-        for (const [index, entry] of array.entries()) {
-            this.path.enter(index + 1);
-            entry.accept(this);
-            this.path.exit();
-        }
     }
 
     public onProject(project: wbs.Project): void {
@@ -93,12 +84,12 @@ export class Visitor implements wbs.Visitor, team.Visitor, rpp.Visitor {
         // Do nothing by default
     }
 
-    public visitTeam(team: team.Team): void {
-        this.onTeam(team);
-        this.iterateOver(team.members);
+    public visitTeam(aTeam: team.Team): void {
+        this.onTeam(aTeam);
+        this.iterateOver(aTeam.members);
     }
 
-    public onTeam(team: team.Team): void {
+    public onTeam(aTeam: team.Team): void {
         // Do nothing by default;
     }
 
@@ -119,4 +110,12 @@ export class Visitor implements wbs.Visitor, team.Visitor, rpp.Visitor {
         // Do nothing by default;
     }
 
-};
+    private iterateOver(array: Visitable[]): void {
+        for (const [index, entry] of array.entries()) {
+            this.path.enter(index + 1);
+            entry.accept(this);
+            this.path.exit();
+        }
+    }
+
+}

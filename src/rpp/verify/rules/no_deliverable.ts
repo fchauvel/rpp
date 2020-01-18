@@ -24,7 +24,7 @@ export class TaskWithoutDeliverable extends Rule {
                 `Task '${task.name}' has no deliverable`,
                 "Do we miss some?",
                 Codes.TASK_WITHOUT_DELIVERABLE,
-                identifier
+                identifier,
             );
         }
     }
