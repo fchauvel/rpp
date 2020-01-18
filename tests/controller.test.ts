@@ -35,6 +35,8 @@ describe("The controller should", () => {
         .mockImplementation(() => "");
     storage.loadTeam = jest.fn()
         .mockImplementation(() => "");
+    storage.storeGanttChart = jest.fn()
+        .mockImplementation(() => {});
 
     const terminal = new MockedTerminal();
     const controller = new Controller(rpp, terminal, storage);
@@ -52,6 +54,31 @@ describe("The controller should", () => {
 
         expect(rpp.version).toHaveBeenCalledTimes(1);
         expect(terminal.showVersion).toHaveBeenCalledTimes(1);
+    });
+
+
+    test("accept a 'gantt' command", async () => {
+        await new Promise((resolve) => {
+            controller.execute(["gantt",
+                                "-p", "project.yaml",
+                                "-o", "gantt.svg"]);
+            resolve();
+        });
+
+        expect(storage.storeGanttChart).toHaveBeenCalledTimes(1);
+    });
+
+
+    test("accept a 'gantt' command", async () => {
+        await new Promise((resolve) => {
+            controller.execute(["gantt",
+                                "-p", "project.yaml",
+                                "-t", "team.yaml",
+                                "-o", "gantt.svg"]);
+            resolve();
+        });
+
+        expect(storage.storeGanttChart).toHaveBeenCalledTimes(1);
     });
 
 
