@@ -32,7 +32,7 @@ export class Guard {
             new rules.ActivityWithoutLeader(),
             new rules.EmptyTeam(),
             new rules.UselessPartner(),
-            new rules.DuplicateLeader()
+            new rules.DuplicateLeader(),
         ];
     }
 

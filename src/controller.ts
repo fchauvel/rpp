@@ -153,7 +153,7 @@ export class Controller {
 
     private loadBlueprint(args: Arguments): Blueprint {
         const project = this._storage.loadProject(args.project);
-        let team = undefined;
+        let team;
         if (args.team) {
             team = this._storage.loadTeam(args.team);
         }

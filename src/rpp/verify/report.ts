@@ -29,8 +29,8 @@ export class Issue {
     constructor(level: Level,
                 description: string,
                 advice: string,
-                code:string,
-                location:string) {
+                code: string,
+                location: string) {
         this._level = level;
         this._description = description;
         this._advice = advice;
@@ -71,25 +71,25 @@ export class Report {
 
     public warn(description: string,
                 advice: string,
-                code?:string,
-                location?:string): void {
+                code?: string,
+                location?: string): void {
         this.push(Level.WARNING, description, advice, code, location);
     }
 
     public error(description: string,
                  advice: string,
-                 code?:string,
-                 location?:string): void {
+                 code?: string,
+                 location?: string): void {
         this.push(Level.ERROR, description, advice, code, location);
     }
 
     private push(level: Level,
                  description: string,
                  advice: string,
-                 code?:string,
+                 code?: string,
                  location?: string): void {
         this._issues.push(
-            new Issue(level, description, advice, code, location)
+            new Issue(level, description, advice, code, location),
         );
     }
 

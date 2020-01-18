@@ -10,8 +10,8 @@
 
 
 
-import { format } from "../../../utils";
 import { Activity, Package, Task } from "../../../rpp/wbs";
+import { format } from "../../../utils";
 import { Codes, Rule } from "./commons";
 
 
@@ -35,7 +35,7 @@ export class DuplicateLeader extends Rule  {
             const leaders =
                 this.blueprint.team.leadersOf(this.path);
             if (leaders.length > 1) {
-                const leaderNames = leaders.map(l => l.name).join(", ");
+                const leaderNames = leaders.map((l) => l.name).join(", ");
                 this.error(
                     format(DESCRIPTION, activity.name, leaderNames),
                     ADVICE,
