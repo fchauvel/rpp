@@ -8,6 +8,8 @@
  * See the LICENSE file for details.
  */
 
+
+import { Blueprint } from "../../rpp";
 import { Team } from "../../rpp/team";
 import { Project } from "../../rpp/wbs";
 
@@ -52,7 +54,7 @@ export abstract class Format {
     }
 
 
-    public writeGantt(project: Project): string {
+    public writeGantt(blueprint: Blueprint): string {
         const message = "Gantt serialization not yet "
             + `supported for ${this.name} files.`;
         throw new Error(message);

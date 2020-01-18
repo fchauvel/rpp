@@ -10,6 +10,7 @@
 
 import { Duration, Durations } from "../../../time";
 import { Activity, Deliverable, Milestone, Package, Path, Project, Task} from "../../../rpp/wbs";
+import { Blueprint } from "../../../rpp";
 import { Visitor } from "../../../rpp/visitor";
 import { Figure, Painter, Point } from "./shape";
 import { Style } from "./style";
@@ -21,6 +22,7 @@ export class Tags {
     public static readonly TIME_AXIS = "time_axis";
     public static readonly DELIVERABLE = "deliverable";
     public static readonly MILESTONE = "milestone";
+    public static readonly LEADER = "leader";
 }
 
 class PainterVisitor extends Visitor {
@@ -76,20 +78,27 @@ export class GanttPainter extends Painter {
 
     private _layout: Layout;
     private _project: Project;
+    private _blueprint: Blueprint;
 
 
     constructor(layout: Layout) {
         super();
         this._layout = layout;
         this._project = null;
+        this._blueprint = null;
     }
 
 
-    public draw(project: Project): Figure {
+    public draw(blueprint: Blueprint): Figure {
         this.moveTo(this._layout.LEFT_MARGIN,
                     this._layout.TOP_MARGIN);
 
-        this._project = project;
+        this._blueprint = blueprint;
+        if (!blueprint.team) {
+            this._layout.settings.showActivityLeader = false;
+        }
+
+        this._project = blueprint.project;
 
         this.drawUpperTimeLine();
         this.createSpaceForMilestones();
@@ -107,6 +116,9 @@ export class GanttPainter extends Painter {
         this.moveDownBy(this._layout.spaceBeforeActivity(path));
         this.drawActivityIdentifier(path, isPackage);
         this.drawActivityName(activity, path, isPackage);
+        if (this._blueprint.team) {
+            this.drawActivityLeader(activity, path, isPackage);
+        }
         this.drawActivityDuration(activity, path, isPackage);
         this.moveDownBy(this._layout.TASK_HEIGHT);
     }
@@ -238,7 +250,6 @@ export class GanttPainter extends Painter {
         const top = this._layout.timeAxisStart.y;
         const height = -1 *
             (this.position.y - (top - overflow * this._layout.TASK_HEIGHT));
-
         for (const eachPeriod of this._project.period.splitBy(period)) {
             this.drawLine(0, height, style, []);
             const end = this._project.period.normalize(eachPeriod.end);
@@ -273,6 +284,20 @@ export class GanttPainter extends Painter {
                        ]);
     }
 
+    private drawActivityLeader(activity: Activity, path: Path, isPackage): void {
+        this.moveHorizontallyTo(this._layout.taskLeaderStart(path));
+        const leader =
+            this._blueprint.team.members.find(p => p.leads(path));
+        this.writeText(leader.name,
+                       this._layout.LEADER_WIDTH,
+                       this._layout.TASK_HEIGHT,
+                       this.styleSheet.activity(path.depth).label,
+                       [
+                           this._layout.identifier(path, isPackage),
+                           Tags.LEADER,
+                       ]);
+    }
+
     private drawActivityDuration(activity: Activity,
                                  path: Path,
                                  isPackage: boolean): void {
@@ -293,6 +318,10 @@ export class GanttPainter extends Painter {
 
 export class Layout {
 
+    public settings = {
+        showActivityLeader: true,
+    };
+
     public get timeAxisStart(): Point {
         const x = this.LEFT_MARGIN
             + this.TASK_LABEL_WIDTH
@@ -309,6 +338,7 @@ export class Layout {
     public readonly LEFT_MARGIN = 5;
     public readonly TASK_IDENTIFIER_WIDTH = 50;
     public readonly TASK_LABEL_WIDTH = 300;
+    public LEADER_WIDTH = 50;
     public readonly TASK_HEIGHT = 20;
     public readonly TIME_AXIS_LENGTH = 900;
 
@@ -342,10 +372,25 @@ export class Layout {
     }
 
     public taskNameWidth(path: Path): number {
-        return this.TASK_LABEL_WIDTH
+        const baseline = this.TASK_LABEL_WIDTH
             - this.indentation(path)
             - this.SEPARATOR
             - this.TASK_IDENTIFIER_WIDTH;
+        if (this.settings.showActivityLeader) {
+            return baseline
+                - this.SEPARATOR
+                - this.LEADER_WIDTH;
+        }
+        return baseline;
+    }
+
+    public taskLeaderStart(path): number {
+        return this.activityIdentifierStart(path)
+            + this.TASK_IDENTIFIER_WIDTH
+            + this.SEPARATOR
+            + this.taskNameWidth(path)
+            + this.SEPARATOR;
+        ;
     }
 
     public identifier(path: Path, isPackage: boolean): string {

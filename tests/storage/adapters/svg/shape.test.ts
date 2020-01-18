@@ -10,7 +10,9 @@
 
 import { GanttPainter, Layout, Tags } from "../../../../src/storage/adapters/svg/painter";
 import { Figure, Shape } from "../../../../src/storage/adapters/svg/shape";
-import { Activity, Deliverable, Milestone, Package, Project, Task } from "../../../../src/rpp/wbs";
+import { Blueprint } from "../../../../src/rpp";
+import { Person, Role, Team } from "../../../../src/rpp/team";
+import { Activity, Deliverable, Milestone, Package, Path, Project, Task } from "../../../../src/rpp/wbs";
 import { Visitor } from "../../../../src/rpp/visitor";
 
 class Reader {
@@ -50,6 +52,15 @@ class Reader {
         return (milestone.boundingBox.center.x - timeAxis.boundingBox.left) / width;
     }
 
+
+    public findLeader(identifier: string): Shape {
+        return this._chart.findShapesWithTags(
+            [
+                identifier,
+                Tags.LEADER,
+            ]
+        )[0];
+    }
 
     public findDeliverable(identifier: string): Shape {
         return this._chart.findShapesWithTags([identifier,
@@ -110,8 +121,20 @@ describe("A Gantt chart should", () => {
         [ new Milestone("MS1 key milestone", 6) ],
     );
 
+    const team = new Team(
+        "Team",
+        [
+            new Person("John", "Doe",
+                       [ Role.lead(new Path([1])),
+                         Role.lead(new Path([3])) ]),
+            new Person("Mark", "Moe",
+                       [ Role.lead(new Path([2])),
+                         Role.lead(new Path([3, 1])),
+                         Role.lead(new Path([3, 2])) ])
+        ]);
+
     const gantt = new GanttPainter(new Layout());
-    const chart = new Reader(gantt.draw(project));
+    const chart = new Reader(gantt.draw(new Blueprint(project, team)));
 
     test("have tasks' identifier that do not overlap tasks' name", () => {
         const tester = new class extends Tester {
@@ -209,6 +232,31 @@ describe("A Gantt chart should", () => {
 
             expect(actualDate).toBeCloseTo(normalize(milestone.date - 1));
         }
+    });
+
+
+    test("have task leaders aligned with tasks", () => {
+
+        const tester = new class extends Visitor {
+
+            public onTask(task: Task): void {
+                this.onActivity(task, "T");
+            }
+
+            public onWorkPackage(workPackage: Package): void {
+                this.onActivity(workPackage, "WP");
+            }
+
+            public onActivity(activity: Activity, prefix: string): void {
+                const identifier = this.path.asIdentifier(prefix);
+                const leader = chart.findLeader(identifier);
+                const label = chart.findActivityLabel(identifier);
+                expect(leader.center.isAlignedWith(label.center)).toBe(true);
+            }
+
+        }();
+
+        project.accept(tester);
     });
 
 });

@@ -136,8 +136,8 @@ export class Controller {
     }
 
     private generateGantt(args: Arguments): void {
-        const project = this._storage.loadProject(args.project);
-        this._storage.storeGanttChart(project, args.output);
+        const blueprint = this.loadBlueprint(args);
+        this._storage.storeGanttChart(blueprint, args.output);
     }
 
     private verify(args: Arguments): void {
