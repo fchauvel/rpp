@@ -28,7 +28,6 @@ This yields the following Gantt Chart:
 
 ![Sample Gantt Chart](https://raw.github.com/fchauvel/rpp/master/samples/epic/gantt.svg?sanitize=true)
 
-
 ## Project Descriptions
 
 ### Work Plan
@@ -38,7 +37,6 @@ files, one for the woorkplan, one for the teams, etc. See for instance
 `samples/epic/workplan.yaml`. This file specifies the work plan (work
 packages, tasks, deliverables and milestones) of our sample EPIC
 project. Here is an excerpt:
-
 
 ```yaml
 project:
@@ -102,7 +100,6 @@ $ cd samples/epic
 $ rpp gantt -p workplan.yaml -t team.yaml -o gantt.svg
 ```
 
-
 ## Sanity Checks
 
 RPP can also run sanity checks on your project description. To do so,
@@ -152,11 +149,7 @@ RPP checks for the following:
 -   Teams consistency
 
     -   Empty teams
-
     -   Duplicate activity leader
-
     -   Tasks without contributors
-
     -   Activities without leader
-
     -   Idle partners (without any role)

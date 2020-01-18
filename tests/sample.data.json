@@ -1,0 +1,88 @@
+{
+    "project": {
+        "name": "Sample Project",
+        "origin": "2020-01-16",
+	"milestones": [
+            {
+                "name": "First Milestone",
+                "date": 3
+            },
+            {
+                "name": "Second Miletsone",
+                "date": 6
+            }
+        ],
+        "breakdown": [
+            {
+                "name": "Activity 1",
+                "start": 1,
+                "duration": 5,
+                "deliverables": [
+                    {
+                        "name": "Report on Activity 1",
+                        "kind": "Report",
+                        "due": 4
+                    }
+                ]
+            },
+            {
+                "name": "Activity 2",
+                "start": 3,
+                "duration": 5,
+                "deliverables": [
+                    {
+                        "due": 5,
+                        "name": "Report on Activity 2",
+                        "kind": "Report"			
+                    }
+                ]
+            },
+            {
+                "name": "Activity 3",
+                "breakdown": [
+                    {
+                        "name": "Activity 3.1",
+                        "start": 3,
+                        "duration": 8,
+                        "deliverables": [
+                            {
+                                "name": "Report on Activity 3.1",
+                                "kind": "Report",
+                                "due": 10
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Activity 3.2",
+                        "start": 6,
+                        "duration": 10,
+                        "deliverables": [
+                            {
+                                "name": "Report on Activity 3.2",
+                                "kind": "Report",
+                                "due": 15
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "team": {
+        "name": "Sample Team",
+        "members": [
+            {
+                "firstname": "John",
+                "lastname": "Doe",
+                "leads": [ "A 1",  "A 3.1", "A 3.2" ],
+                "contributes": [ "A 2" ]
+            },
+            {
+                "firstname": "Bob",
+                "lastname": "Spong",
+                "leads": [ "A 2", "A 3" ],
+                "contributes": [ "A 1" ]
+            }
+        ]
+    }
+}

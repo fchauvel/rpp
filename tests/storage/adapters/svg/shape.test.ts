@@ -8,12 +8,12 @@
  * See the LICENSE file for details.
  */
 
-import { GanttPainter, Layout, Tags } from "../../../../src/storage/adapters/svg/painter";
-import { Figure, Shape } from "../../../../src/storage/adapters/svg/shape";
 import { Blueprint } from "../../../../src/rpp";
 import { Person, Role, Team } from "../../../../src/rpp/team";
-import { Activity, Deliverable, Milestone, Package, Path, Project, Task } from "../../../../src/rpp/wbs";
 import { Visitor } from "../../../../src/rpp/visitor";
+import { Activity, Deliverable, Milestone, Package, Path, Project, Task } from "../../../../src/rpp/wbs";
+import { GanttPainter, Layout, Tags } from "../../../../src/storage/adapters/svg/painter";
+import { Figure, Shape } from "../../../../src/storage/adapters/svg/shape";
 
 class Reader {
 
@@ -58,7 +58,7 @@ class Reader {
             [
                 identifier,
                 Tags.LEADER,
-            ]
+            ],
         )[0];
     }
 
@@ -130,7 +130,7 @@ describe("A Gantt chart should", () => {
             new Person("Mark", "Moe",
                        [ Role.lead(new Path([2])),
                          Role.lead(new Path([3, 1])),
-                         Role.lead(new Path([3, 2])) ])
+                         Role.lead(new Path([3, 2])) ]),
         ]);
 
     const gantt = new GanttPainter(new Layout());

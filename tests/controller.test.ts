@@ -36,7 +36,7 @@ describe("The controller should", () => {
     storage.loadTeam = jest.fn()
         .mockImplementation(() => "");
     storage.storeGanttChart = jest.fn()
-        .mockImplementation(() => {});
+        .mockImplementation(() => "");
 
     const terminal = new MockedTerminal();
     const controller = new Controller(rpp, terminal, storage);

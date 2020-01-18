@@ -8,8 +8,8 @@
  * See the LICENSE file for details.
  */
 
-import { DataSource, Storage } from "../src/storage";
 import { Path } from "../src/rpp/wbs";
+import { DataSource, Storage } from "../src/storage";
 import { FakeFormat, FakeSource } from "./storage/fakes";
 
 
