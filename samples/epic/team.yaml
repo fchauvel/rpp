@@ -5,31 +5,23 @@ team:
     members:
       - firstname: Franck
         lastname: Chauvel
-        leads:
-          - project
-          - WP1
-          - T1.1
-          - T1.2
-          - T1.3
+        leads: [ WP1, T1.1, T1.2, T3.1, T4.4 ]
       - firstname: Brice
         lastname: Morin
-        leads:
-          - WP3
-          - T3.3
+        leads: [ WP3, T2.1, T3.3 ]
+      - firstname: Ketil
+        lastname: Stølen
+        leads: [ T1.3 ]
   - name: UiO
     members:
       - firstname: Olaf
         lastname: Owe
-        leads:
-          - WP5
-        contributes:
-          - WP1
+        leads: [ WP4, T2.2, T4.1, T4.2, T4.3, T5.2]
   - name: OMet
     members:
       - firstname: Stephano
         lastname: Nichele
-        leads:
-          - WP2
+        leads: [ WP2, WP5, T2.3, T3.2, T2.4, T5.1 ]
 
     
         

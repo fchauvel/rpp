@@ -8,10 +8,12 @@
  * See the LICENSE file for details.
  */
 
-import { Project } from "../../../rpp/wbs";
+
+import { Blueprint } from "../../../rpp";
 import { Format } from "../../adapters";
 import { GanttPainter, Layout } from "./painter";
 import { SVGWriter } from "./svg";
+
 
 export class SVGFormat extends Format {
 
@@ -19,9 +21,9 @@ export class SVGFormat extends Format {
         super("SVG", [".svg"]);
     }
 
-    public writeGantt(project: Project): string {
+    public writeGantt(blueprint: Blueprint): string {
         const gantt = new GanttPainter(new Layout());
-        return new SVGWriter().write(gantt.draw(project));
+        return new SVGWriter().write(gantt.draw(blueprint));
     }
 
 }

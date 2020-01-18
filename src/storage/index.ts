@@ -8,6 +8,8 @@
  * See the LICENSE file for details.
  */
 
+
+import { Blueprint } from "../rpp";
 import { Team } from "../rpp/team";
 import { Project  } from "../rpp/wbs";
 import { Format } from "./adapters";
@@ -70,9 +72,9 @@ export class Storage {
     }
 
 
-    public storeGanttChart(project: Project, location: string): void {
+    public storeGanttChart(blueprint: Blueprint, location: string): void {
         const format = this.selectReader(location);
-        const content = format.writeGantt(project);
+        const content = format.writeGantt(blueprint);
         this._sources[0].store(location, content);
     }
 

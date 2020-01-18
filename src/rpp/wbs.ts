@@ -208,8 +208,13 @@ export class Path {
 
     public static fromText(text: string, separator= "."): Path {
         const pattern = /(\d+)/g;
-        const path = text.match(pattern);
-        return new Path(path.map((i) => parseInt(i, 10)));
+        const paths = text.match(pattern);
+        if (!paths) {
+            throw new Error(
+                `Text '${text}' is not a valid reference to an activity.`
+            );
+        }
+        return new Path(paths.map((i) => parseInt(i, 10)));
     }
 
 
