@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+## [RPP 0.7.0 (Jan. 19, 2020)][v0.7.0]
+
 -   Add support for projects' team
 
     -   Add reading a team description from either a YAML or JSON file
@@ -75,7 +77,9 @@
 -   Add reading project from JSON file
 -   Add how to generate Gantt chart in the README
 
-[unreleased]: https://github.com/fchauvel/rpp/compare/v0.6.0..dev
+[unreleased]: https://github.com/fchauvel/rpp/compare/v0.7.0..dev
+
+[v0.7.0]: https://github.com/fchauvel/rpp/compare/v0.6.0...v0.7.0
 
 [v0.6.0]: https://github.com/fchauvel/rpp/compare/v0.5.0...v0.6.0
 
