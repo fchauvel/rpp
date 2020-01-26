@@ -11,7 +11,7 @@
 
 project:
   name: EPIC
-  origin: 2020-07-01
+  origin: "2020-07-01"
   milestones:
     - name: First simulated DGA
       date: 16

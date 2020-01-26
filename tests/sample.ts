@@ -10,10 +10,15 @@
 
 
 import { Blueprint } from "../src/rpp";
-import { JsonBlueprint, ObjectParser } from "../src/storage/adapters/object";
+import { teamSchema, workPlanSchema } from "../src/storage/adapters/schemas"
 
 import * as fs from "fs";
 
+
+export interface JsonBlueprint {
+    project: any;
+    team: any;
+}
 
 
 export class SampleProject {
@@ -62,7 +67,7 @@ export class SampleProject {
 
     get withAMilestoneBeforeProjectStart(): Blueprint {
         return this.modify( (sample) => {
-            sample.project.milestones[1].date = 0;
+            sample.project.milestones[1].date = -1;
         });
     }
 
@@ -145,9 +150,12 @@ export class SampleProject {
     }
 
     private static asBlueprint(sample: JsonBlueprint): Blueprint {
-        const read = new ObjectParser();
-        const project = read.asProject(sample.project);
-        const team = read.asTeam(sample.team);
+        const project = workPlanSchema
+            .read(sample.project)
+            .as("project");
+        const team = teamSchema
+            .read(sample.team)
+            .as("team");
         return new Blueprint(project, team);
     }
 

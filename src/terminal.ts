@@ -11,6 +11,8 @@
 import { Report } from "./rpp/verify/report";
 import { format } from "./utils";
 
+import { Report as SyntaxError } from "@fchauvel/quick-check/dist/issues";
+
 
 export interface Output {
 
@@ -70,6 +72,15 @@ export class Terminal {
             report.warnings.length + " warning(s), "
             + report.errors.length + " error(s).";
         this.write(summary);
+    }
+
+    public showSyntaxErrors(report: SyntaxError): void {
+        this.write(report.toString());
+    }
+
+
+    public unexpectedError(error: any): void {
+        this.write(error.toString());
     }
 
     public invalidArguments(message: string, error: Error): void {

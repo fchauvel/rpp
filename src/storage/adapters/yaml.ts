@@ -12,25 +12,23 @@ import * as yaml from "js-yaml";
 import { Team  } from "../../rpp/team";
 import { Project  } from "../../rpp/wbs";
 import { Format } from "../adapters";
-import { ObjectParser } from "./object";
-
+import { teamSchema, workPlanSchema } from "./schemas";
 
 export class YAMLFormat extends Format {
 
-    private _read: ObjectParser;
-
     constructor() {
         super("YAML", [".yaml", ".yml"]);
-        this._read = new ObjectParser();
     }
 
     public parseProject(content: string): Project {
-        return this._read.asProject(yaml.safeLoad(content).project);
+        const data = yaml.safeLoad(content);
+        return workPlanSchema.read(data).as("workplan-root").project;
     }
 
 
     public parseTeam(content: string): Team {
-        return this._read.asTeam(yaml.safeLoad(content).team);
+        const data = yaml.safeLoad(content);
+        return teamSchema.read(data).as("teams-root").team;
     }
 
 }

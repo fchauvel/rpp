@@ -10,7 +10,7 @@
 
 project:
   name: Erroneous
-  origin: 2020-09-16
+  origin: "2020-09-16"
   breakdown:
     - name: First Tasks
       start: 5

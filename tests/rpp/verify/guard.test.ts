@@ -82,7 +82,7 @@ describe("The guard should", () => {
         );
     });
 
-    test("report milestones before the project end", () => {
+    test("report milestones before the project start", () => {
         check(
             sampleProject.withAMilestoneBeforeProjectStart,
             [

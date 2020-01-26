@@ -15,6 +15,9 @@ import { Blueprint, RPP } from "./rpp";
 import { FileSystem, Storage } from "./storage";
 import { Terminal } from "./terminal";
 
+import { Report as SyntaxError } from "@fchauvel/quick-check/dist/issues"
+
+
 interface Arguments {
 
     project: string;
@@ -141,23 +144,43 @@ export class Controller {
     }
 
     private generateGantt(args: Arguments): void {
-        const blueprint = this.loadBlueprint(args);
-        this._storage.storeGanttChart(blueprint, args.output);
+        this.handleErrors(() => {
+            const blueprint = this.loadBlueprint(args);
+            this._storage.storeGanttChart(blueprint, args.output);
+        });
     }
 
     private verify(args: Arguments): void {
-        const blueprint = this.loadBlueprint(args);
-        const report = this._rpp.verify(blueprint);
-        this._terminal.showVerificationReport(report);
+        this.handleErrors(() => {
+            const blueprint = this.loadBlueprint(args);
+            const report = this._rpp.verify(blueprint);
+            this._terminal.showVerificationReport(report);
+        });
+    }
+
+    private handleErrors(code: () => void): void {
+        try {
+            code();
+
+        } catch (error) {
+            if (error instanceof SyntaxError) {
+                this._terminal.showSyntaxErrors(error);
+
+            } else {
+                this._terminal.unexpectedError(error);
+
+            }
+        }
     }
 
     private loadBlueprint(args: Arguments): Blueprint {
         const project = this._storage.loadProject(args.project);
         let team;
-        if (args.team) {
-            team = this._storage.loadTeam(args.team);
-        }
+            if (args.team) {
+                team = this._storage.loadTeam(args.team);
+            }
         return new Blueprint(project, team);
     }
+
 
 }

@@ -11,24 +11,22 @@
 import { Team } from "../../rpp/team";
 import { Project } from "../../rpp/wbs";
 import { Format } from "../adapters";
-import { ObjectParser } from "./object";
-
+import { teamSchema, workPlanSchema } from "./schemas";
 
 export class JSONFormat extends Format {
 
-    private _read: ObjectParser;
-
     constructor() {
         super("JSON", [".json"]);
-        this._read = new ObjectParser();
     }
 
     public parseProject(content: string): Project {
-        return this._read.asProject(JSON.parse(content).project);
+        const data = JSON.parse(content);
+        return workPlanSchema.read(data).as("workplan-root").project;
     }
 
     public parseTeam(content: string): Team {
-        return this._read.asTeam(JSON.parse(content).team);
+        const data = JSON.parse(content);
+        return teamSchema.read(data).as("teams-root").team;
     }
 
 }
