@@ -155,7 +155,6 @@ RPP checks for the following:
     -   Activities without leader
     -   Idle partners (without any role)
 
-
 [workplan-schema]: https://github.com/fchauvel/rpp/blob/058f1722d116955bb9a018dcca6287a926044670/src/storage/adapters/schemas.ts#L29
 
 [team-schema]: https://github.com/fchauvel/rpp/blob/058f1722d116955bb9a018dcca6287a926044670/src/storage/adapters/schemas.ts#L111

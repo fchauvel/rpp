@@ -203,3 +203,51 @@ describe("Given the 'Erroneous' sample", () => {
     });
 
 });
+
+
+describe("Given a file that does not exist", () => {
+
+    const tester = new Acceptance();
+
+    test("'rpp verify' not throw an error", () => {
+        expect(() => {
+            tester.invoke(["rpp", "verify",
+                           "-p", "this/file/does_not.exist" ]);
+        }).not.toThrow();
+    });
+
+
+    test("'rpp gantt' should not throw an error", () => {
+        expect(() => {
+            tester.invoke(["rpp", "gantt",
+                           "-p", "this/file/does_not.exist",
+                           "-o", "gantt.svg"]);
+        }).not.toThrow();
+    });
+
+
+});
+
+
+describe("Given a file that does not adhere to the schema", () => {
+
+    const tester = new Acceptance();
+
+    test("'rpp verify' should not throw an error", () => {
+        expect(() => {
+            tester.invoke(
+                ["rpp", "verify",
+                 "-p", "samples/erroneous/syntax/workplan.yaml"]);
+        }).not.toThrow();
+    });
+
+    test("'rpp gantt' should not throw an error", () => {
+        expect(() => {
+            tester.invoke(
+                ["rpp", "gantt",
+                 "-p", "samples/erroneous/syntax/workplan.yaml",
+                 "-o", "gantt.svg"]);
+        }).not.toThrow();
+    });
+
+});

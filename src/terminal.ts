@@ -79,7 +79,7 @@ export class Terminal {
     }
 
 
-    public unexpectedError(error: any): void {
+    public unexpectedError(error: unknown): void {
         this.write(error.toString());
     }
 

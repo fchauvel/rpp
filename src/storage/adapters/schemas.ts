@@ -14,10 +14,10 @@ import { anArrayOf,
          anObject,
          aProperty,
          aString,
-         eitherOf }  from "@fchauvel/quick-check";
+         eitherOf } from "@fchauvel/quick-check";
 
-import { Partner, Person, Role, Team } from "../../rpp/team";
-import { Deliverable, Milestone, Project, Task, Package } from "../../rpp/wbs";
+import { Person, Role, Team } from "../../rpp/team";
+import { Deliverable, Milestone, Package, Project, Task } from "../../rpp/wbs";
 import { Path } from "../../rpp/wbs";
 
 
@@ -75,19 +75,19 @@ workPlanSchema.on("project")
         data.name,
         data.breakdown,
         new Date(data.origin),
-        data.milestones
+        data.milestones,
     ));
 
 workPlanSchema.on("milestone")
     .apply((data) =>  new Milestone(
         data.name,
-        data.date
+        data.date,
     ));
 
 workPlanSchema.on("work package")
     .apply((data) => new Package(
         data.name,
-        data.breakdown
+        data.breakdown,
     ));
 
 workPlanSchema.on("task")
@@ -145,14 +145,14 @@ teamSchema.on("team")
 teamSchema.on("person")
     .apply( (data) => {
         const roles = data.contributes.map(
-            activity => Role.contributeTo(activity)
+            (activity) => Role.contributeTo(activity),
         );
         data.leads.forEach(
-            activity => roles.push(Role.lead(activity))
+            (activity) => roles.push(Role.lead(activity)),
         );
         return new Person(data.firstname,
                           data.lastname,
-                          roles)
+                          roles);
     });
 
 teamSchema.on("task-reference")

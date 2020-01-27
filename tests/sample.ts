@@ -10,14 +10,14 @@
 
 
 import { Blueprint } from "../src/rpp";
-import { teamSchema, workPlanSchema } from "../src/storage/adapters/schemas"
+import { teamSchema, workPlanSchema } from "../src/storage/adapters/schemas";
 
 import * as fs from "fs";
 
 
 export interface JsonBlueprint {
-    project: any;
-    team: any;
+    project: unknown;
+    team: unknown;
 }
 
 

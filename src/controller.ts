@@ -15,7 +15,7 @@ import { Blueprint, RPP } from "./rpp";
 import { FileSystem, Storage } from "./storage";
 import { Terminal } from "./terminal";
 
-import { Report as SyntaxError } from "@fchauvel/quick-check/dist/issues"
+import { Report as SyntaxError } from "@fchauvel/quick-check/dist/issues";
 
 
 interface Arguments {
@@ -176,7 +176,7 @@ export class Controller {
     private loadBlueprint(args: Arguments): Blueprint {
         const project = this._storage.loadProject(args.project);
         let team;
-            if (args.team) {
+        if (args.team) {
                 team = this._storage.loadTeam(args.team);
             }
         return new Blueprint(project, team);
