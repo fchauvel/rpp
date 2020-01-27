@@ -36,7 +36,7 @@ RPP consumes a description of the project split into multiple YAML
 files, one for the woorkplan, one for the teams, etc. See for instance
 `samples/epic/workplan.yaml`. This file specifies the work plan (work
 packages, tasks, deliverables and milestones) of our sample EPIC
-project. Here is an excerpt:
+project (see the [workplan schema][workplan-schema]). Here is an excerpt:
 
 ```yaml
 project:
@@ -66,7 +66,8 @@ project:
 ### Project Team
 
 RPP also accepts a description of the team, that this, the persons
-assigned to the projects with their roles. Here is an excerpt of the EPIC team
+assigned to the projects with their roles (see the [team
+schema][team-schema]). Here is an excerpt of the EPIC team
 description.
 
 ```yaml
@@ -153,3 +154,8 @@ RPP checks for the following:
     -   Tasks without contributors
     -   Activities without leader
     -   Idle partners (without any role)
+
+
+[workplan-schema]: https://github.com/fchauvel/rpp/blob/058f1722d116955bb9a018dcca6287a926044670/src/storage/adapters/schemas.ts#L29
+
+[team-schema]: https://github.com/fchauvel/rpp/blob/058f1722d116955bb9a018dcca6287a926044670/src/storage/adapters/schemas.ts#L111
