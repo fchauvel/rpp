@@ -2,6 +2,13 @@
 
 ## [Unreleased][unreleased]
 
+## [RPP 0.8.0 (Jan. 28, 2020)][v0.8.0]
+
+-   Verify project descriptions (i.e., workplan and teams) against
+    explicit data schemas.
+
+-   New dependency to '@fchauvel/quick-check@0.1.0.'
+
 ## [RPP 0.7.0 (Jan. 19, 2020)][v0.7.0]
 
 -   Add support for projects' team
@@ -77,7 +84,9 @@
 -   Add reading project from JSON file
 -   Add how to generate Gantt chart in the README
 
-[unreleased]: https://github.com/fchauvel/rpp/compare/v0.7.0..dev
+[unreleased]: https://github.com/fchauvel/rpp/compare/v0.8.0..dev
+
+[v0.8.0]: https://github.com/fchauvel/rpp/compare/v0.7.0...v0.8.0
 
 [v0.7.0]: https://github.com/fchauvel/rpp/compare/v0.6.0...v0.7.0
 
