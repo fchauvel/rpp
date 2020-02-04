@@ -6,19 +6,13 @@
 [![Test Coverage](https://img.shields.io/codecov/c/github/fchauvel/rpp)](https://codecov.io/gh/fchauvel/rpp/)
 [![Code Grade](https://img.shields.io/codacy/grade/bd70b010385c4f18a31d24dd44de4580.svg)](https://app.codacy.com/manual/fchauvel/rpp/dashboard)
 
-RPP is a CLI tool to quickly generate project plans including Gantt
-charts. Project planning for developers in a way. We review its key
-features, but checkout [the documentation][docs] for more details.
-
-## Requirements
-RPP is a [NodeJS](https://nodejs.org/en/) application and you must
-have NodeJS up and running on your machine. RPP is tested on Node 10,
-so later versions should work.
+A simple CLI tool to quickly generate project plans including Gantt
+charts. Project planning for developers in a way.
 
 ## Installation
 
 ```shell-session
-$ npm install --global @fchauvel/rpp
+$ npm install @fchauvel/rpp
 ```
 
 ## Gantt Charts
@@ -26,24 +20,23 @@ $ npm install --global @fchauvel/rpp
 To export the associated Gantt chart, use:
 
 ```shell-session
-$ cd docs/samples/epic
-$ rpp gantt -p workplan.yaml -o gantt.svg
+$ rpp gantt -p samples/epic/workplan.yaml -o samples/epic/gantt.svg
+
 ```
 
-This yields the following Gantt chart:
+This yields the following Gantt Chart:
 
-![Sample Gantt Chart](https://raw.github.com/fchauvel/rpp/master/docs/samples/epic/gantt.svg?sanitize=true)
+![Sample Gantt Chart](https://raw.github.com/fchauvel/rpp/master/samples/epic/gantt.svg?sanitize=true)
 
 ## Project Descriptions
 
 ### Work Plan
 
-RPP consumes a description of the project split into multiple files
-(YAML or JSON), one for the workplan, one for the teams, etc. See for
-instance `docs/samples/epic/workplan.yaml`. This file specifies the
-work plan (work packages, tasks, deliverables and milestones) of our
-sample EPIC project (see the [workplan schema][workplan-schema]). Here
-is an excerpt:
+RPP consumes a description of the project split into multiple YAML
+files, one for the woorkplan, one for the teams, etc. See for instance
+`samples/epic/workplan.yaml`. This file specifies the work plan (work
+packages, tasks, deliverables and milestones) of our sample EPIC
+project (see the [workplan schema][workplan-schema]). Here is an excerpt:
 
 ```yaml
 project:
@@ -73,7 +66,7 @@ project:
 ### Project Team
 
 RPP also accepts a description of the team, that this, the persons
-assigned to the project together with their roles (see the [team
+assigned to the projects with their roles (see the [team
 schema][team-schema]). Here is an excerpt of the EPIC team
 description.
 
@@ -100,22 +93,21 @@ team:
 ```
 
 You can pass the team to the `rpp gantt` command using `--team|-t`
-option, so that the Gantt chart indicates who's leading each task. For
+option, so that the Gantt chart indicates who leads the Tasks. For
 instance:
 
-```console
-$ cd docs/samples/epic
+```shell-session
+$ cd samples/epic
 $ rpp gantt -p workplan.yaml -t team.yaml -o gantt.svg
 ```
 
 ## Sanity Checks
 
-RPP can also run sanity checks on your project description to help
-spot inconsistencies. To do so, use the following command:
+RPP can also run sanity checks on your project description. To do so,
+use the following command:
 
-```console
-$ cd docs/samples/erroenous
-$ rpp verify -p workplan.yaml
+```shell-session
+$ rpp verify -p samples/erroneous/workplan.yaml
   1. Warning: 'EMPTY WORK PACKAGE' on 'WP 2'
      - Work package 'First Package' is empty.
      - Tip: Have we forgotten some tasks or work packages there?
@@ -162,8 +154,6 @@ RPP checks for the following:
     -   Tasks without contributors
     -   Activities without leader
     -   Idle partners (without any role)
-
-[docs]: https://fchauvel.github.io/rpp/index.html
 
 [workplan-schema]: https://github.com/fchauvel/rpp/blob/058f1722d116955bb9a018dcca6287a926044670/src/storage/adapters/schemas.ts#L29
 

@@ -8,6 +8,7 @@
     "bugs": {
 	"url": "https://github.com/fchauvel/rpp/issues"
     },
+    "homepage": " https://fchauvel.github.io/rpp/index.html",
     "repository": {
 	"type": "git",
 	"url": "https://github.com/fchauvel/rpp.git"

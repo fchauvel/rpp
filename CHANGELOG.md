@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+-   New [documentation][docs] powered by [Docute](docute.org)
+
 ## [RPP 0.8.0 (Jan. 28, 2020)][v0.8.0]
 
 -   Verify project descriptions (i.e., workplan and teams) against
@@ -101,3 +103,5 @@
 [v0.2.0]: https://github.com/fchauvel/rpp/compare/v0.1.0...v0.2.0
 
 [v0.1.0]: https://github.com/fchauvel/rpp/compare/v0.0.0...v0.1.0
+
+[docs]: https://fchauvel.github.io/rpp/index.html
