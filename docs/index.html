@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>RPP: Rapid Project Plan </title>
+    <link rel="stylesheet" href="https://unpkg.com/docute@4/dist/docute.css">
+  </head>
+  <body>
+    <div id="docute"></div>
+    <script src="https://unpkg.com/docute@4/dist/docute.js"></script>
+    <script>
+      new Docute({
+	  cssVariables: {
+	      headerHeight: "55px"
+	  },
+          target: '#docute',
+	  title: "RPP: Rapid Project Plan",
+	  editLinkBase: "https://github.com/fchauvel/rpp/blob/master/docs",
+	  nav: [
+	      {
+		  title: 'Home',
+		  link: '/'
+	      },
+	      {
+		  title: 'GitHub',
+		  link: 'https://github.com/fchauvel/rpp'
+	      }
+	  ],
+	  sidebar: [
+	      {		  
+		  title: "What is RPP?",
+		  link: "/intro.md"
+	      },
+	      {		  
+		  title: "Install RPP",
+		  link: "/install.md"
+	      },
+	      {
+		  title: "Describe Your Project",
+		  collapsable: true,
+		  children: [
+
+		      {
+			  title: "Work Plan",
+			  link: "/workplan.md"
+		      },
+		      {
+			  title: "Team",
+			  link: "/team.md"
+		      }
+		  ]
+	      },
+	      {		  
+		  title: "Verify Your Project",
+		  link: "/verify.md"
+	      },
+	      {		  
+		  title: "Get a Gantt Chart",
+		  link: "/gantt.md"
+	      },
+	      {
+		  title: "Sample Projects",
+		  collapsable: true,
+		  children: [
+		      {
+			  title: "EPIC",
+			  link: "/samples/epic/"
+		      }
+		  ]
+	      },
+	      {
+		  title: "Change Log",
+		  link: "CHANGELOG.md"  
+	      }
+	  ],
+	  routes: {
+	      "/CHANGELOG.md": {
+		  file: "https://raw.githubusercontent.com/fchauvel/rpp/master/CHANGELOG.md"
+	      }
+	  },
+	  highlight: ['typescript', 'shell-session', 'bash', 'yaml', 'json']
+      })
+    </script>
+    </script src="https://unpkg.com/prismjs@1.19.0/components/prism-typescript.min.js" >
+  </body>
+</html>

@@ -1,0 +1,14 @@
+team:
+  name: Erroneous
+  members:
+    - firstname: James
+      lastname: Bond
+      leads:
+        - A 1
+        - A 2
+    - firstname: John
+      lastname: Doe
+      leads:
+        - A 1
+    - firstname: Bob
+      lastname: Sponge

@@ -32,6 +32,9 @@ class CaptureOutput implements Output {
 
 }
 
+const EPIC = "docs/samples/epic";
+const ERRONEOUS = "docs/samples/erroneous";
+
 
 class Acceptance {
 
@@ -101,7 +104,7 @@ describe("Given the EPIC project", () => {
             tester.invoke(["rpp",
                            "gantt",
                            "-p",
-                           "samples/epic/workplan.json",
+                           EPIC + "/workplan.json",
                            "-o",
                            outputFile]);
 
@@ -115,7 +118,7 @@ describe("Given the EPIC project", () => {
             tester.invoke(["rpp",
                            "gantt",
                            "-p",
-                           "samples/epic/workplan.yaml",
+                           EPIC + "/workplan.yaml",
                            "-o",
                            outputFile]);
 
@@ -129,9 +132,9 @@ describe("Given the EPIC project", () => {
             tester.invoke(["rpp",
                            "gantt",
                            "-p",
-                           "samples/epic/workplan.yaml",
+                           EPIC + "/workplan.yaml",
                            "-t",
-                           "samples/epic/team.yaml",
+                           EPIC + "/team.yaml",
                            "-o",
                            outputFile]);
 
@@ -150,7 +153,7 @@ describe("Given the EPIC project", () => {
             tester.invoke(["rpp",
                            "verify",
                            "-p",
-                           "samples/epic/workplan.yaml"]);
+                           EPIC + "/workplan.yaml"]);
 
             tester.verifyOutput(0, 0);
         });
@@ -159,9 +162,9 @@ describe("Given the EPIC project", () => {
             tester.invoke(["rpp",
                            "verify",
                            "-p",
-                           "samples/epic/workplan.yaml",
+                           EPIC + "/workplan.yaml",
                            "-t",
-                           "samples/epic/team.yaml"]);
+                           EPIC + "/team.yaml"]);
 
             tester.verifyOutput(0, 0);
         });
@@ -183,7 +186,7 @@ describe("Given the 'Erroneous' sample", () => {
             tester.invoke(["rpp",
                            "verify",
                            "-p",
-                           "samples/erroneous/workplan.yaml"]);
+                           ERRONEOUS + "/workplan.yaml"]);
 
             tester.verifyOutput(2, 1);
         });
@@ -193,9 +196,9 @@ describe("Given the 'Erroneous' sample", () => {
             tester.invoke(["rpp",
                            "verify",
                            "-p",
-                           "samples/erroneous/workplan.yaml",
+                           ERRONEOUS + "/workplan.yaml",
                            "-t",
-                           "samples/erroneous/team.yaml"]);
+                           ERRONEOUS + "/team.yaml"]);
 
             tester.verifyOutput(3, 2);
         });
@@ -237,7 +240,7 @@ describe("Given a file that does not adhere to the schema", () => {
         expect(() => {
             tester.invoke(
                 ["rpp", "verify",
-                 "-p", "samples/erroneous/syntax/workplan.yaml"]);
+                 "-p", ERRONEOUS + "/syntax/workplan.yaml"]);
         }).not.toThrow();
     });
 
@@ -245,7 +248,7 @@ describe("Given a file that does not adhere to the schema", () => {
         expect(() => {
             tester.invoke(
                 ["rpp", "gantt",
-                 "-p", "samples/erroneous/syntax/workplan.yaml",
+                 "-p", ERRONEOUS + "/syntax/workplan.yaml",
                  "-o", "gantt.svg"]);
         }).not.toThrow();
     });
