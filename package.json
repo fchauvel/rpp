@@ -31,6 +31,9 @@
 	"lint": "npm run eslint && npm run tslint",
 	"remark": "remark . -o"
     },
+    "files": [
+	"src/**/*.ts"
+    ],
     "devDependencies": {
 	"@types/jest": "^24.0.23",
 	"@types/yargs": "^13.0.3",
@@ -47,7 +50,7 @@
     "dependencies": {
 	"@babel/core": "^7.7.5",
 	"@babel/preset-env": "^7.7.6",
-	"@fchauvel/quick-check": "^0.1.0",
+	"@fchauvel/quick-check": "^0.2.0",
 	"@types/node": "^12.12.18",
 	"babel-jest": "^24.9.0",
 	"d3": "^5.14.2",
