@@ -12,7 +12,7 @@ charts. Project planning for developers in a way.
 ## Installation
 
 ```shell-session
-$ npm install @fchauvel/rpp
+$ npm install --global @fchauvel/rpp
 ```
 
 ## Gantt Charts
@@ -26,7 +26,7 @@ $ rpp gantt -p samples/epic/workplan.yaml -o samples/epic/gantt.svg
 
 This yields the following Gantt Chart:
 
-![Sample Gantt Chart](https://raw.github.com/fchauvel/rpp/master/samples/epic/gantt.svg?sanitize=true)
+![RPP Gantt Diagram](samples/epic/gantt.svg)
 
 ## Project Descriptions
 

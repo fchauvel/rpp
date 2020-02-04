@@ -33,9 +33,9 @@ following:
 $ rpp gantt -p workplan.yaml -t team.yaml -o gantt.svg
 ```
 
-![The EPIC Gantt Chart](./gantt.svg)
+![The EPIC Gantt Chart](/samples/epic/gantt.svg)
 
 
-[workplan]: https://raw.githubusercontent.com/fchauvel/rpp/docs/samples/epic/workplan.yaml
+[workplan]: https://raw.githubusercontent.com/fchauvel/rpp/master/docs/samples/epic/workplan.yaml
 
-[team]: https://raw.githubusercontent.com/fchauvel/rpp/docs/samples/epic/team.yaml
+[team]: https://raw.githubusercontent.com/fchauvel/rpp/master/docs/samples/epic/team.yaml
